@@ -1,0 +1,144 @@
+body{
+  margin: 20px 80px;
+  font-family: 'Cairo', sans-serif;
+}
+@font-face {
+  font-family: 'Cairo';
+  src: url('../assets/cairo.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+.item{
+    background-color: var(--primary);
+    margin: 8px 20px;
+    color: #ffff;
+    border-radius: 20px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    font-weight: 700;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.date-picker-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .date-picker {
+    display: flex;
+    flex-direction: column;
+    margin: 0 20px;
+  }
+  
+  label {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .react-datepicker-wrapper {
+    display: block;
+  }
+  
+  .react-datepicker__input-container {
+    width: 100%;
+  }
+  
+  .react-datepicker__input-container input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .react-datepicker__month-container {
+    width: 250px;
+  }
+  
+  .react-datepicker__day-name,
+  .react-datepicker__day {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 50%;
+  }
+  
+  .react-datepicker__day--selected {
+    background-color: var(--dark);
+    color: #fff;
+  }
+  
+  .react-datepicker__day--keyboard-selected {
+    background-color: var(--dark);
+    color: #fff;
+  }
+  
+  .react-datepicker__day--in-range {
+    background-color: var(--dark);
+    color: #fff;
+  }
+  
+  .react-datepicker__day--in-selecting-range {
+    background-color: var(--dark);
+    color: #fff;
+  }
+  
+  .react-datepicker__day--disabled {
+    color: #ccc;
+  }
+
+  @media print {
+    #printBtn,#modal-modal-title ,#icon{
+      display: none !important;
+    }
+    .model {
+      position: static;
+      width: 90% !important;
+      margin: 20px auto 0 !important;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      box-shadow: none;
+      border: none;
+      background: none;
+      overflow: scroll !important;
+    }
+  
+    .table-container {
+      width: 80% !important;
+      margin: auto !important;
+      height: 100%;
+      overflow: scroll !important;
+
+    }
+  
+    .table {
+      width: 80% !important;
+      margin: auto !important;
+      height: 100%;
+      overflow: scroll !important;
+
+    }
+  }
+  
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.report-table th,
+.report-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.report-table th {
+  background-color: #f2f2f2;
+}

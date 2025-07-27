@@ -1,0 +1,270 @@
+@font-face {
+  font-family: 'Cairo';
+  src: url('../assets/cairo.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  font-family: 'Cairo', sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f5f5f5; // لون خفيف ليتناسب مع الألوان
+  color: #333;
+  font-family: 'Cairo', sans-serif;
+}
+
+.container {
+  text-align: center;
+  padding: 20px;
+}
+
+h2 {
+  // يمكنك إضافة لون هنا إذا أردت، مثلاً: color: #b8860b;
+  margin-bottom: 25px;
+}
+
+#search-box {
+  // لا يزال هذا الكلاس موجودًا ولكن لم يعد يُستخدم في الـ JSX الجديد.
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: white;
+  color: #333;
+  outline: none;
+  transition: 0.3s;
+
+  &:focus {
+    border-color: #8b6508;
+    box-shadow: 0px 0px 8px rgba(184, 134, 11, 0.5);
+  }
+}
+
+.cardsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card-box {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease;
+  position: relative;
+  min-width: 250px;
+  border: 2px solid #b8860b; // حدود ذهبية
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .circle-badge {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    background: #b8860b; // ذهبي
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .card-title {
+    font-size: 25px;
+    font-weight: bold;
+    color: #b8860b;
+  }
+
+  .card-text {
+    font-size: 18px;
+    // هنا اللون يتم التحكم به من الـ inline style في الـ JSX، لا تغيير.
+    // color: #ffffff; 
+    margin: 10px 0;
+    font-family: 'Cairo', sans-serif;
+  }
+
+  .buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .book-button {
+    background: #b8860b; // اللون الأصلي الذي أرفقته
+    color: white;
+    font-weight: bold;
+    padding: 10px 55px;
+    border-radius: 6px;
+    border: none;
+    font-family: 'Cairo', sans-serif;
+    transition: 0.3s;
+
+    &:hover {
+      background: #1c7a1c;
+    }
+  }
+
+  .details-button {
+    background: #797979; // اللون الأصلي الذي أرفقته
+    color: white;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-family: 'Cairo', sans-serif;
+    border: none;
+    transition: 0.3s;
+
+    &:hover {
+      background: #8b6508;
+    }
+  }
+}
+
+
+.status-circle {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-left: 8px;
+}
+
+.available {
+  background-color: #28a745; // 🟢 أخضر للحالة المتاحة
+}
+
+.unavailable {
+  background-color: #dc3545; // 🔴 أحمر للحالة المحجوزة
+}
+
+.date-picker-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+.custom-date-picker {
+  padding: 10px;
+  border: 2px solid #b8860b; // ذهبي
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: white;
+  color: #333;
+  outline: none;
+  transition: 0.3s;
+  appearance: none; // إخفاء أيقونة التقويم الافتراضية
+
+  &::-webkit-calendar-picker-indicator {
+    display: none; // إخفاء أيقونة التقويم للمتصفحات التي تدعم WebKit
+  }
+}
+
+.select-button {
+  background: #b8860b; // ذهبي
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+
+  &:hover {
+    background: #8b6508;
+  }
+}
+
+// --- أنماط الفلاتر الجديدة ومدخل البحث بالاسم ---
+.filter-container {
+  display: flex;
+  flex-wrap: wrap; // للسماح للعناصر بالنزول لسطر جديد على الشاشات الصغيرة
+  justify-content: center;
+  align-items: center; // محاذاة رأسية للعناصر
+  gap: 20px; // مسافة بين العناصر
+  margin: 20px auto 30px auto; // مسافة بعد قسم الفلتر
+
+  .name-search-input {
+
+    // أنماط TextField من Material-UI
+    .MuiInputBase-root {
+      // العنصر الأساسي لمدخل النص
+      border-radius: 8px;
+      border: 2px solid #b8860b; // حدود ذهبية
+      transition: all 0.3s ease;
+
+      &:hover fieldset {
+        // إزالة الحدود الافتراضية عند التحويم
+        border-color: #8b6508 !important;
+      }
+
+      &.Mui-focused fieldset {
+        // إزالة الحدود الافتراضية عند التركيز
+        border-color: #8b6508 !important;
+        box-shadow: 0px 0px 8px rgba(184, 134, 11, 0.5);
+      }
+
+      fieldset {
+        // إزالة الحدود الافتراضية
+        border: none;
+      }
+    }
+
+    .MuiInputLabel-root {
+      // للـ Label
+      color: #b8860b; // لون ذهبي للـ Label
+
+      &.Mui-focused {
+        color: #8b6508; // لون ذهبي أغمق عند التركيز
+      }
+    }
+
+    input {
+      // لمدخل النص الفعلي
+      padding: 10px 14px;
+      color: #333;
+    }
+  }
+
+  .filter-toggle-buttons {
+    .MuiToggleButton-root {
+      background-color: #f0f0f0;
+      color: #333;
+      border: 1px solid #ccc;
+      padding: 8px 15px;
+      font-size: 0.95rem;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      font-weight: normal;
+
+      &:hover {
+        background-color: #e0e0e0;
+      }
+
+      &.Mui-selected {
+        background-color: #b8860b; // اللون الذهبي للزر المختار
+        color: #fff;
+        border-color: #b8860b;
+        font-weight: bold;
+      }
+    }
+  }
+}

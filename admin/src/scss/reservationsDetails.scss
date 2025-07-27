@@ -1,0 +1,99 @@
+body{
+    margin: 20px 80px;
+    font-family: 'Cairo', sans-serif;
+}
+@font-face {
+    font-family: 'Cairo';
+    src: url('../assets/cairo.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  header{
+    .details .text{
+        font-weight: 700;
+        font-size: 1rem;
+    }
+    .share-box{
+        display: flex;
+        justify-content: center;
+        #share{
+            display: block;
+            background-color: var(--primary);
+            color: #fff;
+            border-radius: 50%;
+            padding: 5px;
+            text-align: center;
+            transition: .3s;
+            cursor: pointer;
+            margin: 0 0 0 10px;
+            &:hover{
+                opacity: .8;
+                transform: translateY(-2px);
+            }
+        }
+        #download{
+            display: block;
+            background-color: var(--primary);
+            color: #fff;
+            border-radius: 50%;
+            padding: 5px;
+            text-align: center;
+            transition: .3s;
+            cursor: pointer;
+            margin-bottom: 10px;
+            &:hover{
+                opacity: .8;
+                transform: translateY(-2px);
+            }
+        }
+    }
+    .details{
+        display: flex;
+        justify-content: space-between;
+        width: 50%;
+        margin: auto;
+        align-items: center;
+     }
+}
+thead{
+    background-color: var(--primary);
+    th{
+        color: #fff !important;
+    }
+}
+.table-data{
+    width: 50%;
+    border: 1px solid gray !important;
+    font-weight: 700 !important;
+}
+.pay{
+    margin: 5vh 0;
+    #btn{
+        background-color: var(--primary) !important;
+        margin-bottom: 20px !important;
+    }
+}
+.hide{
+    display: none !important;
+}
+@media print{
+    .shareon{
+        // display: table-row !important;
+        display: block;
+        margin: auto;
+        background-color: #eee !important;
+        color: #eee !important;
+    }
+    .shareoff{
+        display: none!important;
+    }
+    // .shareon {
+    //     display: block;
+    //     position: absolute;
+    //     top: 0;
+    // }
+}
+
+#reservation-reset{
+    margin-top: -5px;
+}

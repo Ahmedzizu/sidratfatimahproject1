@@ -1,0 +1,33 @@
+# Ignore node_modules directory
+/node_modules
+
+# Ignore .idea directory (if you're using WebStorm/PyCharm)
+.idea
+
+# Ignore .vscode directory (if you're using Visual Studio Code)
+.vscode
+
+.env
+
+# Ignore req.rest file
+req.rest
+
+# Ignore the uploads directory and its contents
+# /uploads/
+
+# Ignore all files and subdirectories within /uploads/chalet/
+# /uploads/chalet/*
+
+# Ignore all files and subdirectories within /uploads/hall/
+# /uploads/hall/*
+
+# Ignore all files and subdirectories within /uploads/expenses/
+# /uploads/expenses/*
+
+# Ignore all files within /uploads/resort/ (assuming /uploads/resort/ is a directory, not a file)
+# /uploads/resort/*
+
+# Ignore all .log files in the /logs directory
+/logs/*.log
+
+

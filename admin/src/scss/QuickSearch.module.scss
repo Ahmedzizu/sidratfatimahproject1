@@ -1,0 +1,87 @@
+// ألوان متناسقة
+$primary-color: #1976d2;
+$secondary-color: goldenrod;
+$background-color: #f8f9fa;
+$button-hover-color: #125a9a;
+$border-radius: 10px;
+
+.quickSearch {
+  text-align: center;
+  margin-top: 40px;
+  padding: 20px;
+  background: white;
+  border-radius: $border-radius;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: auto;
+
+  .title {
+    font-size: 22px;
+    font-weight: bold;
+    color: $secondary-color;
+    margin-bottom: 15px;
+  }
+
+  .datePicker {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .categories {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .categoryCard {
+    width: 120px;
+    height: 140px;
+    background: white;
+    border-radius: $border-radius;
+    border: 2px solid transparent;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    &.active {
+      border: 2px solid $primary-color;
+    }
+
+    .categoryImage {
+      width: 100%;
+      height: 80px;
+      object-fit: cover;
+      border-radius: $border-radius $border-radius 0 0;
+    }
+
+    .categoryTitle {
+      font-size: 16px;
+      font-weight: bold;
+      color: $primary-color;
+      margin-top: 8px;
+    }
+  }
+
+  .searchButton {
+    width: 100%;
+    margin-top: 20px;
+    background: $primary-color;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: $border-radius;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background: $button-hover-color;
+    }
+  }
+}

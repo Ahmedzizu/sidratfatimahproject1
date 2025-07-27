@@ -1,0 +1,14 @@
+body{
+    margin: 20px 80px;
+    font-family: 'Cairo', sans-serif;
+}
+@font-face {
+    font-family: 'Cairo';
+    src: url('../assets/cairo.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  .cont{
+    margin: auto;
+    width: 80%;
+}

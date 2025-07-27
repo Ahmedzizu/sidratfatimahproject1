@@ -1,0 +1,282 @@
+// F:\ractprojects\New folder (2)\ggg\user\src\scss\authInfoPage.scss
+
+// لا يتم استيراد 'variables', 'animations', أو 'base' هنا.
+// بدلاً من ذلك، يتم الاعتماد على متغيرات CSS المعرفة في '_base.scss'.
+
+.auth-info-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--dark-bg); // استخدام متغير CSS
+    position: relative;
+    overflow: hidden;
+    font-family: 'Tajawal', sans-serif; // تأكيد الخط، يجب أن يُورث من body
+    color: var(--off-white-text); // استخدام متغير CSS
+}
+
+.auth-info-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.auth-info-card {
+    background: var(--card-bg); // استخدام متغير CSS
+    border: 1px solid var(--border); // استخدام متغير CSS
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+    padding: 40px;
+    width: 100%;
+    max-width: 550px; // أكبر قليلاً لتناسب المحتوى
+    animation: fadeIn 0.8s ease-out; // استخدام اسم الأنيميشن
+    position: relative;
+    overflow: hidden;
+    color: var(--off-white-text); // استخدام متغير CSS
+    text-align: center;
+
+    .logo-container {
+        text-align: center;
+        margin-bottom: 30px;
+
+        .logo {
+            height: 80px;
+            width: 80px;
+            object-fit: contain;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 10px rgba(var(--primary-rgb), 0.5)); // استخدام متغير RGB
+        }
+
+        .title {
+            color: var(--primary); // استخدام متغير CSS
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 0 8px rgba(var(--primary-rgb), 0.5); // استخدام متغير RGB
+            // إذا كان خط 'Cormorant Garamond' مستوردًا، فاستخدمه، وإلا فاستخدم خطًا بديلاً.
+            font-family: 'Cormorant Garamond', serif;
+        }
+    }
+
+    .info-content {
+        margin-top: 20px;
+
+        .info-icon {
+            font-size: 5rem; // أيقونة كبيرة
+            color: var(--primary); // لون ذهبي
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite alternate; // استخدام اسم الأنيميشن
+        }
+
+        .info-title {
+            font-size: 2rem;
+            color: var(--primary); // استخدام متغير CSS
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .info-message {
+            font-size: 1.1rem;
+            color: var(--off-white-text); // استخدام متغير CSS
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .primary-button {
+            // هذا الكلاس يفضل أن يتم التعامل معه في _base.scss كزر عام
+            // إذا كان لا بد من التجاوز هنا، فليكن بأقل قدر ممكن.
+            background-color: var(--primary) !important; // استخدام متغير CSS
+            color: var(--dark-bg) !important; // استخدام متغير CSS
+            border-radius: 30px !important;
+            padding: 14px 30px !important;
+            font-weight: 700 !important;
+            font-size: 1.1rem !important;
+            box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.4) !important; // استخدام متغير RGB
+            transition: all 0.3s ease !important;
+
+            &:hover {
+                background-color: rgba(var(--primary-rgb), 0.92) !important; // استخدام darken يدويًا
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(var(--primary-rgb), 0.6) !important; // استخدام متغير RGB
+            }
+        }
+
+        .info-note {
+            font-size: 0.9rem;
+            color: rgba(var(--off-white-text-rgb), 0.7); // استخدام متغير RGB
+            margin-top: 20px;
+            font-style: italic;
+        }
+    }
+}
+
+// عناصر الزينة في الخلفية
+.auth-decoration {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+
+    .bubble {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(var(--primary-rgb), 0.08); // استخدام متغير RGB
+        animation: float 8s ease-in-out infinite; // استخدام اسم الأنيميشن
+        filter: blur(2px);
+
+        &.bubble-1 {
+            width: 300px;
+            height: 300px;
+            right: -100px;
+            bottom: -100px;
+        }
+
+        &.bubble-2 {
+            width: 200px;
+            height: 200px;
+            left: -50px;
+            top: -50px;
+            animation-delay: 2s;
+        }
+    }
+
+    .golden-pattern {
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(var(--primary-rgb), 0.07) 0%, rgba(255, 255, 255, 0) 70%); // استخدام متغير RGB
+        right: -200px;
+        top: -200px;
+        opacity: 0.7;
+        animation: pulse 4s infinite alternate; // استخدام اسم الأنيميشن
+    }
+}
+
+// RTL adjustments
+[dir="rtl"] {
+    .auth-info-card {
+        .logo-container {
+            .title {
+                // لا يوجد `::after` في `title` هنا، لذلك هذه القاعدة لن تعمل.
+                // إذا كنت تقصد خطاً سفلياً، فيجب إضافته في LTR أولاً.
+                // &::after {
+                //     right: 50%;
+                //     transform: translateX(50%);
+                // }
+            }
+        }
+    }
+
+    // Specific RTL adjustments for elements if needed
+    .auth-info-container {
+        // إذا كان هناك عناصر تحتاج لتغيير اتجاه Flexbox أو Margin/Padding
+        // (لا يوجد شيء محدد هنا يحتاج لتعديل RTL بخلاف ما ورث من _base.scss)
+    }
+
+    .auth-decoration {
+        .bubble {
+            &.bubble-1 {
+                right: auto;
+                left: -100px; // عكس الموقع الأفقي
+            }
+
+            &.bubble-2 {
+                left: auto;
+                right: -50px; // عكس الموقع الأفقي
+            }
+        }
+
+        .golden-pattern {
+            right: auto;
+            left: -200px; // عكس الموقع الأفقي
+        }
+    }
+}
+
+// Responsive Styles (يمكنك تكييفها أكثر حسب الحاجة)
+@media (max-width: 768px) {
+    .auth-info-card {
+        padding: 30px 20px;
+        border-radius: 12px;
+        max-width: 450px;
+    }
+
+    .auth-info-card .logo-container .logo {
+        height: 70px;
+        width: 70px;
+    }
+
+    .auth-info-card .logo-container .title {
+        font-size: 1.5rem;
+    }
+
+    .auth-info-card .info-content .info-icon {
+        font-size: 4rem;
+    }
+
+    .auth-info-card .info-content .info-title {
+        font-size: 1.7rem;
+    }
+
+    .auth-info-card .info-content .info-message {
+        font-size: 1rem;
+    }
+
+    .auth-info-card .info-content .primary-button {
+        padding: 12px 25px !important;
+        font-size: 1rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-info-card {
+        padding: 25px 15px;
+        border-radius: 10px;
+        max-width: 90%; // تأكد أنها تتسع جيدًا على الشاشات الصغيرة جداً
+    }
+
+    .auth-info-card .logo-container .logo {
+        height: 60px;
+        width: 60px;
+    }
+
+    .auth-info-card .logo-container .title {
+        font-size: 1.3rem;
+    }
+
+    .auth-info-card .info-content .info-icon {
+        font-size: 3.5rem;
+    }
+
+    .auth-info-card .info-content .info-title {
+        font-size: 1.5rem;
+    }
+
+    .auth-info-card .info-content .info-message {
+        font-size: 0.9rem;
+    }
+
+    .auth-info-card .info-content .primary-button {
+        padding: 10px 20px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .auth-info-card .info-content .info-note {
+        font-size: 0.8rem;
+    }
+
+    .auth-decoration .bubble.bubble-2 {
+        display: none; // إخفاء الفقاعات الزائدة على الشاشات الصغيرة جداً
+    }
+
+    .auth-decoration .golden-pattern {
+        width: 250px;
+        height: 250px;
+    }
+}

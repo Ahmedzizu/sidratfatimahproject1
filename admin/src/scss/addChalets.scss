@@ -1,0 +1,435 @@
+:root {
+    --primary: #B38D46;
+    /* الذهبي */
+    --primary-dark: #8A6D35;
+    --primary-light: #D4B87A;
+    --dark: #2C3E50;
+    --light: #F5F5F5;
+    --gray: #E0E0E0;
+    --dark-gray: #757575;
+    --white: #FFFFFF;
+    --black: #212121;
+    --error: #D32F2F;
+    --success: #388E3C;
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: 'Cairo', sans-serif;
+    background-color: #FAFAFA;
+    color: var(--black);
+    direction: rtl;
+    /* RTL افتراضي */
+}
+
+@font-face {
+    font-family: 'Cairo';
+    src: url('../assets/cairo.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* التصميم الرئيسي */
+.cont {
+    width: 100%;
+    max-width: 1400px;
+    margin: 5vh auto;
+    padding: 20px;
+    background-color: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: var(--transition);
+
+    h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--gray);
+    }
+
+    .search-box {
+        margin: 0 0 30px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+
+        .btn {
+            background-color: var(--primary);
+            color: var(--white);
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 10px 20px;
+            box-shadow: 0 2px 8px rgba(179, 141, 70, 0.3);
+            transition: var(--transition);
+
+            &:hover {
+                background-color: var(--primary-dark);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(179, 141, 70, 0.4);
+            }
+
+            &:active {
+                transform: translateY(0);
+            }
+        }
+    }
+}
+
+/* تصميم الجدول */
+.TableContainer {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    transition: var(--transition);
+
+    &:hover {
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.tablehead {
+    background-color: var(--primary) !important;
+
+    .table-row {
+        color: var(--white) !important;
+        font-weight: 700 !important;
+        font-size: 0.95rem;
+        text-align: center;
+    }
+}
+
+.TableBody {
+    .TableRow {
+        transition: var(--transition);
+
+        &:nth-child(even) {
+            background-color: rgba(243, 243, 243, 0.5);
+        }
+
+        &:hover {
+            background-color: rgba(179, 141, 70, 0.08) !important;
+            transform: scale(1.005);
+        }
+
+        .TableCell {
+            text-align: center;
+            font-weight: 500;
+            color: var(--dark);
+            border-bottom: 1px solid rgba(224, 224, 224, 0.5);
+            padding: 12px 16px;
+        }
+    }
+}
+
+/* تصميم الأزرار */
+.MuiButton-contained {
+    &.MuiButton-containedPrimary {
+        background-color: var(--primary);
+
+        &:hover {
+            background-color: var(--primary-dark);
+        }
+    }
+
+    &.MuiButton-containedError {
+        background-color: var(--error);
+
+        &:hover {
+            background-color: #B71C1C;
+        }
+    }
+
+    &.MuiButton-containedWarning {
+        background-color: #FFA000;
+
+        &:hover {
+            background-color: #FF8F00;
+        }
+    }
+
+    &.MuiButton-containedSuccess {
+        background-color: var(--success);
+
+        &:hover {
+            background-color: #2E7D32;
+        }
+    }
+
+    transition: var(--transition);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15) !important;
+    }
+}
+
+/* تصميم السويتش */
+.MuiSwitch-switchBase {
+    &.Mui-checked {
+        color: var(--primary) !important;
+
+        &+.MuiSwitch-track {
+            background-color: var(--primary) !important;
+            opacity: 0.7;
+        }
+
+        &:hover {
+            &+.MuiSwitch-track {
+                opacity: 1;
+            }
+        }
+    }
+}
+
+/* تصميم المودال */
+.MuiModal-root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .MuiBackdrop-root {
+        background-color: rgba(0, 0, 0, 0.5) !important;
+        backdrop-filter: blur(4px);
+    }
+
+    .MuiPaper-root {
+        animation: fadeInScale 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(179, 141, 70, 0.2);
+
+        .MuiDialogTitle-root {
+            background-color: var(--primary);
+            color: var(--white);
+            font-weight: 700;
+            padding: 16px 24px;
+        }
+
+        .MuiDialogContent-root {
+            padding: 24px !important;
+        }
+
+        .MuiDialogActions-root {
+            padding: 16px 24px;
+            background-color: var(--light);
+        }
+    }
+}
+
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* تصميم حقول الإدخال */
+.MuiTextField-root {
+    .MuiOutlinedInput-root {
+        border-radius: 8px;
+
+        &:hover .MuiOutlinedInput-notchedOutline {
+            border-color: var(--primary-light);
+        }
+
+        &.Mui-focused .MuiOutlinedInput-notchedOutline {
+            border-color: var(--primary);
+            border-width: 1px;
+        }
+    }
+
+    .MuiInputLabel-root.Mui-focused {
+        color: var(--primary);
+    }
+}
+
+/* تصميم الصور */
+.imgStack {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+
+    img {
+        height: 60px;
+        width: 60px;
+        border-radius: 8px;
+        object-fit: cover;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: var(--transition);
+
+        &:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+    }
+}
+
+.plusIconContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+
+    #plusIcon {
+        width: 32px;
+        height: 32px;
+        color: var(--primary);
+        cursor: pointer;
+        transition: var(--transition);
+
+        &:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+    }
+}
+
+.image-display,
+.video-display {
+    position: relative;
+    display: inline-block;
+    margin: 5px;
+
+    .image-trash,
+    .video-trash {
+        position: absolute;
+        top: -8px;
+        left: -8px;
+        background-color: var(--error);
+        color: var(--white);
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        transition: var(--transition);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    &:hover {
+
+        .image-trash,
+        .video-trash {
+            opacity: 1;
+        }
+    }
+}
+
+/* تصميم السليكت */
+.select-option {
+    width: 100%;
+    min-height: 56px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: var(--transition);
+
+    &:hover {
+        border-color: var(--primary-light);
+    }
+
+    .MuiSelect-select {
+        padding: 12px 14px;
+    }
+
+    .MuiOutlinedInput-notchedOutline {
+        border-color: var(--gray);
+    }
+
+    &:hover .MuiOutlinedInput-notchedOutline {
+        border-color: var(--primary-light);
+    }
+
+    &.Mui-focused .MuiOutlinedInput-notchedOutline {
+        border-color: var(--primary);
+    }
+}
+
+/* تصميم الطباعة */
+@media print {
+
+    .sidebar-print,
+    button,
+    .search-box,
+    .cont h2 {
+        display: none !important;
+    }
+
+    .table-print {
+        position: absolute;
+        z-index: 1;
+        width: 100% !important;
+        top: 0;
+        left: 0 !important;
+
+        .row-hidden-print {
+            display: none;
+        }
+    }
+}
+
+/* تصميم RTL إضافي */
+[dir="rtl"] {
+    .MuiTableCell-root {
+        text-align: right;
+    }
+
+    .MuiDialogActions-root {
+        flex-direction: row-reverse;
+    }
+
+    .MuiFormControlLabel-root {
+        margin-right: 0;
+        margin-left: 16px;
+    }
+}
+
+/* تصميم للشاشات الصغيرة */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .cont {
+        margin: 2vh auto;
+        padding: 15px;
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        .search-box {
+            flex-direction: column;
+            align-items: stretch;
+
+            .btn {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+    }
+
+    .TableContainer {
+        overflow-x: auto;
+    }
+
+    .MuiTableCell-root {
+        padding: 8px !important;
+        font-size: 0.85rem;
+    } }

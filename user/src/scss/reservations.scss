@@ -1,0 +1,679 @@
+// src/scss/reservations.scss - ملف مستقل بالكامل
+
+// متغيرات الألوان
+$primary-color: #D4AF37; // اللون الذهبي الرئيسي
+$secondary-color: #B38D46; // اللون الذهبي الثانوي
+$dark-bg: #121212; // الخلفية الداكنة
+$card-bg: #1E1E1E; // خلفية البطاقات
+$light-text: #F5F5F5; // لون النص الفاتح
+$border-color: rgba(212, 175, 55, 0.3); // لون الحدود الذهبية
+
+// ألوان حالات الحجز
+$status-unconfirmed: #ff4d4f; // أحمر
+$status-confirmed: #4CAF50; // أخضر (يمكن تغييره لذهبي أخف)
+$status-completed: #2196F3; // أزرق
+$status-canceled: #616161; // رمادي داكن
+$status-info: #ff9800; // برتقالي (لرسالة طلب الإلغاء)
+$success-color: #4caf50; // لون النجاح (من استخدام Snackbar)
+
+// قيم RGB المقابلة للمتغيرات (لاستخدامها في rgba())
+$primary-rgb: rgb(212, 175, 55);
+$secondary-rgb: rgb(179, 141, 70);
+$dark-bg-rgb: rgb(18, 18, 18);
+$light-text-rgb: rgb(245, 245, 245);
+$input-bg-dark: rgba(245, 245, 245, 0.07); // خلفية حقول الإدخال
+
+
+// أنيميشنات
+@keyframes fadeInSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.7);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
+  }
+}
+
+@keyframes glowBorder {
+  0% {
+    box-shadow: 0 0 0 0 rgba($primary-color, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 0 5px rgba($primary-color, 0.1);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba($primary-color, 0);
+  }
+}
+
+@keyframes starPulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+.reservations-page-container {
+  min-height: calc(100vh - 120px);
+  background-color: $dark-bg;
+  color: $light-text;
+  padding: 60px 20px;
+  font-family: 'Tajawal', sans-serif;
+  animation: fadeInSlideUp 0.8s ease-out forwards;
+
+  .container.reserve {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 20px;
+
+    .section-title {
+      text-align: center;
+      color: $primary-color;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 50px;
+      position: relative;
+      padding-bottom: 15px;
+      text-shadow: 0 0 10px rgba($primary-color, 0.5);
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 4px;
+        background: linear-gradient(90deg, $primary-color, $secondary-color);
+        border-radius: 2px;
+      }
+    }
+
+    .reservations-grid {
+      .MuiGrid-item {
+        display: flex;
+        justify-content: center;
+        animation: fadeInSlideUp 0.6s ease-out both;
+
+        &:nth-child(1) {
+          animation-delay: 0.1s;
+        }
+
+        &:nth-child(2) {
+          animation-delay: 0.2s;
+        }
+
+        &:nth-child(3) {
+          animation-delay: 0.3s;
+        }
+      }
+
+      .reservation-card {
+        background-color: $card-bg;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba($border-color, 0.5);
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        width: 100%;
+
+        &:hover {
+          transform: translateY(-5px) scale(1.01);
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+          border-color: rgba($primary-color, 0.7);
+        }
+
+        .card-content {
+          padding: 30px !important;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 20px;
+        }
+
+        .card-name {
+          color: $primary-color;
+          font-size: 1.8rem;
+          font-weight: 700;
+          text-align: center;
+          margin-bottom: 0 !important;
+          text-shadow: 0 0 8px rgba($primary-color, 0.4);
+        }
+
+        .price-box {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-bottom: 10px;
+
+          .price-text {
+            color: $light-text;
+            font-size: 1rem;
+            margin: 0;
+
+            .price-value {
+              font-size: 1.8rem;
+              font-weight: 900;
+              color: $primary-color;
+              margin-inline-start: 8px;
+              text-shadow: 0 0 8px rgba($primary-color, 0.5);
+            }
+          }
+        }
+
+        .reservation-period {
+          color: rgba($light-text, 0.8);
+          font-size: 0.95rem;
+          text-align: center;
+          line-height: 1.5;
+
+          p {
+            margin: 0;
+          }
+        }
+
+        .status-container {
+          margin-top: 15px;
+          margin-bottom: 20px;
+          width: 100%;
+        }
+
+        .status-text {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 10px 15px;
+          border-radius: 25px;
+          font-weight: 600;
+          font-size: 1rem;
+          text-align: center;
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+
+          .status-icon {
+            margin-inline-end: 8px;
+            font-size: 1.2rem;
+          }
+
+          &.unconfirmed {
+            background-color: rgba($status-unconfirmed, 0.15);
+            color: $status-unconfirmed;
+            border: 1px solid rgba($status-unconfirmed, 0.4);
+          }
+
+          &.confirmed {
+            background-color: rgba($status-confirmed, 0.15);
+            color: $status-confirmed;
+            border: 1px solid rgba($status-confirmed, 0.4);
+          }
+
+          &.completed {
+            background-color: rgba($status-completed, 0.15);
+            color: $status-completed;
+            border: 1px solid rgba($status-completed, 0.4);
+          }
+
+          &.canceled {
+            background-color: rgba($status-canceled, 0.15);
+            color: $status-canceled;
+            border: 1px solid rgba($status-canceled, 0.4);
+          }
+        }
+
+        .cancel-request-alert {
+          margin-top: 20px;
+          background-color: rgba($status-info, 0.15) !important;
+          color: $status-info !important;
+          border: 1px solid rgba($status-info, 0.4) !important;
+          border-radius: 10px;
+          padding: 10px 15px;
+          font-size: 0.9rem;
+          text-align: center;
+
+          .MuiAlert-icon {
+            color: $status-info !important;
+          }
+        }
+
+        .rating-form {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          width: 100%;
+          gap: 15px;
+          margin-top: 20px;
+          padding-top: 15px;
+          border-top: 1px dashed rgba($border-color, 0.3);
+
+          .stars-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            .rating-label {
+              color: rgba($light-text, 0.9);
+              font-size: 1rem;
+              font-weight: 600;
+              margin-inline-end: 10px;
+              white-space: nowrap;
+            }
+
+            .star {
+              cursor: pointer;
+              transition: color 0.2s ease, transform 0.2s ease;
+
+              &:hover {
+                transform: scale(1.1);
+              }
+            }
+          }
+
+          .note-field {
+            .MuiInputBase-root {
+              background-color: $input-bg-dark;
+              border-radius: 8px;
+              color: $light-text;
+
+              fieldset {
+                border-color: rgba($border-color, 0.7);
+              }
+
+              &:hover fieldset {
+                border-color: rgba($primary-color, 0.7);
+              }
+
+              &.Mui-focused fieldset {
+                border-color: $primary-color;
+                box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+              }
+            }
+
+            .MuiInputBase-input {
+              padding: 10px 12px;
+            }
+
+            .MuiInputLabel-root {
+              color: rgba($light-text, 0.7);
+            }
+
+            .MuiFormLabel-root.Mui-focused {
+              color: $primary-color;
+            }
+          }
+
+          .submit-rating-btn {
+            width: auto;
+            padding: 10px 20px !important;
+            font-size: 0.95rem !important;
+            margin-top: 10px !important;
+          }
+        }
+
+        .reservation-actions-btns {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 15px;
+          width: 100%;
+          margin-top: 20px;
+
+          .submit-btn {
+            padding: 12px 20px !important;
+            font-size: 0.95rem !important;
+            font-weight: 600 !important;
+            border-radius: 8px !important;
+            transition: all 0.3s ease;
+
+            &.primary-btn {
+              background-color: $primary-color !important;
+              color: $dark-bg !important;
+              box-shadow: 0 2px 8px rgba($primary-color, 0.4) !important;
+
+              &:hover {
+                background-color: darken($primary-color, 5%) !important;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba($primary-color, 0.6) !important;
+              }
+            }
+
+            &.secondary-btn {
+              background-color: rgba($primary-color, 0.1) !important;
+              color: $primary-color !important;
+              border: 1px solid rgba($primary-color, 0.4) !important;
+              box-shadow: none !important;
+
+              &:hover {
+                background-color: rgba($primary-color, 0.2) !important;
+                transform: translateY(-2px);
+              }
+            }
+
+            &.cancel-btn {
+              background-color: rgba($status-unconfirmed, 0.15) !important;
+              color: $status-unconfirmed !important;
+              border: 1px solid rgba($status-unconfirmed, 0.4) !important;
+              box-shadow: none !important;
+
+              &:hover {
+                background-color: rgba($status-unconfirmed, 0.25) !important;
+                transform: translateY(-2px);
+              }
+            }
+          }
+        }
+      }
+
+      .no-reservations-message {
+        text-align: center;
+        color: rgba($light-text, 0.7);
+        font-size: 1.3rem;
+        margin-top: 50px;
+        width: 100%;
+      }
+    }
+  }
+
+  .login-required-container,
+  .loading-reservations {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $dark-bg;
+
+    .login-prompt-btn {
+      background-color: $primary-color !important;
+      color: $dark-bg !important;
+      padding: 15px 30px !important;
+      font-size: 1.2rem !important;
+      font-weight: 700 !important;
+      border-radius: 10px !important;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 20px rgba($primary-color, 0.4) !important;
+
+      &:hover {
+        background-color: darken($primary-color, 5%) !important;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba($primary-color, 0.6) !important;
+      }
+    }
+
+    .loading-message {
+      color: $primary-color;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+  }
+
+  .snackbar-alert {
+    border-radius: 8px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1rem;
+
+    .MuiAlert-icon {
+      font-size: 1.5rem;
+    }
+
+    &.MuiAlert-filledWarning {
+      background-color: rgba($status-info, 0.9) !important;
+      color: $light-text !important;
+    }
+
+    &.MuiAlert-filledSuccess {
+      background-color: rgba($success-color, 0.9) !important;
+      color: $light-text !important;
+    }
+  }
+
+
+  /* RTL Adjustments */
+  [dir="rtl"] {
+    .section-title::after {
+      left: auto;
+      right: 50%;
+      transform: translateX(50%);
+    }
+
+    .reservation-card {
+
+      .card-name,
+      .price-box,
+      .reservation-period,
+      .status-text {
+        text-align: center;
+      }
+
+      .price-box .price-text .price-value {
+        margin-inline-start: 0;
+        margin-inline-end: 8px;
+      }
+
+      .status-text .status-icon {
+        margin-inline-end: 0;
+        margin-inline-start: 8px;
+        transform: scaleX(-1); // قلب الأيقونة
+      }
+
+      .rating-form {
+        .stars-container {
+          flex-direction: row-reverse;
+
+          .rating-label {
+            margin-inline-end: 0;
+            margin-inline-start: 10px;
+          }
+        }
+
+        .note-field {
+          .MuiInputBase-input {
+            text-align: right;
+          }
+
+          .MuiInputLabel-root {
+            text-align: right;
+          }
+        }
+      }
+
+      .reservation-actions-btns {
+        flex-direction: row-reverse;
+      }
+    }
+  }
+
+
+  /* Responsive Styles */
+  @media (max-width: 992px) {
+    .reservations-page-container {
+      padding: 40px 15px;
+
+      .section-title {
+        font-size: 2.2rem;
+        margin-bottom: 40px;
+      }
+
+      .reservations-grid {
+        .MuiGrid-item {
+          // على الشاشات المتوسطة والصغيرة، يمكن أن تكون البطاقات أوسع
+          // width: 100%; // ستأخذ تلقائيا العرض الكامل إذا كانت grid-template-columns: 1fr;
+        }
+
+        .reservation-card {
+          .card-content {
+            padding: 25px !important;
+            gap: 15px;
+          }
+
+          .card-name {
+            font-size: 1.6rem;
+          }
+
+          .price-box .price-text .price-value {
+            font-size: 1.6rem;
+          }
+
+          .reservation-period {
+            font-size: 0.9rem;
+          }
+
+          .status-text {
+            font-size: 0.9rem;
+            padding: 8px 12px;
+          }
+
+          .rating-form {
+            .stars-container .star {
+              size: 22px;
+            }
+
+            .note-field {
+              .MuiInputBase-input {
+                padding: 8px 10px;
+              }
+            }
+
+            .submit-rating-btn {
+              padding: 8px 15px !important;
+              font-size: 0.85rem !important;
+            }
+          }
+
+          .reservation-actions-btns {
+            gap: 10px;
+
+            .submit-btn {
+              padding: 10px 15px !important;
+              font-size: 0.85rem !important;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .reservations-page-container {
+      padding: 30px 10px;
+
+      .section-title {
+        font-size: 2rem;
+        margin-bottom: 30px;
+      }
+
+      .reservations-grid {
+        .MuiGrid-item {
+          //  xs={12} يجعلها عمود واحد
+        }
+      }
+
+      .login-required-container,
+      .loading-reservations {
+        .login-prompt-btn {
+          font-size: 1rem !important;
+          padding: 12px 25px !important;
+        }
+
+        .loading-message {
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    .reservations-page-container {
+      padding: 20px 8px;
+
+      .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 25px;
+      }
+
+      .reservations-grid {
+        .reservation-card {
+          .card-content {
+            padding: 20px !important;
+            gap: 10px;
+          }
+
+          .card-name {
+            font-size: 1.4rem;
+          }
+
+          .price-box .price-text .price-value {
+            font-size: 1.4rem;
+          }
+
+          .reservation-period {
+            font-size: 0.85rem;
+          }
+
+          .status-text {
+            font-size: 0.85rem;
+            padding: 6px 10px;
+
+            .status-icon {
+              font-size: 1rem;
+            }
+          }
+
+          .rating-form {
+            gap: 10px;
+
+            .stars-container {
+              gap: 3px;
+
+              .star {
+                size: 20px;
+              }
+            }
+
+            .rating-label {
+              font-size: 0.85rem;
+            }
+
+            .submit-rating-btn {
+              padding: 6px 12px !important;
+              font-size: 0.8rem !important;
+            }
+          }
+
+          .reservation-actions-btns {
+            gap: 8px;
+
+            .submit-btn {
+              padding: 8px 12px !important;
+              font-size: 0.8rem !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}

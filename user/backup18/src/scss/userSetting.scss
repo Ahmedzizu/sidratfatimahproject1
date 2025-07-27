@@ -1,0 +1,648 @@
+// متغيرات الألوان (متوافقة مع باقي المشروع)
+$primary-color: #D4AF37; // اللون الذهبي الرئيسي
+$secondary-color: #B38D46; // اللون الذهبي الثانوي
+$dark-bg: #121212; // الخلفية الداكنة للصفحة
+$card-bg: #1E1E1E; // خلفية البطاقات (تستخدم للفورمات)
+$light-text: #F5F5F5; // لون النص الفاتح
+$border-color: rgba(212, 175, 55, 0.4); // لون الحدود الذهبية (أكثر وضوحاً)
+$error-color: #ff5252; // لون رسائل الخطأ
+$success-color: #4caf50; // لون رسائل النجاح
+$input-bg-dark: lighten($card-bg, 5%); // خلفية أغمق قليلاً للحقول (أكثر تميزاً)
+$dropdown-bg: #1A1A1A; // لون أغمق قليلاً لقائمة الدول
+$text-subtle: rgba($light-text, 0.75); // لون نص فرعي (أكثر وضوحاً)
+$glow-color: rgba($primary-color, 0.8); // لون التوهج الأساسي
+
+// Global Direction Variables (for RTL compatibility)
+$dir-left: left;
+$dir-right: right;
+
+
+// ===============================================
+// أنيميشنات قوية ومُحسّنة
+// ===============================================
+
+// ظهور الصفحة بالكامل مع تحريك لأعلى وتأثير ضبابي خفيف
+@keyframes pageFadeInSlideUpBlur {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+        filter: blur(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+// أنيميشن لظهور الفورمات وال Grid items
+@keyframes formEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.98);
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+}
+
+// أنيميشن لخط العنوان السفلي يتوسع ويتوهج
+@keyframes expandLineGlow {
+    0% {
+        width: 0;
+        opacity: 0;
+        transform: translateX(-50%);
+        background-size: 0% 100%;
+    }
+    50% {
+        width: 100px;
+        opacity: 1;
+        transform: translateX(-50%);
+        background-size: 100% 100%;
+        box-shadow: 0 0 15px rgba($glow-color, 0.7);
+    }
+    100% {
+        width: 120px; /* العرض النهائي */
+        opacity: 1;
+        transform: translateX(-50%);
+        background-size: 100% 100%;
+        box-shadow: 0 0 5px rgba($glow-color, 0.3);
+    }
+}
+
+// أنيميشن للخط السفلي لعناوين الأقسام الفرعية
+@keyframes expandSubLine {
+    from {
+        width: 0;
+    }
+    to {
+        width: 80px; /* العرض النهائي */
+    }
+}
+
+// أنيميشن توهج مستمر للحدود عند التركيز
+@keyframes continuousGlowBorder {
+    0% { box-shadow: 0 0 0 0 rgba($primary-color, 0.4); }
+    50% { box-shadow: 0 0 0 6px rgba($primary-color, 0.2); }
+    100% { box-shadow: 0 0 0 0 rgba($primary-color, 0.4); }
+}
+
+// أنيميشن نبض للأزرار
+@keyframes pulseButtonStrong {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 5px 15px rgba($primary-color, 0.4);
+    }
+    50% {
+        transform: scale(1.03); /* نبض أقوى */
+        box-shadow: 0 10px 25px rgba($primary-color, 0.7);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 5px 15px rgba($primary-color, 0.4);
+    }
+}
+
+
+// ===============================================
+// التصميم العام للصفحة
+// ===============================================
+.user-setting-page {
+    min-height: calc(100vh - 120px); /* مع الأخذ في الاعتبار النافبار والفوتر */
+    padding: 80px 40px; /* بادينج أكبر */
+    background-color: $dark-bg;
+    color: $light-text;
+    font-family: 'Tajawal', sans-serif;
+    animation: pageFadeInSlideUpBlur 1s ease-out forwards; /* أنيميشن ظهور الصفحة */
+    overflow-x: hidden; /* لمنع scrollbars بسبب الأنميشنات */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* توسيط المحتوى */
+
+    .setting-main-title {
+        text-align: center;
+        color: $primary-color;
+        font-size: 3.5rem; /* حجم خط أكبر بكثير */
+        font-weight: 900; /* خط أثقل */
+        margin-bottom: 70px; /* مسافة سفلية أكبر */
+        position: relative;
+        padding-bottom: 20px; /* تباعد أكبر للخط السفلي */
+        text-shadow: 0 6px 12px rgba(0, 0, 0, 0.8); /* ظل نص أعمق */
+        letter-spacing: 2px; /* تباعد أحرف */
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0; /* سيبدأ من 0 */
+            height: 5px; /* خط أسمك */
+            background: linear-gradient(90deg, $primary-color, $secondary-color);
+            border-radius: 2px;
+            animation: expandLineGlow 1.5s ease-out forwards 0.5s; /* أنيميشن توسع الخط مع توهج */
+        }
+    }
+
+    .forms-container {
+        max-width: 1000px; /* عرض أكبر للحاوي */
+        width: 100%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 60px; /* مسافة أكبر بين الفورمات */
+    }
+
+    .profile-data-form,
+    .password-update-form {
+        background-color: $card-bg;
+        border-radius: 20px; /* حواف دائرية أكبر */
+        padding: 50px; /* بادينج أكبر */
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); /* ظل أعمق */
+        border: 2px solid rgba($border-color, 0.7); /* حدود أوضح وأسمك */
+        animation: formEntrance 1s ease-out both; /* أنيميشن ظهور الفورم */
+        transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* انتقال سلس عند التحويم */
+        position: relative; /* لتطبيق تأثيرات إضافية */
+        overflow: hidden; /* لمنع أي تجاوز بصري */
+
+        &:hover {
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.7); /* ظل أقوى عند التحويم */
+            transform: translateY(-8px); /* رفع أكبر */
+            border-color: $primary-color; /* توهج للحدود */
+        }
+
+        &:nth-of-type(1) { /* تأخير مختلف لأول فورم */
+            animation-delay: 0.8s;
+        }
+        &:nth-of-type(2) { /* تأخير مختلف لثاني فورم */
+            animation-delay: 1.2s;
+        }
+    }
+
+    .form-section-title {
+        color: $primary-color;
+        font-size: 2.2rem; /* حجم خط أكبر */
+        font-weight: 800; /* خط أثقل */
+        margin-bottom: 35px; /* مسافة سفلية أكبر */
+        position: relative;
+        padding-bottom: 12px; /* تباعد للخط السفلي */
+        text-align: center;
+        text-shadow: 0 0 8px rgba($primary-color, 0.5); /* ظل نص أقوى */
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0; /* سيبدأ من 0 */
+            height: 3px; /* خط أسمك */
+            background: linear-gradient(90deg, $primary-color, $secondary-color);
+            border-radius: 1px;
+            animation: expandSubLine 1s ease-out forwards 0.3s; /* أنيميشن توسع الخط */
+        }
+    }
+
+    .form-fields-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* حجم أعمدة أكبر */
+        gap: 35px; /* مسافة أكبر بين الحقول */
+        margin-bottom: 40px; /* مسافة سفلية أكبر */
+    }
+
+    .form-field-item {
+        position: relative;
+        /* أنيميشن ظهور متتابع لكل حقل (اختياري، قد يسبب تأخيراً كبيراً إذا كانت الحقول كثيرة) */
+        /* animation: fadeInUp 0.6s ease-out both; */
+
+        .input-label {
+            display: block;
+            margin-bottom: 12px; /* مسافة أكبر */
+            color: $light-text; /* لون النص الأساسي */
+            font-size: 1.1rem; /* خط أكبر */
+            font-weight: 600;
+            transition: color 0.3s ease;
+            text-shadow: 0 0 5px rgba(0,0,0,0.3); /* ظل خفيف للنص */
+        }
+
+        .form-input {
+            width: 100%;
+            background-color: $input-bg-dark; /* خلفية أغمق قليلاً للحقول */
+            border-radius: 10px; /* حواف دائرية أكبر */
+            transition: all 0.4s ease; /* انتقال سلس */
+
+            .MuiOutlinedInput-root {
+                color: $light-text;
+                border-radius: 10px;
+
+                fieldset {
+                    border-color: rgba($border-color, 0.8); /* حدود أوضح */
+                    border-width: 2px; /* حدود أسمك */
+                    transition: all 0.4s ease;
+                }
+
+                &:hover fieldset {
+                    border-color: $primary-color; /* توهج عند التحويم */
+                }
+
+                &.Mui-focused fieldset {
+                    border-color: $primary-color;
+                    box-shadow: 0 0 0 4px rgba($primary-color, 0.4); /* توهج أقوى عند التركيز */
+                    animation: continuousGlowBorder 1.5s infinite alternate; /* أنيميشن توهج مستمر */
+                }
+
+                &.Mui-disabled {
+                    .MuiOutlinedInput-notchedOutline {
+                        border-color: rgba($border-color, 0.3) !important; /* لون حدود أغمق عند التعطيل */
+                    }
+                    .MuiInputBase-input {
+                        color: rgba($light-text, 0.5) !important;
+                        -webkit-text-fill-color: rgba($light-text, 0.5) !important;
+                    }
+                }
+            }
+
+            .MuiInputBase-input {
+                padding: 16px 18px; /* بادينج أكبر */
+                color: $light-text;
+                font-size: 1.1rem; /* خط أكبر */
+                font-weight: 500;
+            }
+
+            .MuiFormHelperText-root {
+                position: absolute;
+                bottom: -25px; /* مسافة أكبر لرسالة الخطأ */
+                left: 0;
+                color: $error-color;
+                font-size: 0.85rem; /* خط أكبر */
+                margin-top: 4px;
+                font-weight: 500;
+            }
+        }
+
+        &.full-width-item {
+            grid-column: 1 / -1;
+        }
+
+        // تنسيق PhoneInput
+        &.phone-field-item {
+            direction: ltr; /* الافتراضي */
+
+            .react-tel-input {
+                font-family: 'Tajawal', sans-serif;
+
+                .form-control {
+                    width: 100% !important;
+                    height: 58px; /* ارتفاع أكبر */
+                    background-color: $input-bg-dark;
+                    border: 2px solid rgba($border-color, 0.7);
+                    border-radius: 10px;
+                    padding: 16px 18px 16px 60px; /* بادينج يناسب علم الدولة */
+                    color: $light-text;
+                    transition: all 0.4s ease;
+                    font-size: 1.1rem;
+                    box-shadow: none;
+
+                    &::placeholder {
+                        color: rgba($light-text, 0.5);
+                    }
+
+                    &:hover {
+                        border-color: $primary-color;
+                    }
+
+                    &:focus {
+                        border-color: $primary-color;
+                        box-shadow: 0 0 0 4px rgba($primary-color, 0.4);
+                        outline: none;
+                        animation: continuousGlowBorder 1.5s infinite alternate;
+                    }
+                }
+
+                .flag-dropdown {
+                    background-color: $input-bg-dark;
+                    border: 2px solid rgba($border-color, 0.7);
+                    border-right: none;
+                    border-radius: 10px 0 0 10px;
+                    transition: all 0.4s ease;
+                    height: 58px; /* نفس ارتفاع الحقل */
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: none;
+
+                    &:hover {
+                        background-color: rgba($primary-color, 0.15);
+                    }
+
+                    .selected-flag {
+                        background-color: transparent;
+                        &:hover {
+                            background-color: transparent;
+                        }
+                        .arrow {
+                            border-top-color: $light-text;
+                        }
+                    }
+
+                    &.open {
+                        background-color: rgba($primary-color, 0.2);
+                    }
+                }
+
+                .country-list {
+                    background-color: $dropdown-bg; /* خلفية أغمق للقائمة */
+                    border: 1px solid $border-color;
+                    border-radius: 10px;
+                    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+                    color: $light-text;
+                    font-size: 1rem; /* خط أكبر */
+                    padding-bottom: 0;
+
+                    .search-box {
+                        background-color: $card-bg; /* خلفية أغمق لحقل البحث */
+                        border: 1px solid rgba($border-color, 0.6);
+                        color: $light-text;
+                        padding: 10px 15px;
+                        border-radius: 8px;
+                        margin: 10px;
+                        &:focus {
+                            border-color: $primary-color;
+                            box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+                        }
+                    }
+
+                    .country {
+                        padding: 12px 18px; /* بادينج أكبر لعناصر القائمة */
+                        transition: background-color 0.2s ease;
+                        &:hover {
+                            background-color: rgba($primary-color, 0.18); /* لون أغمق عند التحويم */
+                        }
+                        &.highlight {
+                            background-color: rgba($primary-color, 0.3); /* لون تحديد أوضح */
+                        }
+                        .dial-code {
+                            color: $primary-color;
+                            font-weight: 700;
+                        }
+                    }
+                }
+            }
+
+            // عندما يكون حقل الهاتف في حالة التركيز (من JSX)
+            &.focused {
+                .react-tel-input {
+                    .form-control,
+                    .flag-dropdown {
+                        border-color: $primary-color !important;
+                        box-shadow: 0 0 0 4px rgba($primary-color, 0.4);
+                    }
+                }
+            }
+        }
+
+        .error-message { /* رسالة الخطأ أسفل حقل الهاتف */
+            color: $error-color;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            position: absolute;
+            bottom: -25px; /* نفس الموضع مثل MuiFormHelperText-root */
+            left: 0;
+            right: auto;
+            text-align: left;
+        }
+    }
+
+    .submit-btn {
+        background-color: $primary-color !important;
+        color: $dark-bg !important;
+        padding: 16px 40px !important; /* بادينج أكبر */
+        font-weight: 800 !important; /* خط أثقل */
+        text-transform: uppercase !important;
+        letter-spacing: 1.5px !important; /* تباعد أحرف أكبر */
+        border-radius: 10px !important; /* حواف دائرية أكبر */
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+        margin-top: 30px !important; /* مسافة علوية أكبر */
+        box-shadow: 0 8px 20px rgba($primary-color, 0.5) !important; /* ظل أقوى */
+        animation: pulseButtonStrong 2s infinite alternate ease-in-out; /* أنيميشن نبض قوي */
+
+        &:hover {
+            background-color: darken($primary-color, 10%) !important; /* أغمق أكثر عند التحويم */
+            transform: translateY(-5px) !important; /* رفع أكبر */
+            box-shadow: 0 12px 30px rgba($primary-color, 0.8) !important; /* ظل توهج أقوى */
+        }
+
+        &:disabled {
+            background-color: rgba($primary-color, 0.3) !important;
+            cursor: not-allowed;
+            animation: none !important;
+            transform: translateY(0) !important;
+            box-shadow: none !important;
+        }
+
+        .MuiCircularProgress-root {
+            color: $dark-bg;
+        }
+    }
+
+    .secondary-btn {
+        background-color: transparent !important;
+        color: $primary-color !important;
+        border: 2px solid $primary-color !important;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3) !important;
+
+        &:hover {
+            background-color: rgba($primary-color, 0.2) !important;
+            box-shadow: 0 6px 18px rgba($primary-color, 0.4) !important;
+            transform: translateY(-3px);
+        }
+    }
+}
+
+// ===============================================
+// تعديلات RTL
+// ===============================================
+[dir="rtl"] {
+    .user-setting-page {
+        .setting-main-title::after {
+            left: auto;
+            right: 50%;
+            transform: translateX(50%);
+        }
+
+        .form-section-title::after {
+            left: auto;
+            right: 50%;
+            transform: translateX(50%);
+        }
+
+        .form-field-item {
+            .input-label {
+                text-align: right;
+            }
+
+            .MuiFormHelperText-root,
+            .error-message {
+                left: auto;
+                right: 0;
+                text-align: right;
+            }
+        }
+
+        .phone-field-item {
+            direction: rtl; /* جعل اتجاه حقل الهاتف من اليمين لليسار */
+
+            .react-tel-input {
+                .form-control {
+                    padding: 16px 60px 16px 18px !important; /* تبديل البادينج */
+                    text-align: right;
+                }
+
+                .flag-dropdown {
+                    border-right: 2px solid rgba($border-color, 0.7);
+                    border-left: none;
+                    border-radius: 0 10px 10px 0; /* تعديل الحواف الدائرية */
+                    left: auto;
+                    right: 0; /* نقل العلم لليمين */
+                }
+            }
+        }
+    }
+}
+
+// ===============================================
+// تصميم متجاوب (Responsive Design)
+// ===============================================
+@media (max-width: 992px) { /* Tablets and smaller laptops */
+    .user-setting-page {
+        padding: 60px 30px;
+
+        .setting-main-title {
+            font-size: 3rem;
+            margin-bottom: 50px;
+        }
+
+        .profile-data-form,
+        .password-update-form {
+            padding: 40px;
+        }
+
+        .form-fields-grid {
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+    }
+}
+
+@media (max-width: 768px) { /* Smaller tablets and large phones */
+    .user-setting-page {
+        padding: 40px 20px;
+
+        .setting-main-title {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            padding-bottom: 15px;
+            &::after {
+                height: 4px;
+            }
+        }
+
+        .profile-data-form,
+        .password-update-form {
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        .form-section-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            &::after {
+                height: 2px;
+            }
+        }
+
+        .form-fields-grid {
+            grid-template-columns: 1fr; /* عمود واحد */
+            gap: 25px;
+        }
+
+        .form-field-item.full-width-item {
+            grid-column: auto;
+        }
+
+        .submit-btn, .secondary-btn {
+            padding: 14px 30px !important;
+            font-size: 1.1rem !important;
+        }
+    }
+}
+
+@media (max-width: 480px) { /* Small phones */
+    .user-setting-page {
+        padding: 30px 15px;
+
+        .setting-main-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            &::after {
+                width: 80px;
+            }
+        }
+
+        .profile-data-form,
+        .password-update-form {
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .form-section-title {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            &::after {
+                width: 60px;
+            }
+        }
+
+        .form-fields-grid {
+            gap: 20px;
+        }
+
+        .form-field-item {
+            .input-label {
+                font-size: 0.95rem;
+                margin-bottom: 8px;
+            }
+            .form-input .MuiInputBase-input,
+            .phone-field-item .react-tel-input .form-control {
+                padding: 14px 16px !important;
+                font-size: 1rem !important;
+                height: auto; /* للسماح بتعديل الارتفاع بناءً على البادينج */
+            }
+            .phone-field-item .react-tel-input .form-control {
+                padding-left: 50px !important; /* تعديل بادينج الهاتف */
+            }
+            [dir="rtl"] & .phone-field-item .react-tel-input .form-control {
+                padding-right: 50px !important;
+                padding-left: 16px !important;
+            }
+            .phone-field-item .react-tel-input .flag-dropdown {
+                height: auto; /* للسماح بتعديل الارتفاع بناءً على البادينج */
+            }
+            .error-message {
+                font-size: 0.75rem;
+                bottom: -20px;
+            }
+        }
+
+        .submit-btn, .secondary-btn {
+            padding: 12px 25px !important;
+            font-size: 1rem !important;
+            letter-spacing: 0.8px !important;
+        }
+    }
+}

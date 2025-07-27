@@ -1,0 +1,68 @@
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('../assets/cairo.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    direction: rtl;
+    font-family: 'Cairo', sans-serif;
+
+}
+html {
+  user-select: none; /* يمنع تحديد النص */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+:root{
+    --primary: #B38D46;
+    --dark:#383F49;
+}
+::-webkit-scrollbar {
+    width: 8px; /* width of the scroll bar */
+  }
+  
+  ::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* color of the track */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color:  #d8d8d8; /* color of the thumb */
+    border-radius: 40px;
+  }
+
+  
+  .fc-event {
+    border: none !important;
+    color: white !important;
+    font-weight: bold;
+    border-radius: 5px;
+  }
+
+
+  .translation{
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    border-radius: 50%;
+    overflow: hidden;
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+    margin-right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    img{
+        width: 100px;
+        height: 40px;
+    }
+  }
+  

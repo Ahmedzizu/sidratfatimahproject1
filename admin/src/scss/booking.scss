@@ -1,0 +1,197 @@
+body{
+  margin: 20px 80px;
+  font-family: 'Cairo', sans-serif;
+}
+@font-face {
+  font-family: 'Cairo';
+  src: url('/assets/cairo.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.booking-container {
+  max-width: 1200px; /* ✅ تحديد حد أقصى للعرض */
+  width: 100%;
+  margin: auto; /* ✅ يجعل العنصر في المنتصف */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* ✅ يجعل جميع العناصر في المنتصف */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.booking-title {
+  font-family: 'Cairo', sans-serif !important;
+  text-align: center;
+  font-size: 27px;
+  font-weight: bold;
+  margin-bottom: 10px !important;
+}
+
+.submit-button2 {
+  transition: all 0.3s ease-in-out !important;
+
+  font-family: 'Cairo', sans-serif !important; 
+  background: #b8860b !important;
+  color: white;
+  font-weight: bold;
+  padding: 10px 52px !important;
+  border-radius: 60px !important;
+  transition: 0.3s;
+
+  &:hover {
+    background: #383f49;
+  }
+}
+
+.fields-container {
+  font-family: 'Cairo', sans-serif !important;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px; /* ✅ زيادة التباعد بين الحقول */
+}
+
+.period-container {
+  font-family: 'Cairo', sans-serif !important;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.period-option {
+  font-family: 'Cairo', sans-serif !important;
+  flex: 1;
+  text-align: center;
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  background: #f5f5f5;
+  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: bold;
+}
+
+.period-option.selected {
+  background: #383f49;
+  color: white;
+}
+
+.period-option.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.period-label {
+  font-size: 16px;
+}
+
+.period-time {
+  font-size: 14px;
+  color: #ca991b; /* برتقالي */
+  font-weight: bold;
+  margin-top: 4px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #383f49;
+  margin: 20px 0 10px;
+  border-bottom: 2px solid #383f49;
+  padding-bottom: 5px;
+}
+
+.period-time {
+  font-size: 14px;
+  color: #7b7669;
+  font-weight: bold;
+  margin-top: 4px;
+}
+  .booking-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+        justify-content: center;
+  }
+  
+  .booking-section {
+    width: 200%;
+    max-width: 800px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #383f49;
+  margin-bottom: 10px;
+}
+
+.booking-date {
+  font-size: 20px;
+  color: #5f5e5e;
+  margin-bottom: 30px;
+}
+
+.period-container {
+  display: flex;
+  justify-content: center; 
+  gap: 10px;
+}
+
+.period-time {
+  color: #ca991b;
+  font-weight: bold;
+}
+
+.back-button {
+  width: 100%;
+  background-color: #383f49 !important; /* لون داكن */
+  color: #fff !important; /* نص أبيض */
+  font-weight: bold;
+  padding: 10px 20px !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease-in-out !important;
+  display: flex;
+  align-items: center;
+  gap: 5px; /* تباعد بين الأيقونة والنص */
+  padding-bottom: 10px;
+  font-family: 'Cairo', sans-serif !important;
+}
+
+.back-button:hover {
+  background-color: #b8860b; /* لون ذهبي عند التمرير */
+  transform: scale(1.05); /* تأثير تكبير خفيف */
+}
+
+.back-button svg {
+  font-size: 20px; /* حجم الأيقونة */
+}
+.period-option.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #ffdddd;
+  border: 1px solid #ff4d4d;
+}
+
+.period-option.disabled .period-label,
+.period-option.disabled .period-time {
+  color: #ff4d4d;
+}

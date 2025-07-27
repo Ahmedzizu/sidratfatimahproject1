@@ -1,0 +1,254 @@
+// متغيرات الألوان (متناسقة مع باقي المشروع)
+$primary-color: #D4AF37;
+$secondary-color: #B38D46;
+$dark-bg: #121212;
+$card-bg: #1E1E1E;
+$light-text: #F5F5F5;
+$border-color: rgba(212, 175, 55, 0.3);
+$overlay-dark: rgba(0, 0, 0, 0.6); // تراكب داكن
+$control-bg: rgba(30, 30, 30, 0.7); // خلفية أزرار التحكم
+
+// أنيميشنات
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes imageFadeIn {
+  from {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.image-gallery-container {
+  width: 100%;
+  max-width: 1000px; // أقصى عرض للمعرض
+  margin: 40px auto; // توسيط وتحديد تباعد
+  background-color: $card-bg;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba($border-color, 0.6);
+  overflow: hidden; // مهم لإخفاء أي شيء خارج الحدود
+  font-family: 'Tajawal', sans-serif;
+  position: relative; // لتموضع أزرار التحكم
+  animation: fadeIn 0.8s ease-out; // أنيميشن ظهور الحاوية بأكملها
+
+  .main-image-wrapper {
+    position: relative; // لتحديد موضع أزرار التحكم
+    width: 100%;
+    padding-bottom: 56.25%; // نسبة عرض إلى ارتفاع 16:9 للحفاظ على الأبعاد (يمكن تغييرها)
+    overflow: hidden;
+    background-color: $dark-bg; // خلفية احتياطية
+
+    .main-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; // تغطية المساحة مع الحفاظ على الأبعاد
+      display: block;
+      animation: imageFadeIn 0.6s ease-out; // أنيميشن الانتقال بين الصور
+    }
+
+    .carousel-control {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: $control-bg; // خلفية داكنة شفافة
+      color: $primary-color;
+      border: none;
+      border-radius: 50%; // دائري
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.8rem;
+      opacity: 0.8;
+      transition: all 0.3s ease;
+      z-index: 10; // لضمان ظهورها فوق الصورة
+
+      &:hover {
+        opacity: 1;
+        background-color: rgba($primary-color, 0.2);
+        box-shadow: 0 0 15px rgba($primary-color, 0.5);
+        transform: translateY(-50%) scale(1.1); // تكبير خفيف
+      }
+
+      &.prev {
+        left: 15px; // مسافة من اليسار
+        // For RTL, this will be handled by the [dir="rtl"] block
+      }
+
+      &.next {
+        right: 15px; // مسافة من اليمين
+        // For RTL, this will be handled by the [dir="rtl"] block
+      }
+    }
+  }
+
+  .thumbnail-images-wrapper {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; // السماح بلف الصور لأسطر جديدة
+    gap: 15px; // مسافة بين الصور المصغرة
+    padding: 20px; // تباعد داخلي
+    background-color: $dark-bg; // خلفية أغمق للصور المصغرة
+    border-top: 1px solid rgba($border-color, 0.4);
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    animation: slideInFromBottom 0.8s ease-out 0.6s forwards; // أنيميشن ظهور
+    opacity: 0; // تبدأ مخفية
+    transform: translateY(20px); // تبدأ من الأسفل
+
+    .thumbnail-image {
+      width: 100px; // حجم الصورة المصغرة
+      height: 70px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid transparent; // حدود شفافة افتراضيًا
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      opacity: 0.7;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+      &:hover {
+        opacity: 1;
+        border-color: rgba($primary-color, 0.7);
+        transform: scale(1.05); // تكبير خفيف عند التحويم
+      }
+
+      &.active {
+        border-color: $primary-color; // حدود ذهبية للصورة النشطة
+        opacity: 1;
+        box-shadow: 0 0 15px rgba($primary-color, 0.6); // ظل متوهج
+        transform: scale(1.02); // تكبير خفيف
+      }
+    }
+  }
+}
+
+// تعديلات RTL
+[dir="rtl"] {
+  .image-gallery-container {
+    .main-image-wrapper {
+      .carousel-control {
+        &.prev {
+          left: auto;
+          right: 15px; // عكس الموضع
+          transform: translateY(-50%) scaleX(-1); // قلب السهم أفقياً
+
+          &:hover {
+            transform: translateY(-50%) scale(1.1) scaleX(-1);
+          }
+        }
+
+        &.next {
+          right: auto;
+          left: 15px; // عكس الموضع
+          transform: translateY(-50%) scaleX(-1); // قلب السهم أفقياً
+
+          &:hover {
+            transform: translateY(-50%) scale(1.1) scaleX(-1);
+          }
+        }
+      }
+    }
+  }
+}
+
+// تصميم متجاوب (لتحسين المظهر على أحجام الشاشات المختلفة)
+@media (max-width: 768px) {
+  .image-gallery-container {
+    margin: 20px auto;
+    border-radius: 12px;
+    padding: 0; // إزالة التباعد من الحاوية الرئيسية
+
+    .main-image-wrapper {
+      padding-bottom: 65%; // نسبة عرض إلى ارتفاع أكثر ملاءمة للموبايل
+      border-radius: 12px 12px 0 0; // تدوير الزوايا العليا
+
+      .carousel-control {
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+
+        &.prev {
+          left: 10px;
+        }
+
+        &.next {
+          right: 10px;
+        }
+      }
+    }
+
+    .thumbnail-images-wrapper {
+      padding: 15px;
+      gap: 10px;
+      border-top: 1px solid rgba($border-color, 0.3);
+      border-radius: 0 0 12px 12px; // تدوير الزوايا السفلية
+
+      .thumbnail-image {
+        width: 80px;
+        height: 60px;
+        border-radius: 6px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .image-gallery-container {
+    margin: 15px auto;
+    border-radius: 8px;
+
+    .main-image-wrapper {
+      padding-bottom: 75%; // نسبة عرض إلى ارتفاع أكبر
+      border-radius: 8px 8px 0 0;
+
+      .carousel-control {
+        width: 35px;
+        height: 35px;
+        font-size: 1.2rem;
+      }
+    }
+
+    .thumbnail-images-wrapper {
+      padding: 10px;
+      gap: 8px;
+      border-radius: 0 0 8px 8px;
+
+      .thumbnail-image {
+        width: 60px;
+        height: 45px;
+        border-radius: 5px;
+      }
+    }
+  }
+}

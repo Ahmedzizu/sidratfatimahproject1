@@ -1,0 +1,126 @@
+body{
+    margin: 20px 80px;
+    font-family: 'Cairo', sans-serif;
+}
+@font-face {
+    font-family: 'Cairo';
+    src: url('../assets/cairo.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  .contain{
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    .cont{
+        flex-direction: column;
+        direction: rtl;
+        width: 70%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .logo img{
+            height: 100px;
+            width: 100px;
+        }
+        h2{
+            color: var(--primary);
+        }
+        .subtitle{
+            margin: 30px 20px 10px;
+        }
+        p{
+            margin: 0 20px 20px;
+            color:#848484;
+        }
+     
+        form {
+            box-sizing: border-box;
+            direction: rtl;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin: auto;
+            padding: 0 30px 30px;
+            border: 1px solid var(--primary);
+            border-radius: 40px;
+            .MuiFormControl-root {
+              margin: 10px 0;
+              box-sizing: border-box;
+              border-color: var(--primary) !important;
+            }
+            .btns{
+                display: flex;
+                justify-content: space-around;
+                .btn{
+                    background-color: var(--dark);
+                    width: 200px;
+                    margin: 10px auto 0;
+                    &:hover{
+                        opacity: .8;
+                        color: #fff;
+                    }
+                }
+            }
+            a{
+                color: var(--primary);
+                cursor: pointer;
+                &:hover{
+                    text-decoration: underline;
+                }
+            }
+          }
+    }
+}
+.login_admin_page{
+    overflow: hidden !important;
+}
+.buble1{
+    z-index: -1;
+    position: absolute;
+    width: 306px;
+    height: 304px;
+    right: 0;
+    transform: translate(50% ,50%);
+    bottom: 0;
+    border-radius: 50%;
+    background: #B38D46;
+}
+.buble2{
+    z-index: -1;
+    position: absolute;
+    width: 96px;
+    height: 96px;
+    right: 10%;
+    bottom: 10%;
+    background: #B38D46;
+    border-radius: 50%;
+}
+.buble3{
+    z-index: -1;
+    position: absolute;
+    width: 29px;
+    height: 29px;
+    right: 10%;
+    bottom: 30%;
+    background: #B38D46;
+    border-radius: 50%;
+}
+@media screen and (max-width:750px) {
+    .contain{
+        width: 90%;
+        margin: auto;
+        .cont{
+            width: 100%;
+            h2{
+                font-size: 1.3rem;
+                font-weight: 700;
+            }
+        }
+    }
+}

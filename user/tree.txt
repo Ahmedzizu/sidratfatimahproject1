@@ -1,0 +1,140 @@
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS F:\ractprojects\New folder (2)\ggg\user> tree /f
+Folder PATH listing for volume New Volume
+Volume serial number is AEB1-8979
+F:.
+│   .env
+│   .gitignore
+│   package-lock.json
+│   package.json
+│   README.md
+│
+├───.idea
+│       .gitignore
+│       git_toolbox_blame.xml
+│       modules.xml
+│       sedra-fatma-user.iml
+│       vcs.xml
+│       workspace.xml
+│
+├───build
+│       favicon.ico
+│       logo192.png
+│       logo512.png
+│       manifest.json
+│       robots.txt
+│
+├───public
+│       favicon.ico
+│       index.html
+│       logo192.png
+│       logo512.png
+│       manifest.json
+│       robots.txt
+│
+└───src
+    │   .env.js
+    │   App.js
+    │   i18n.js
+    │   index.js
+    │
+    ├───assets
+    │       address.png
+    │       area.png
+    │       bath.png
+    │       bed.png
+    │       en.jpg
+    │       halls.png
+    │       kitchen.png
+    │       living.png
+    │       Logo 1.png
+    │       Logo8 .png
+    │       paypal.webp
+    │       rate.png
+    │       suadia.png
+    │       user.png
+    │
+    ├───components
+    │       BankDetailsModal.jsx
+    │       CancelDialoge.jsx
+    │       Dialoge.jsx
+    │       Footer.jsx
+    │       ImageCarousel.jsx
+    │       Loading.jsx
+    │       MapLocation.jsx
+    │       Navbar.jsx
+    │       Notify.js
+    │       ReservationChalet.jsx
+    │       ReservationHall.jsx
+    │       ReservationResort.jsx
+    │       SearchContext.jsx
+    │       SearchModal.jsx
+    │       UserProfile.jsx
+    │
+    ├───config
+    │       config.js
+    │
+    ├───pages
+    │       ChaletCard.jsx
+    │       ChaletPage.jsx
+    │       Chalets.jsx
+    │       EmailVerification.jsx
+    │       ForgotPassword.jsx
+    │       HallCard.jsx
+    │       HallPage.jsx
+    │       Halls.jsx
+    │       Home.jsx
+    │       PhoneVirefy.jsx
+    │       Reservations.jsx
+    │       ResetPassword.jsx
+    │       ResortCard.jsx
+    │       ResortPage.jsx
+    │       Resorts.jsx
+    │       Signin.jsx
+    │       Signup.jsx
+    │       TermsConditions.jsx
+    │       UserSetting.jsx
+    │
+    ├───redux
+    │   │   store.js
+    │   │
+    │   └───reducers
+    │           bank.js
+    │           chalet.js
+    │           hall.js
+    │           resort.js
+    │           user.js
+    │
+    ├───scss
+    │       app.scss
+    │       authInfoPage.scss
+    │       bankDetails.scss
+    │       calender.scss
+    │       cancelDialoge.scss
+    │       carousel.scss
+    │       chaletCard.scss
+    │       chaletPage.scss
+    │       footer.scss
+    │       hallPage.scss
+    │       halls.scss
+    │       home.scss
+    │       mapLocation.scss
+    │       navbar.scss
+    │       phone.scss
+    │       reservationChalet.scss
+    │       reservations.scss
+    │       signin.scss
+    │       signup.scss
+    │       termsAndCondition.scss
+    │       Userprofile.scss
+    │       userSetting.scss
+    │       _animations.scss
+    │       _base.scss
+    │       _chalet_cards.scss
+    │       _variables.scss
+    │
+    └───translation
+            ar.json
+            en.json

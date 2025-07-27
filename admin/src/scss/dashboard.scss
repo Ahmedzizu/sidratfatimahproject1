@@ -1,0 +1,550 @@
+body {
+  margin: 0;
+  font-family: 'Cairo', sans-serif;
+  overflow-x: hidden;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('/assets/cairo.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.box {
+  border-radius: 30px;
+  color: #fff;
+  padding: 10px;
+  height: 150px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.247);
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(19, 15, 9, 0.6);
+    z-index: 1;
+  }
+
+  p {
+    margin: 0;
+    position: relative;
+    z-index: 2;
+    color: #fff;
+  }
+
+  .circle {
+    position: relative;
+    z-index: 2;
+    width: 60px;
+    height: 60px;
+    background-color: #b38d46a4;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    font-size: 1.9rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+}
+
+.box-halls {
+  background-image: url('/assets/image3.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.box-chalets {
+  background-image: url('/assets/image4.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.box-resorts {
+  background-image: url('/assets/image2.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.box-unpaid {
+  background-image: url('/assets/image1.jpeg');
+  background-size: cover;
+  background-position: center;
+}
+
+.calender-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+
+  h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #383f49;
+    margin-bottom: 20px;
+  }
+
+  .group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+
+    .search-input {
+      width: 300px;
+      padding: 10px 15px;
+      border: 2px solid #ccc;
+      border-radius: 30px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      outline: none;
+
+      &:focus {
+        border-color: #b38d46;
+        box-shadow: 0 0 10px rgba(179, 141, 70, 0.2);
+      }
+
+      &::placeholder {
+        color: #aaa;
+        font-style: italic;
+      }
+    }
+
+    .search-button {
+      padding: 10px 20px;
+      background-color: #b38d46;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: #a0743d;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+}
+
+.fc .fc-button-primary:disabled,
+.fc-direction-ltr .fc-button-group>.fc-button:not(:first-child),
+.fc .fc-button .fc-icon,
+.fc-direction-ltr .fc-button-group>.fc-button:not(:last-child) {
+  /* display: none; */
+}
+
+.fc .fc-button .fc-icon {
+  font-size: 1rem;
+}
+
+.fc .fc-button-primary {
+  background-color: #006c35;
+  height: 30px;
+
+  &:hover {
+    background-color: #006c35 !important;
+    opacity: 0.7;
+  }
+}
+
+.fc .fc-toolbar.fc-header-toolbar {
+  display: block;
+  text-align: center;
+}
+
+@media screen and (max-width: 450px) {
+  body {
+    margin: 0 !important;
+  }
+
+  .box {
+    font-size: 1rem;
+  }
+}
+
+.fc-toolbar-chunk {
+  margin: 10px 0 0;
+}
+
+.css-1ps4owl-MuiTypography-root-MuiLink-root {
+  text-decoration: none !important;
+}
+
+.fc .fc-button-primary {
+  line-height: 20px;
+}
+
+.fc .fc-button-group>.fc-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ------------------------------------------------------------- */
+/* Core Calendar Styles for larger cells and professional look */
+/* ------------------------------------------------------------- */
+
+/* Main FullCalendar container adjustments - to fill more screen width and remove blue spaces */
+.fc {
+  max-width: 99%;
+  /* Increased from 90% to fill more screen width */
+  margin: 10px auto;
+  /* Reduced top/bottom margin, centered horizontally */
+  direction: ltr;
+  /* Important for FullCalendar rendering */
+  border: 1px solid #c0c0c0;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Styling for the day names (Sun, Mon, Tue...) */
+.fc-daygrid-head-container {
+  background-color: #b38d46;
+  /* Apply the brown color to the header row */
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  overflow: hidden;
+  /* Ensure rounded corners are visible */
+}
+
+.fc-col-header-cell {
+  padding: 10px 5px;
+  /* Padding for day names */
+  font-weight: bold;
+  color: white;
+  /* White text for day names */
+  font-size: 1.1rem;
+  /* Slightly larger font for day names */
+}
+
+/* Styling for the entire day cell (the red outlined boxes) */
+.fc-daygrid-day {
+  min-height: 180px;
+  /* **CRUCIAL:** Increased from 150px for more vertical space */
+  position: relative;
+  /* For proper positioning of children */
+  padding: 5px;
+  /* Adjust padding for the entire day cell */
+  overflow: hidden;
+  /* Ensure content doesn't spill out */
+}
+
+/* New wrapper for day number and "حجز" button added in dayCellContent */
+.fc-day-content-wrapper {
+  height: 100%;
+  /* Take full height of the day cell */
+  display: flex;
+  flex-direction: column;
+  /* Stack children vertically */
+  justify-content: flex-start;
+  /* Align contents to the top */
+  align-items: flex-start;
+  /* Align contents to the start (left) */
+  width: 100%;
+}
+
+/* Day number and "حجز" button container (was fc-daygrid-day-top) */
+.fc-daygrid-day-top {
+  display: flex;
+  justify-content: space-between;
+  /* Pushes day number to left, button to right */
+  align-items: center;
+  width: 100%;
+  padding: 5px;
+  /* Padding for the top section (number and button) */
+  box-sizing: border-box;
+  /* Include padding in width */
+}
+
+/* Day number styling */
+.fc-daygrid-day-number {
+  font-size: 1.1rem;
+  /* Larger font for day number */
+  font-weight: bold;
+  color: #222;
+  /* No padding here, as it's handled by .fc-daygrid-day-top */
+}
+
+/* Custom "حجز" button styling within the day cell */
+.fc-daygrid-day-top button {
+  background-color: #1178a0;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #0c5a7a;
+    transform: translateY(-1px);
+  }
+}
+.today-box {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  text-align: center;
+}
+.today-box-title {
+  font-family: 'Cairo', sans-serif;
+  color: #333;
+  margin-bottom: 16px;
+}
+.today-box-content {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.today-stat {
+  display: flex;
+  flex-direction: column;
+}
+.today-stat .count {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+.today-stat .label {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 4px;
+}
+.today-stat .count.green {
+  color: #4CAF50;
+}
+.today-stat .count.red {
+  color: #F44336;
+}
+.today-box .divider {
+  width: 1px;
+  height: 60px;
+  background-color: #e0e0e0;
+}
+/* Area where events are listed within a day cell */
+.fc-daygrid-day-events {
+  flex-grow: 1;
+  /* Allow events area to grow and take available space */
+  width: 100%;
+  overflow-y: auto;
+  /* Add scrollbar if events exceed height */
+  scrollbar-width: thin;
+  /* For Firefox */
+  scrollbar-color: #c7bba6 #f1f1f1;
+  /* For Firefox */
+  margin-top: 5px;
+  /* Space between top elements and events list */
+  padding: 0 5px;
+  /* Padding for the events list */
+  box-sizing: border-box;
+  /* Include padding in width */
+}
+
+/* Scrollbar styles for webkit browsers */
+.fc-daygrid-day-events::-webkit-scrollbar {
+  width: 8px;
+}
+
+.fc-daygrid-day-events::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.fc-daygrid-day-events::-webkit-scrollbar-thumb {
+  background: #b38d46;
+  border-radius: 10px;
+}
+
+.fc-daygrid-day-events::-webkit-scrollbar-thumb:hover {
+  background: #a0743d;
+}
+
+/* Styling for individual event boxes (reservations - "أحمد محمد" etc.) */
+.fc-daygrid-event {
+  background-color: #006c35;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.05rem;
+  word-break: break-word;
+  white-space: normal;
+  margin-bottom: 8px;
+  /* Increased margin between events for more separation */
+  padding: 8px 12px;
+  border-radius: 10px;
+  line-height: 1.5;
+  min-height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    opacity: 0.95;
+    transform: translateY(-4px);
+  }
+}
+
+/* Specific colors for events based on dayPeriod (from Dashboard.jsx) */
+.fc-daygrid-event[style*="background-color: rgb(76, 175, 80)"] {
+  /* Morning/Default Green */
+  background-color: #4CAF50 !important;
+}
+
+.fc-daygrid-event[style*="background-color: rgb(156, 39, 176)"] {
+  /* Evening Purple */
+  background-color: #9C27B0 !important;
+}
+
+.fc-daygrid-event[style*="background-color: rgb(244, 67, 54)"] {
+  /* Full Day Red */
+  background-color: #F44336 !important;
+}
+
+.fc-daygrid-event[style*="background-color: rgb(204, 204, 204)"] {
+  /* "+More" Grey */
+  background-color: #ccc !important;
+  color: #333 !important;
+  font-weight: bold;
+}
+
+/* Styling for the "+More" link when events are collapsed */
+.fc-daygrid-more-link {
+  background-color: #b38d46;
+  color: white !important;
+  font-size: 1.0rem;
+  padding: 8px 15px;
+  border-radius: 10px;
+  margin-top: 10px;
+  display: block;
+  text-align: center;
+  text-decoration: none !important;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #a0743d;
+    transform: translateY(-2px);
+  }
+}
+
+/* Ensure header buttons are styled correctly */
+.fc-toolbar-chunk .fc-button-group .fc-button {
+  font-family: 'Cairo', sans-serif;
+  text-transform: capitalize;
+  font-size: 1.05rem;
+  padding: 10px 20px;
+}
+
+/* Responsive adjustments for smaller screens */
+@media screen and (max-width: 768px) {
+  .fc {
+    max-width: 100%;
+    margin: 10px auto;
+    border-radius: 5px;
+  }
+
+  .fc-daygrid-day {
+    min-height: 120px;
+    /* Adjusted min-height for day cells on small screens */
+    padding: 5px;
+  }
+
+  .fc-daygrid-event {
+    font-size: 0.85rem;
+    padding: 3px 5px;
+    min-height: 35px;
+    margin-bottom: 5px;
+    border-radius: 6px;
+  }
+
+  .fc-daygrid-day-number {
+    font-size: 0.9rem;
+    /* No padding here */
+  }
+
+  .fc-daygrid-more-link {
+    font-size: 0.85rem;
+    padding: 3px 6px;
+    border-radius: 6px;
+  }
+
+  .fc-toolbar-chunk .fc-button-group .fc-button {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+}
+
+.global-alert {
+  position: absolute;
+  top: 110px;
+  left: 27%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+.alert-circle {
+  width: 35px;
+  height: 35px;
+  background-color: red;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+  animation: pulse 1.5s infinite;
+}
+
+.alert-icon {
+  font-size: 12px;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .global-alert {
+    display: none;
+  }
+}

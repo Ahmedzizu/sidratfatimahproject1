@@ -1,0 +1,52 @@
+body{
+    margin: 20px 80px;
+    font-family: 'Cairo', sans-serif;
+}
+@font-face {
+    font-family: 'Cairo';
+    src: url('../assets/cairo.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  .table-heading{
+    p{
+        margin: 0;
+    }
+}
+.salary-box{
+    display: flex;
+    justify-content: space-between;
+    p{
+        text-align: center !important;
+        width: calc(100% /3);
+        border: 1px solid #000;
+        height: 40px;
+        line-height: 40px;
+        margin: 0;
+    }
+}
+#share{
+    background-color: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    display: block;
+    margin: auto;
+    padding: 5px;
+    text-align: center;
+    transition: .3s;
+    cursor: pointer;
+    margin-bottom: 10px;
+    &:hover{
+        opacity: .8;
+        transform: translateY(-2px);
+    }
+}
+
+
+.table-heading ,table-data ,table-row ,.border .resert-container .table-box .table-row .table-data{
+    height: 20px !important;
+    line-height: 20px !important;
+}
+.resert-container{
+    padding: 0 !important;
+}
