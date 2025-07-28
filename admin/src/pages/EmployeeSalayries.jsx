@@ -96,18 +96,15 @@ const EmployeeSalaries = () => {
 }, [dispatch]);
 
 
-useEffect(() => {
-  const fetchPaidSalaries = async () => {
+// ✅ Step 1: Define the function here, outside of useEffect
+const fetchPaidSalaries = async () => {
   try {
     const params = {
       month: months.indexOf(selectedMonth) + 1,
       year: parseInt(selectedYear),
       type: "Salaries",
     };
-
-    // ✅ Use .get to fetch data, and pass the filters as params
     const res = await Api.get(`/api/expenses`, { params });
-
     console.log("Fetched paid salaries:", res.data);
     setPaidSalaries(res.data);
   } catch (err) {
@@ -115,9 +112,10 @@ useEffect(() => {
   }
 };
 
+// ✅ Step 2: Now, the useEffect just calls the function
+useEffect(() => {
   fetchPaidSalaries();
 }, [selectedMonth, selectedYear]);
-
 useEffect(() => {
   const fetchBanks = async () => {
     try {
