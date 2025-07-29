@@ -4,12 +4,18 @@ import Api from "../../config/config";
 
 export const fetchReservation_payments = createAsyncThunk(
   "reservation_payments/fetchReservation_payments",
-  async (id, thunkAPI) => {
+  async (id, { rejectWithValue }) => {
+    // ✨ This check prevents the error
+    if (!id) {
+      console.error("fetchReservation_payments called with an undefined ID.");
+      return rejectWithValue("An ID is required to fetch payments.");
+    }
     try {
       const response = await Api.get(`/reservation-payments/get-payment/${id}`);
       return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      // Return the actual error message from the server if available
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );

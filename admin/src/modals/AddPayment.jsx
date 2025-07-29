@@ -28,7 +28,7 @@ const style = {
   p: 4,
 };
 
-function AddPayment({ handleClose, handleOpen, open, data: temp, update, remainingAmount  }) {
+function AddPayment({ handleClose, handleOpen, open, data: temp, update, remainingAmount ,onPaymentSuccess,  reservationData}) {
   const { t, i18n } = useTranslation();
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -57,14 +57,23 @@ function AddPayment({ handleClose, handleOpen, open, data: temp, update, remaini
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
+const reservationId = reservationData?._id || id;
 
+    // إذا لم يتم العثور على معرّف بأي طريقة، أوقف العملية
+    if (!reservationId) {
+      console.error("Reservation ID is missing.");
+      alert("لم يتم العثور على معرّف الحجز المطلوب.");
+      return;
+    }
     const paidAmount = +data.paid || 0;
     const insuranceAmount = +data.insurance || 0;
+
 // ✅ هذا هو شرط التحقق الذي سيعمل الآن
   if (data.type !== "تأمين" && paidAmount > remainingAmount) {
     alert(`لا يمكن دفع مبلغ أكبر من المتبقي. المبلغ المتبقي هو: ${remainingAmount.toFixed(2)}`);
     return; // أوقف عملية الحفظ
   }
+
     if (!paidAmount && !insuranceAmount) {
       setSnackOpen(true);
       return;
@@ -82,7 +91,7 @@ function AddPayment({ handleClose, handleOpen, open, data: temp, update, remaini
       ...data,
       insurance: insuranceAmount,
       paid: paidAmount,
-      reservation: id,
+      reservation: reservationId,
     };
 
     const url = update ? `/reservation-payments/update` : '/reservation-payments/add-payment';

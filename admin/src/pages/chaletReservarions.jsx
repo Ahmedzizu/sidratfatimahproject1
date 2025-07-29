@@ -259,120 +259,66 @@ const ChaletsReservations = () => {
     setSelectedHistory([]); //
   };
   // ✨ --- تحسينات على الأزرار ---
-  const renderActions = (row) => {
+const renderActions = (row) => {
     const isConfirmedButNotCompleted =
       (row.status === "confirmed" ||
         row.status === "extended" ||
         row.isModified) &&
       !row.completed;
-
-    const buttonSx = {
-      fontFamily: "Cairo, sans-serif",
-      textTransform: "none",
-      borderRadius: "8px",
-      mx: { xs: 0.5, sm: 1 }, // تعديل المسافة لتكون متجاوبة
-      my: { xs: 0.5, sm: 0 }, // إضافة مسافة عمودية على الجوال
-      fontSize: { xs: "0.75rem", sm: "0.875rem" },
-    };
+    
+    // الأيقونات المشتركة لكل الحالات
+    const commonIcons = (
+        <>
+            <IconButton onClick={() => handleOpenHistoryModal(row.modificationHistory)} color="secondary" title={t("history", "سجل التعديلات")}>
+                <HistoryIcon />
+            </IconButton>
+            <IconButton href={`https://wa.me/${row.client?.phone}`} target="_blank" color="success" title={t("whatsapp", "واتساب")}>
+                <WhatsAppIcon />
+            </IconButton>
+        </>
+    );
 
     if (isConfirmedButNotCompleted) {
       return (
-        <Box
-          sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
-        >
-          <Button
-            variant="contained"
-            size="small"
-            startIcon={<EditIcon />}
-            onClick={() => handleOpenEdit(row)}
-            sx={{
-              ...buttonSx,
-              backgroundColor: themeColors.primary,
-              "&:hover": { backgroundColor: "#9c7b3b" },
-            }}
-          >
-            {t("")}
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            color="error"
-            startIcon={<CancelIcon />}
-            onClick={() => handleDeleteOpen(row._id)}
-            sx={buttonSx}
-          >
-            {t("")}
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            color="secondary"
-            startIcon={<InfoIcon />}
-            onClick={() => navigate(`/reservationDetails/${row._id}`)}
-            sx={buttonSx}
-          >
-            {t("")}
-          </Button>
-          {new Date() > new Date(row.period.endDate) &&
-            row.status === "confirmed" && (
-              <Button
-                variant="contained"
-                size="small"
-                color="success"
-                startIcon={<CheckCircleIcon />}
-                disabled={row.completed || row.remainingAmount > 0}
-                onClick={() => completeOpen(row)}
-                sx={buttonSx}
-              >
-                {t("")}
-              </Button>
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: 'center' }}>
+            <IconButton onClick={() => handleOpenEdit(row)} color="primary" title={t("reservation.edit", "تعديل")}>
+                <EditIcon />
+            </IconButton>
+            <IconButton onClick={() => handleDeleteOpen(row._id)} color="error" title={t("reservation.cancel", "إلغاء")}>
+                <CancelIcon />
+            </IconButton>
+            <IconButton onClick={() => navigate(`/reservationDetails/${row._id}`)} color="secondary" title={t("reservation.details", "تفاصيل")}>
+                <InfoIcon />
+            </IconButton>
+            {new Date() > new Date(row.period.endDate) && row.status === "confirmed" && (
+                <IconButton disabled={row.completed || row.remainingAmount > 0} onClick={() => completeOpen(row)} color="success" title={t("reservation.complete", "إكمال")}>
+                    <CheckCircleIcon />
+                </IconButton>
             )}
+            {commonIcons}
         </Box>
       );
     }
     if (row.completed) {
       return (
-        <Box
-          sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
-        >
-          <Button
-            variant="outlined"
-            size="small"
-            color="secondary"
-            startIcon={<InfoIcon />}
-            onClick={() => navigate(`/reservationDetails/${row._id}`)}
-            sx={buttonSx}
-          >
-            {t("")}
-          </Button>
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: 'center' }}>
+            <IconButton onClick={() => navigate(`/reservationDetails/${row._id}`)} color="secondary" title={t("reservation.details", "تفاصيل")}>
+                <InfoIcon />
+            </IconButton>
+            {commonIcons}
         </Box>
       );
     }
     if (row.status === "canceled") {
       return (
-        <Box
-          sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
-        >
-          <Button
-            variant="contained"
-            size="small"
-            color="error"
-            startIcon={<DeleteForeverIcon />}
-            onClick={() => handleDeleteOpen(row._id)}
-            sx={buttonSx}
-          >
-            {t("")}
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            color="secondary"
-            startIcon={<InfoIcon />}
-            onClick={() => navigate(`/reservationDetails/${row._id}`)}
-            sx={buttonSx}
-          >
-            {t()}
-          </Button>
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: 'center' }}>
+            <IconButton onClick={() => handleDeleteOpen(row._id)} color="error" title={t("reservation.permanentDelete", "حذف نهائي")}>
+                <DeleteForeverIcon />
+            </IconButton>
+            <IconButton onClick={() => navigate(`/reservationDetails/${row._id}`)} color="secondary" title={t("reservation.details", "تفاصيل")}>
+                <InfoIcon />
+            </IconButton>
+            {commonIcons}
         </Box>
       );
     }
@@ -570,6 +516,7 @@ const ChaletsReservations = () => {
 
       <Paper elevation={2} sx={{ p: 2, mb: 3, borderRadius: "12px" }}>
         <Box
+        
           sx={{
             display: "grid",
             gridTemplateColumns: {
@@ -581,6 +528,14 @@ const ChaletsReservations = () => {
             alignItems: "center",
           }}
         >
+           <TextField
+        type="text"
+        variant="outlined"
+        value={search}
+        placeholder={t("search")}
+        onChange={(e) => setSearch(e.target.value)}
+        sx={{ flex: 1, minWidth: "200px" }}
+      />
           <TextField
             type="date"
             label={t("from_date")}
@@ -650,16 +605,10 @@ const ChaletsReservations = () => {
             {/* ✏️ --- تحسين النص --- */}
             {t("reset_filters", "إعادة تعيين")}
           </Button>
+              
         </Box>
       </Paper>
-      <TextField
-        type="text"
-        variant="outlined"
-        value={search}
-        placeholder={t("search")}
-        onChange={(e) => setSearch(e.target.value)}
-        sx={{ flex: 1, minWidth: "200px" }}
-      />
+ 
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -715,13 +664,7 @@ const ChaletsReservations = () => {
               <TableBody>
                 {filteredData.map((row, ind) => (
                   // 1. أزل النمط من هنا
-                  <TableRow
-                    key={ind}
-                    sx={{
-                      "&:hover": { backgroundColor: "#f1f1f1" },
-                      ...getRowStyle(row),
-                    }}
-                  >
+                  <TableRow key={ind} sx={{ '&:hover': { backgroundColor: '#f1f1f1' }, ...getRowStyle(row) }}>
                     <TableCell
                       style={{ ...getRowStyle(row), fontFamily: "Cairo" }}
                       align="center"
@@ -787,7 +730,7 @@ const ChaletsReservations = () => {
                       align="center"
                       sx={{ fontWeight: "bold", color: themeColors.success }}
                     >
-                      {row.cost.toLocaleString()} {t("currency", "ر.س")}
+                      {row.cost.toLocaleString()} 
                     </TableCell>
 
                     <TableCell style={{ fontFamily: "Cairo" }} align="center">
@@ -850,28 +793,11 @@ const ChaletsReservations = () => {
                     >
                       {/* ✏️ --- إضافة العملة --- */}
                       {row.remainingAmount.toLocaleString()}{" "}
-                      {t("currency", "ر.س")}
                     </TableCell>
 
-                    <TableCell align="center" sx={{ minWidth: "320px" }}>
-                      {renderActions(row)}
-
-                      <IconButton
-                        onClick={() =>
-                          handleOpenHistoryModal(row.modificationHistory)
-                        }
-                        color="secondary"
-                      >
-                        <HistoryIcon />
-                      </IconButton>
-                      <IconButton
-                        href={`https://wa.me/${row.client?.phone}`}
-                        target="_blank"
-                        color="success"
-                      >
-                        <WhatsAppIcon />
-                      </IconButton>
-                    </TableCell>
+                    <TableCell align="center" sx={{ minWidth: "220px", padding: '8px' }}>
+        {renderActions(row)}
+    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

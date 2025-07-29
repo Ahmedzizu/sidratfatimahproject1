@@ -1,42 +1,55 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Paper from '@mui/material/Paper';
-import { useNavigate } from 'react-router-dom';
-import Api from '../config/config';
-import { fetchReservations } from '../redux/reducers/reservation';
-import { useDispatch } from 'react-redux';
-// import Draggable from 'react-draggable';
-function PaperComponent(props) {
-    return (
+import React from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import AddCardIcon from '@mui/icons-material/AddCard'; // أيقونة لزر الدفع
 
-      <Paper {...props} />
-   
-  );
-}
-export default function ConfirmDialoge({open ,handleClose,handleAccept,url,id}) {
-    const dispatch=useDispatch()
+const ConfirmDialoge = ({
+  open,
+  handleClose,
+  handleAccept,
+  title = "تأكيد العملية",
+  message = "هل أنت متأكد؟",
+  // ✨ هذه هي الخصائص الجديدة التي تتيح إضافة الزر
+  showSecondaryAction = false,
+  secondaryActionText = "إجراء إضافي",
+  onSecondaryAction,
+}) => {
+  const { t } = useTranslation();
 
   return (
-    <div>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        PaperComponent={PaperComponent}
-        aria-labelledby="draggable-dialog-title"
-      >
-        <DialogTitle style={{ cursor: 'move', }} id="draggable-dialog-title" >
-                هل انت متأكد من تأكيد هذا الحجز ؟
-        </DialogTitle>
-        <DialogActions style={{justifyContent:"space-around"}}>
-          <Button onClick={handleAccept} variant='contained' color='success'>تأكيد</Button>
-          <Button autoFocus onClick={handleClose} variant='outlined'  id='cancel'  > الغاء</Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle sx={{ fontFamily: 'Cairo, sans-serif', fontWeight: 'bold' }}>
+        {t(title)}
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText sx={{ fontFamily: 'Cairo, sans-serif' }}>
+          {t(message)}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions sx={{ padding: '16px 24px' }}>
+        <Button onClick={handleClose} color="secondary" sx={{ fontFamily: 'Cairo, sans-serif' }}>
+          {t('cancel', 'إلغاء')}
+        </Button>
+        
+        {/* ✨ هنا يتم عرض الزر الإضافي بناءً على prop */}
+        {showSecondaryAction && (
+          <Button
+            onClick={onSecondaryAction}
+            color="info"
+            variant="outlined"
+            startIcon={<AddCardIcon />}
+            sx={{ fontFamily: 'Cairo, sans-serif', mx: 1 }}
+          >
+            {t(secondaryActionText)}
+          </Button>
+        )}
+
+        <Button onClick={handleAccept} color="primary" variant="contained" autoFocus sx={{ fontFamily: 'Cairo, sans-serif' }}>
+          {t('confirm', 'تأكيد')}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
-}
+};
+
+export default ConfirmDialoge;

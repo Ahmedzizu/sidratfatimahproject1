@@ -1,29 +1,41 @@
+
 import React, { useEffect, useState } from 'react';
-import { TextField, Button, Select, MenuItem, Typography } from '@mui/material';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import "../scss/addChalets.scss";
+import { TextField, Select, MenuItem, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Box, Container } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import Api from '../config/config';
 import { fetchNotification } from '../redux/reducers/reservation';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import ConfirmDialoge from '../components/ConfirmDialoge';
-import DeleteDialoge from '../components/DeleteDialoge';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+
+// --- Icons ---
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import InfoIcon from '@mui/icons-material/Info';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+
+// --- Components ---
 import ReservarionsModal from '../modals/ReservarionsModal';
+import ConfirmDialoge from '../components/ConfirmDialoge'; // سيتم تحديث هذا الملف
+import DeleteDialoge from '../components/DeleteDialoge';
+import AddPayment from '../modals/AddPayment'; // ✨ ملف المودال الجديد
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+// 🎨 --- تعريف لوحة الألوان الأساسية ---
+const themeColors = {
+  primary: '#B38D46',
+  secondary: '#6c757d',
+  background: '#f8f9fa',
+  text: '#212529',
+  error: '#dc3545',
+  success: '#198754',
+};
 const NewReservations = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -35,11 +47,12 @@ const NewReservations = () => {
   const [update, setUpdate] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteID, setDeleteID] = useState();
-  const [confirmData, setConfirmData] = useState();
+  const [confirmData, setConfirmData] = useState(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [temp, setTemp] = useState({});
   const [snackOpen, setSnackOpen] = useState(false);
   const [entityTypeFilter, setEntityTypeFilter] = useState("all");
+   const [paymentModalOpen, setPaymentModalOpen] = useState(false); 
 
   useEffect(() => {
     fetchNewReservations();
@@ -57,36 +70,26 @@ const NewReservations = () => {
       .then(() => dispatch(fetchNotification()));
   }
 
-  function handleConfirmOpen(data) {
-    if (!data.payment?.paidAmount || data.payment.paidAmount <= 0) {
-      alert("⚠️ لا يمكن تأكيد الحجز بدون دفع مبلغ.");
-      return;
-    }
-    setConfirmData(data);
+   function handleConfirmOpen(rowData) {
+    setConfirmData(rowData); // تخزين بيانات الحجز كاملة
     setConfirmOpen(true);
   }
-
-  function handleAccept() {
+   function handleAccept() {
     if (!confirmData) return;
-
     const paidAmount = confirmData?.payment?.paidAmount || 0;
     if (paidAmount <= 0) {
-      alert("⚠️ لا يمكن تأكيد الحجز بدون دفع مبلغ.");
+      alert(t("no_payment_alert", "⚠️ لا يمكن تأكيد الحجز بدون دفع مبلغ. يرجى إضافة دفعة أولاً."));
       return;
     }
-
     setConfirmOpen(false);
-
-    Api.patch('/admin/reservation', {
-      _id: confirmData._id,
-      confirmRequest: true,
-    })
+    Api.patch('/admin/reservation', { _id: confirmData._id, confirmRequest: true })
       .then(() => fetchNewReservations())
       .catch((err) => {
         if (err.response?.status === 403) setSnackOpen(true);
       });
   }
-
+   
+  
   function handleOpenEdit(data) {
     setTemp({
       clientName: data.client.name,
@@ -162,38 +165,63 @@ const NewReservations = () => {
       console.error("❌ خطأ أثناء الاتصال بالـ API:", error);
     }
   }
-
+const renderActions = (row) => (
+    <Box sx={{ display: "flex", justifyContent: "center", alignItems: 'center' }}>
+        <IconButton onClick={() => handleOpenEdit(row)} color="primary" title={t("edit", "تعديل")}>
+            <EditIcon />
+        </IconButton>
+        <IconButton onClick={() => handleDeleteOpen(row._id)} color="error" title={t("delete", "حذف")}>
+            <DeleteIcon />
+        </IconButton>
+        <IconButton onClick={() => navigate(`/unConfermidReservationDetails/${row._id}`)} sx={{color: '#f0ad4e'}} title={t("details", "التفاصيل")}>
+            <InfoIcon />
+        </IconButton>
+        {row.status === "unConfirmed" && (
+            <IconButton onClick={() => handleConfirmOpen(row)} color="success" title={t("confirm_reservation", "تأكيد الحجز")}>
+                <CheckCircleIcon />
+            </IconButton>
+        )}
+    </Box>
+  );
+  
   return (
-    <div className="cont" style={{ direction: i18n.language === 'en' ? 'ltr' : 'rtl' }}>
-      <Typography variant="h4" component="h2" sx={{ textAlign: 'center', marginBottom: '20px', color: '#B38D46', fontWeight: 'bold' ,fontFamily: 'Cairo', }}>
-        {t("إدارة الحجوزات الجديدة")}
+   <Container maxWidth="xl" sx={{ py: 3, direction: i18n.language === 'en' ? 'ltr' : 'rtl', backgroundColor: themeColors.background }}>
+      <Typography variant="h4" component="h2" sx={{ textAlign: 'center', mb: 4, color: themeColors.primary, fontWeight: 'bold', fontFamily: 'Cairo, sans-serif' }}>
+        {t("new_reservations_management", "إدارة الحجوزات الجديدة")}
       </Typography>
 
-      <div className="search-box" style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
+   <Paper elevation={2} sx={{ p: 2, mb: 3, borderRadius: '12px' }}>
+    <Box sx={{
+        display: 'grid',
+        gridTemplateColumns: { xs: '1fr', md: '1fr auto' }, // عمود واحد على الجوال، عمودان على الكمبيوتر
+        gap: 2,
+        alignItems: 'center'
+    }}>
         <TextField
-          type="text"
-          variant="outlined"
-          value={search}
-          placeholder={t("search")}
-          onChange={(e) => setSearch(e.target.value)}
-          sx={{ borderRadius: "50px", flex: 1 }}
+            type="text"
+            variant="outlined"
+            value={search}
+            placeholder={t("search")}
+            onChange={(e) => setSearch(e.target.value)}
         />
         <Select
-          value={entityTypeFilter}
-          onChange={(e) => setEntityTypeFilter(e.target.value)}
-          displayEmpty
-          sx={{ minWidth: 200, fontFamily: 'Cairo' }}
+            value={entityTypeFilter}
+            onChange={(e) => setEntityTypeFilter(e.target.value)}
+            displayEmpty
+            sx={{ minWidth: 200, fontFamily: 'Cairo' }}
         >
-          <MenuItem value="all">{t("جميع الجهات")}</MenuItem>
-          <MenuItem value="hall">{t("قاعات")}</MenuItem>
-          <MenuItem value="chalet">{t("شاليهات")}</MenuItem>
+            <MenuItem value="all">{t("جميع الجهات")}</MenuItem>
+            <MenuItem value="hall">{t("قاعات")}</MenuItem>
+            <MenuItem value="chalet">{t("شاليهات")}</MenuItem>
         </Select>
-      </div>
+    </Box>
+</Paper>
 
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <TableContainer component={Paper} className="table-print">
-          <Table aria-label="simple table">
-            <TableHead className="tablehead">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+        <Box sx={{ width: '100%', overflowX: 'auto' }}>
+            <TableContainer component={Paper} elevation={2} sx={{ borderRadius: '12px' }}>
+              <Table>
+                <TableHead sx={{ backgroundColor: themeColors.primary, '& .MuiTableCell-root': { color: 'white', fontWeight: 'bold', fontFamily: 'Cairo, sans-serif' } }}>
               <TableRow>
                 {/* ✅ تعديل رؤوس الأعمدة لتطابق التصميم الجديد */}
                 <TableCell align="center" style={{fontFamily: 'Cairo'}}>{t("رقم العقد")}</TableCell>
@@ -201,9 +229,8 @@ const NewReservations = () => {
                 <TableCell align="center" style={{fontFamily: 'Cairo'}}>{t("reservation.entity")}</TableCell>
                 <TableCell align="center" style={{fontFamily: 'Cairo'}}>{t("reservation.dateAndPeriod")}</TableCell>
                 <TableCell align="center" style={{fontFamily: 'Cairo'}}>{t("مبلغ الحجز")}</TableCell>
-                <TableCell align="center">{t("reservation.remainingAmount")}</TableCell>
+                {/* <TableCell align="center">{t("reservation.remainingAmount")}</TableCell> */}
                 <TableCell align="center" style={{fontFamily: 'Cairo'}}>{t("الحالة")}</TableCell>
-                <TableCell align="center">{t("واتساب")}</TableCell>
                 <TableCell align="center">{t("نوع الدفع")}</TableCell>
                 <TableCell align="center" style={{fontFamily: 'Cairo'}}>{t("الإجراءات")}</TableCell>
               </TableRow>
@@ -246,13 +273,7 @@ const NewReservations = () => {
                       {row.cost.toLocaleString()}
                     </span>
                   </TableCell>
-                  
-                  {/* ✅ إضافة خلية المبلغ المتبقي */}
-                  <TableCell align="center">
-                    <span style={{ color: 'red', fontSize: '18px', fontWeight: 'bold', fontFamily: 'Cairo' }}>
-                      {(row.cost - (row.payment?.paidAmount || 0)).toLocaleString()}
-                    </span>
-                  </TableCell>
+
                   
                   {/* ✅ تطبيق تصميم خلية الحالة الملونة */}
                   <TableCell style={{fontFamily: 'Cairo'}} align="center">
@@ -277,47 +298,46 @@ const NewReservations = () => {
                       {t(getStatusName(row.status, row.deferred, row.isModified, t))}
                     </div>
                   </TableCell>
-
-                   <TableCell align="center" style={{ fontFamily: 'Cairo' }}>
-                                      <a href={`https://wa.me/${row.client?.phone}`} target="_blank" rel="noopener noreferrer" style={{ color: '#25D366', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
-                                        <span>{row.client?.phone}</span>
-                                        <span style={{ fontSize: '20px' }}>🟢</span>
-                                      </a>
-                                    </TableCell>
-                  <TableCell align="center">{row.payment?.method || "-"}</TableCell>
-
-                  <TableCell align="center" style={{fontFamily: 'Cairo', minWidth: '300px'}}>
-                    <Button variant="contained" size="small" onClick={() => handleOpenEdit(row)}
-                      sx={{ margin: "0 5px", backgroundColor: "#1178a0", color: "#FFFFFF" }}>
-                      {t("تعديل")}
-                    </Button>
-                    <Button variant="contained" size="small" color="error" onClick={() => handleDeleteOpen(row._id)}
-                      sx={{ margin: "0 5px", backgroundColor: "#d9534f" }}>
-                      {t("حذف")}
-                    </Button>
-                    <Button variant="contained" size="small"
-                      onClick={() => navigate(`/unConfermidReservationDetails/${row._id}`)}
-                      sx={{ margin: "0 5px", backgroundColor: "#f0ad4e", color: "#FFFFFF" }}>
-                      {t("تفاصيل الحجز")}
-                    </Button>
-                    {row.status === "unConfirmed" && (
-                      <Button variant="contained" size="small" color="success" onClick={() => handleConfirmOpen(row)}
-                        sx={{ margin: "0 5px", backgroundColor: "#5cb85c" }}>
-                        {t("تأكيد الحجز")}
-                      </Button>
-                    )}
-                  </TableCell>
+                  <TableCell align="center"  sx={{ minWidth: "220px" }}>{row.payment?.method || "-"}</TableCell>
+                   <TableCell align="center" sx={{ minWidth: "220px" }}>
+                        {renderActions(row)}
+                      </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+         </Box>
       </motion.div>
       <ReservarionsModal update={update} handleClose={()=>{setOpen(false); setTemp({}); setUpdate(false)}} data={temp} handleOpen={setOpen} open={open} />
-      <ConfirmDialoge open={confirmOpen} handleAccept={handleAccept} handleClose={handleConfirmClose} />
+     
       <DeleteDialoge open={deleteOpen} handleClose={handleDeleteClose} handleDelete={handleDeleteConfirm} />
-    </div>
+      {/* ✨ نافذة التأكيد المعدلة */}
+      <ConfirmDialoge
+        open={confirmOpen}
+        handleClose={() => setConfirmOpen(false)}
+        handleAccept={handleAccept}
+        title={t("confirm_reservation_title", "تأكيد الحجز")}
+        message={t("confirm_reservation_message", "هل أنت متأكد أنك تريد تأكيد هذا الحجز؟")}
+        // Props جديدة
+        showSecondaryAction={true}
+        secondaryActionText={t("add_payment", "إضافة دفعة")}
+        onSecondaryAction={() => setPaymentModalOpen(true)}
+      />
+
+      {/* ✨ مودال الدفع الجديد */}
+      {confirmData && (
+          <AddPayment
+            open={paymentModalOpen}
+            handleClose={() => setPaymentModalOpen(false)}
+            reservationData={confirmData}
+            onPaymentSuccess={() => {
+                setPaymentModalOpen(false);
+                fetchNewReservations(); // تحديث البيانات بعد الدفع
+            }}
+          />
+      )}
+    </Container>
   );
 };
-
 export default NewReservations;

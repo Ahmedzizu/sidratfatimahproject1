@@ -421,9 +421,6 @@
   "fromDate": "من تاريخ",
   "toDate": "إلى تاريخ",
   "resetFilters":"إعادة تعيين"
-  
-
-
         
     },
     "Bank":{
@@ -433,5 +430,25 @@
         "accountNo":"رقم الحساب",
         "add":"اضافة بيانات بنك جديد",
         "edit":"تعديل بيانات البنك" 
-    }
+    },
+  "quick_search": "بحث سريع",
+  "choose": "اختر التاريخ",
+  "search_by_name": "البحث بالاسم",
+  "all_types": "كل الأنواع",
+  "chalets": "شاليهات",
+  "halls": "قاعات",
+  "morning_period": "الفترة الصباحية",
+  "evening_period": "الفترة المسائية",
+  "available": "متاح",
+  "booked": "محجوز",
+  "book": "حجز",
+  "under_maintenance": "تحت الصيانة",
+  "view_details": "عرض التفاصيل",
+  "under_maintenance_alert": "هذا الكيان تحت الصيانة حالياً ولا يمكن حجزه",
+  "view_full_day_booking_details": "عرض تفاصيل حجز اليوم الكامل",
+  "view_morning_booking_details": "عرض تفاصيل الحجز الصباحي",
+  "view_evening_booking_details": "عرض تفاصيل الحجز المسائي",
+  "multiple_bookings_today": "يوجد أكثر من حجز لهذا الكيان اليوم، يرجى تحديد الفترة المطلوبة",
+  "no_specific_booking_found_for_details": "لا يوجد حجز محدد لهذا الكيان في التاريخ المحدد"
 }
+
