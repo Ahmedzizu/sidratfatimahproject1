@@ -1,4 +1,91 @@
 {
+ 
+  "brandName": "مجموعة سدرة فاطمة",
+  "loading": {
+    "reservation": "جاري تحميل بيانات الحجز..."
+  },
+  "details": {
+    "mainTitle": "تفاصيل الحجز  ",
+    "tableTitle": "تفاصيل الحجز  ",
+    "customerNameLabel": "اسم العميل",
+    "customerPhoneLabel": "رقم العميل",
+    "customerName": "اسم العميل",
+    "customerPhone": "رقم العميل",
+    "customerWhatsapp": "واتساب العميل",
+    "contractNumber": "رقم العقد",
+    "reservationStatus": "حالة الحجز",
+    "paymentMethod": "طريقة الدفع",
+    "bank": "البنك",
+    "discount": "الخصم",
+    "bookingAmount": "مبلغ الحجز",
+    "period": "الفترة",
+    "multiplePeriods": "فترات متعددة",
+    "aPeriod": "فترة",
+    "checkInDetails": "تفاصيل الدخول",
+    "checkInLabel": "دخول",
+    "checkOutDetails": "تفاصيل الخروج",
+    "checkOutLabel": "خروج",
+    "network": "الشبكة",
+    "paid": "المدفوع",
+    "additionalServices": "الخدمات الإضافية",
+    "remaining": "المتبقي"
+  },
+ 
+  "freeServices": {
+    "title": "الخدمات المجانية",
+    "table": {
+      "service": "الخدمة المجانية",
+      "count": "العدد",
+      "notes": "الملاحظات"
+    }
+  },
+  "additionalServices": {
+    "title": "الخدمات الإضافية",
+    "printReceipt": "طباعة إيصال",
+    "table": {
+      "service": "الخدمة الإضافية",
+      "type": "النوع",
+      "count": "العدد",
+      "totalAmount": "المبلغ الكلي"
+    }
+  },
+  "requests": {
+    "addRequest": "إضافة مطلب",
+    "table": {
+      "service": "المطلب",
+      "statement": "البيان",
+      "price": "السعر",
+      "notes": "الملاحظات"
+    }
+  }
+,
+  "entityTypes": {
+    "hall": "قاعة",
+    "chalet": "الملتقى"
+  },
+  "payments": {
+    "title": "دفعات",
+    "printAll": "طباعة كل الدفعات",
+    "table": {
+      "type": "نوع الدفع",
+      "amount": "المبلغ",
+      "insurance": "مبلغ التأمين",
+      "bank": "البنك",
+      "source": "المصدر",
+      "employee": "الموظف",
+      "dateTime": "تاريخ ووقت الدفعة"
+    }
+  },
+  "common": {
+    "notSpecified": "غير محدد",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "print": "طباعة",
+    "search": "بحث...",
+    "date": "التاريخ",
+    "currency": "ريال"
+  },
+  "currency" :"ريال",
   "MngChalet":"إدارة الحجوزات الشاليهات",
   "all_entities":"كل الكيان",
   "whatsapp":"واتسـاب",
@@ -371,6 +458,7 @@
         "edit":"تعديل",
         "return":"ارجاع"
     },
+
     "finance":{
       "notAvailable": "هذه الصفحة غير متاحة",
         "noGuarantee": "بدون ضمان",
@@ -407,8 +495,11 @@
         "Source":"المصدر",
   "BankTransfer": "تحويل بنكي",
   "Check": "شيك",
-  
-  
+    "sortByDate": "ترتيب حسب التاريخ",
+    "employee": "الموظف",
+    "addedBy": "أضيف بواسطة",
+    "invoice": "الفاتورة",
+    "bankName": "اسم البنك",
   "Maintenance": "صيانة",
   "Electricity": "كهرباء",
   "Water": "مياه",
@@ -451,4 +542,3 @@
   "multiple_bookings_today": "يوجد أكثر من حجز لهذا الكيان اليوم، يرجى تحديد الفترة المطلوبة",
   "no_specific_booking_found_for_details": "لا يوجد حجز محدد لهذا الكيان في التاريخ المحدد"
 }
-

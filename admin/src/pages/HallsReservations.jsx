@@ -476,7 +476,7 @@ const getRowStyle = (reservation) => {
 };
 
 return (
-    // 🎨 --- استخدام Container لتوسيط المحتوى ---
+  <div className="page-content-wrapper">
     <Container
       maxWidth="xl"
       sx={{
@@ -832,6 +832,7 @@ return (
         history={selectedHistory}
       />
     </Container>
+    </div>
   );
 };
 

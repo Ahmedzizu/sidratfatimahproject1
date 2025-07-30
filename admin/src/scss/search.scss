@@ -1,270 +1,338 @@
-@font-face {
-  font-family: 'Cairo';
-  src: url('../assets/cairo.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+// المتغيرات
+$primary-golden: #b8860b;
+$dark-grey: #343a40;
+$light-background: #f5f5f5;
+$text-color: #333;
+$success-green: #28a745;
+$danger-red: #dc3545;
+$button-hover-dark: #8b6508;
+$button-details-grey: #797979;
+$button-details-hover: #5a5a5a;
+$white-color: #fff;
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+@mixin box-shadow($shadow...) {
+  box-shadow: $shadow;
+}
+
+// إعادة الضبط الأساسية
 * {
-  font-family: 'Cairo', sans-serif;
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
+  font-family: 'Cairo', Arial, sans-serif;
 }
 
 body {
-  background-color: #f5f5f5; // لون خفيف ليتناسب مع الألوان
-  color: #333;
-  font-family: 'Cairo', sans-serif;
+  background-color: $light-background;
+  color: $text-color;
+  line-height: 1.6;
+  min-height: 100vh;
 }
 
 .container {
-  text-align: center;
-  padding: 20px;
+  width: 100%;
+  max-width: 100%;
+  padding: 1rem;
+  margin: 0 auto;
+  background-color: $white-color;
 }
 
 h2 {
-  // يمكنك إضافة لون هنا إذا أردت، مثلاً: color: #b8860b;
-  margin-bottom: 25px;
-}
-
-#search-box {
-  // لا يزال هذا الكلاس موجودًا ولكن لم يعد يُستخدم في الـ JSX الجديد.
-  padding: 12px;
-  margin-bottom: 20px;
-  border: 2px solid #b8860b;
-  border-radius: 8px;
-  font-size: 16px;
-  background-color: white;
-  color: #333;
-  outline: none;
-  transition: 0.3s;
-
-  &:focus {
-    border-color: #8b6508;
-    box-shadow: 0px 0px 8px rgba(184, 134, 11, 0.5);
-  }
-}
-
-.cardsContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  justify-content: center;
-  padding: 20px;
-}
-
-.card-box {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  color: $primary-golden;
+  margin: 1rem 0;
+  font-size: clamp(1.5rem, 4vw, 2rem);
   text-align: center;
-  transition: transform 0.3s ease;
-  position: relative;
-  min-width: 250px;
-  border: 2px solid #b8860b; // حدود ذهبية
-
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15);
-  }
-
-  .circle-badge {
-    position: absolute;
-    top: -12px;
-    right: -12px;
-    background: #b8860b; // ذهبي
-    color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    font-weight: bold;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-  }
-
-  .card-title {
-    font-size: 25px;
-    font-weight: bold;
-    color: #b8860b;
-  }
-
-  .card-text {
-    font-size: 18px;
-    // هنا اللون يتم التحكم به من الـ inline style في الـ JSX، لا تغيير.
-    // color: #ffffff; 
-    margin: 10px 0;
-    font-family: 'Cairo', sans-serif;
-  }
-
-  .buttons-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 15px;
-  }
-
-  .book-button {
-    background: #b8860b; // اللون الأصلي الذي أرفقته
-    color: white;
-    font-weight: bold;
-    padding: 10px 55px;
-    border-radius: 6px;
-    border: none;
-    font-family: 'Cairo', sans-serif;
-    transition: 0.3s;
-
-    &:hover {
-      background: #1c7a1c;
-    }
-  }
-
-  .details-button {
-    background: #797979; // اللون الأصلي الذي أرفقته
-    color: white;
-    font-weight: bold;
-    padding: 10px 15px;
-    border-radius: 6px;
-    font-family: 'Cairo', sans-serif;
-    border: none;
-    transition: 0.3s;
-
-    &:hover {
-      background: #8b6508;
-    }
-  }
+  font-weight: 700;
 }
 
-
-.status-circle {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  margin-left: 8px;
-}
-
-.available {
-  background-color: #28a745; // 🟢 أخضر للحالة المتاحة
-}
-
-.unavailable {
-  background-color: #dc3545; // 🔴 أحمر للحالة المحجوزة
-}
-
+// تاريخ البحث
 .date-picker-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: center;
+  @include flex-center;
+  gap: 0.75rem;
+  margin: 1.5rem auto;
+  flex-wrap: wrap;
+  max-width: 600px;
 }
 
 .custom-date-picker {
-  padding: 10px;
-  border: 2px solid #b8860b; // ذهبي
+  padding: 0.75rem 1rem;
+  border: 2px solid $primary-golden;
   border-radius: 8px;
-  font-size: 16px;
-  background-color: white;
-  color: #333;
-  outline: none;
-  transition: 0.3s;
-  appearance: none; // إخفاء أيقونة التقويم الافتراضية
+  font-size: 1rem;
+  background-color: $white-color;
+  color: $text-color;
+  min-width: 220px;
+  flex: 1;
+  font-family: inherit;
 
-  &::-webkit-calendar-picker-indicator {
-    display: none; // إخفاء أيقونة التقويم للمتصفحات التي تدعم WebKit
+  &:focus {
+    border-color: $button-hover-dark;
+    @include box-shadow(0 0 0 3px rgba($primary-golden, 0.2));
+    outline: none;
   }
 }
 
 .select-button {
-  background: #b8860b; // ذهبي
-  color: white;
+  background: $primary-golden;
+  color: $white-color;
   border: none;
-  padding: 10px 15px;
+  padding: 0.75rem 1.5rem;
   border-radius: 8px;
-  font-size: 14px;
-  font-weight: bold;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: 0.3s;
+  min-width: 120px;
+  transition: background 0.2s ease;
 
   &:hover {
-    background: #8b6508;
+    background: $button-hover-dark;
+  }
+
+  &:active {
+    transform: scale(0.98);
   }
 }
 
-// --- أنماط الفلاتر الجديدة ومدخل البحث بالاسم ---
+// قسم الفلاتر
 .filter-container {
   display: flex;
-  flex-wrap: wrap; // للسماح للعناصر بالنزول لسطر جديد على الشاشات الصغيرة
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1.5rem auto;
   justify-content: center;
-  align-items: center; // محاذاة رأسية للعناصر
-  gap: 20px; // مسافة بين العناصر
-  margin: 20px auto 30px auto; // مسافة بعد قسم الفلتر
+  max-width: 800px;
 
   .name-search-input {
+    flex: 1;
+    min-width: 250px;
 
-    // أنماط TextField من Material-UI
     .MuiInputBase-root {
-      // العنصر الأساسي لمدخل النص
       border-radius: 8px;
-      border: 2px solid #b8860b; // حدود ذهبية
-      transition: all 0.3s ease;
+      border: 2px solid $primary-golden;
+      background-color: $white-color;
+      font-family: inherit;
 
-      &:hover fieldset {
-        // إزالة الحدود الافتراضية عند التحويم
-        border-color: #8b6508 !important;
-      }
-
-      &.Mui-focused fieldset {
-        // إزالة الحدود الافتراضية عند التركيز
-        border-color: #8b6508 !important;
-        box-shadow: 0px 0px 8px rgba(184, 134, 11, 0.5);
+      &:hover,
+      &.Mui-focused {
+        border-color: $button-hover-dark;
+        @include box-shadow(0 0 0 3px rgba($primary-golden, 0.2));
       }
 
       fieldset {
-        // إزالة الحدود الافتراضية
         border: none;
+      }
+
+      input {
+        padding: 12px 14px;
+        color: $text-color;
+        font-size: 1rem;
       }
     }
 
     .MuiInputLabel-root {
-      // للـ Label
-      color: #b8860b; // لون ذهبي للـ Label
+      color: $primary-golden;
+      font-weight: 500;
 
       &.Mui-focused {
-        color: #8b6508; // لون ذهبي أغمق عند التركيز
+        color: $button-hover-dark;
       }
-    }
-
-    input {
-      // لمدخل النص الفعلي
-      padding: 10px 14px;
-      color: #333;
     }
   }
 
   .filter-toggle-buttons {
     .MuiToggleButton-root {
-      background-color: #f0f0f0;
-      color: #333;
-      border: 1px solid #ccc;
-      padding: 8px 15px;
-      font-size: 0.95rem;
-      border-radius: 6px;
-      transition: all 0.3s ease;
-      font-weight: normal;
+      background-color: $light-background;
+      color: $text-color;
+      border: 1px solid #ddd;
+      padding: 0.6rem 1rem;
+      min-width: 90px;
+      font-family: inherit;
+      font-weight: 500;
 
       &:hover {
-        background-color: #e0e0e0;
+        background-color: #e9e9e9;
       }
 
       &.Mui-selected {
-        background-color: #b8860b; // اللون الذهبي للزر المختار
-        color: #fff;
-        border-color: #b8860b;
-        font-weight: bold;
+        background-color: $primary-golden;
+        color: $white-color;
+        font-weight: 600;
+
+        &:hover {
+          background-color: $button-hover-dark;
+        }
       }
+    }
+  }
+}
+
+// بطاقات النتائج
+.cards-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 0.5rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.card-box {
+  background: $dark-grey;
+  border-radius: 10px;
+  padding: 1.5rem;
+  border: 2px solid $primary-golden;
+  text-align: center;
+  @include box-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    @include box-shadow(0 6px 12px rgba(0, 0, 0, 0.15));
+  }
+
+  .card-title {
+    font-size: 1.5rem;
+    color: $primary-golden;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid rgba($primary-golden, 0.3);
+    margin: 1rem auto;
+    width: 80%;
+  }
+
+  .card-text {
+    font-size: 1rem;
+    margin: 0.8rem 0;
+    color: $white-color;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+  }
+
+  .status-circle {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-left: 0.5rem;
+    border: 1px solid $white-color;
+
+    &.available {
+      background-color: $success-green;
+    }
+
+    &.unavailable {
+      background-color: $danger-red;
+    }
+  }
+
+  .buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+    justify-content: center;
+  }
+
+  .book-button,
+  .details-button {
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    flex: 1;
+    min-width: 140px;
+    max-width: 100%;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  .book-button {
+    background: $primary-golden;
+    color: $white-color;
+
+    &:hover {
+      background: $button-hover-dark;
+    }
+  }
+
+  .details-button {
+    background: $button-details-grey;
+    color: $white-color;
+
+    &:hover {
+      background: $button-details-hover;
+    }
+  }
+}
+
+// تحسينات للهواتف المحمولة
+@media (max-width: 768px) {
+  .container {
+    padding: 0.8rem;
+  }
+
+  .date-picker-container,
+  .filter-container {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .custom-date-picker,
+  .select-button,
+  .name-search-input {
+    width: 100%;
+  }
+
+  .cards-grid-container {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    padding: 0.5rem;
+  }
+
+  .card-box {
+    padding: 1.2rem;
+
+    .buttons-container {
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .book-button,
+    .details-button {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .card-box {
+    padding: 1rem;
+
+    .card-title {
+      font-size: 1.3rem;
+    }
+
+    .card-text {
+      font-size: 0.95rem;
     }
   }
 }

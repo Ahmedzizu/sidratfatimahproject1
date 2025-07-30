@@ -155,8 +155,8 @@ const bankMap = useMemo(() => {
 
   return (
 
+    <div className="page-content-wrapper">
 
-// داخل الـ JSX
 <div style={{ direction: i18n.language === 'en' ? 'ltr' : 'rtl' }}>
   <Paper elevation={3} sx={{ padding: 3, mb: 4 }}>
     <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>
@@ -357,27 +357,7 @@ const bankMap = useMemo(() => {
     '---'
   )}
 </TableCell>
-                  <TableCell align="center" className="row-hidden-print">
-                    {/* <Button
-                      variant="contained"
-                      size="small"
-                      color="error"
-                      onClick={() => handleDelete(row._id)}
-                    >
-                      {t('finance.delete')}
-                    </Button> */}
-                    {/* <Button
-                      variant="contained"
-                      size="small"
-                      color="warning"
-                      onClick={() => handleOpenEdit(row)}
-                    >
-                      {t('finance.edit')}
-                    </Button> */}
-                  </TableCell>
-                  <TableCell align="center" className="row-hidden-print">
-                    
-                  </TableCell>
+                  
                 </TableRow>
               ))}
             </TableBody>
@@ -393,7 +373,7 @@ const bankMap = useMemo(() => {
           update={update}
           employeeName={user?.name} 
         />
-      </div>
+      </div> </div>
     )
  
 };

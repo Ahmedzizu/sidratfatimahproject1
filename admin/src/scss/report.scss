@@ -21,6 +21,78 @@ body{
     justify-content: center;
     align-items: center;
 }
+.table-heading {
+  padding: 10px;
+  margin: 0;
+  font-weight: bold;
+  background-color: #27ae60;
+  color: #af2020; /* نص أبيض لتباين أفضل */
+  flex-basis: 120px;
+  flex-shrink: 0;
+  text-align: right;
+  display: flex;
+  align-items: center;
+}
+.table-data {
+  padding: 10px;
+  margin: 0;
+  color: #000000;
+  border-right: 1px solid #eee;
+  flex-grow: 1;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+  text-align: right;
+  display: flex;
+  align-items: center;
+}
+.receipt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+.company-logo {
+   margin: 5px 33px;
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}
+.company-details {
+   margin: 5px 1px;
+  text-align: right;
+}
+
+.company-details h3 {
+  margin: 5px 33px;
+  font-size: 2rem;
+  color: #000;
+}
+
+.company-details p {
+  margin: 5px 33px;
+  font-size: 0.9rem;
+  color: #555;
+}.contract-title h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #B38D46; /* Your preferred color */
+}
+/* ✅ تعديل: استخدام flexbox لتوسيط العنوان ورقمه بشكل مثالي */
+.contract-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 25px;
+}
+.contract-title .contract-number {
+    margin: 5px 0 0 0;
+    font-size: 1rem;
+    color: #444;
+}
 
 .date-picker-container {
     display: flex;
@@ -58,7 +130,22 @@ body{
   .react-datepicker__month-container {
     width: 250px;
   }
-  
+  .table-box {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  overflow: hidden; /* لضمان تطبيق الزوايا الدائرية على المحتوى الداخلي */
+}
+
+.table-row {
+  display: flex;
+  border-bottom: 1px solid #eee;
+}
+.table-row:last-child {
+  border-bottom: none;
+}
+
   .react-datepicker__day-name,
   .react-datepicker__day {
     width: 30px;
@@ -92,25 +179,60 @@ body{
     color: #ccc;
   }
 
-  @media print {
-    #printBtn,#modal-modal-title ,#icon{
-      display: none !important;
-    }
-    .model {
-      position: static;
-      width: 90% !important;
-      margin: 20px auto 0 !important;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      box-shadow: none;
-      border: none;
-      background: none;
-      overflow: scroll !important;
-    }
+ @media print {
+  body {
+    margin: 0;
+    padding: 1px;
+    font-size: 15px;
+    zoom:100%; // يمكنك تعديل هذه النسبة حسب الحاجة
+     -webkit-print-color-adjust: exact !important; /* لحل مشاكل ألوان الخلفية */
+    print-color-adjust: exact !important;
+  }
+ .table-heading {  /* كان مكتوبًا table-heading بدون نقطة */
+    background-color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color: #B38D46 !important; /* أضفت لون النص الأبيض للتباين */
+ }
+  #printBtn, #modal-modal-title, #icon {
+    display: none !important;
+  }
+
+  .model {
+    position: static;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto;
+    box-shadow: none;
+    border: none;
+    background: none;
+    page-break-inside: avoid;
+  }
+
+  .resert-container {
+    page-break-inside: avoid;
+    page-break-after: avoid;
+  }
+
+  .table-box {
+    page-break-inside: avoid;
+  }
+
+   .rules {
+   margin: "0";
+   page-break-inside: avoid;
+   }
+
+  @page {
+    size: A4 portrait;
+    margin: 0.1cm;
+  }
+}
+    
   
     .table-container {
-      width: 80% !important;
+      width: 100% !important;
       margin: auto !important;
       height: 100%;
       overflow: scroll !important;
@@ -118,13 +240,13 @@ body{
     }
   
     .table {
-      width: 80% !important;
+      width: 100% !important;
       margin: auto !important;
       height: 100%;
       overflow: scroll !important;
 
     }
-  }
+  
   
 .report-table {
   width: 100%;
@@ -135,7 +257,7 @@ body{
 .report-table th,
 .report-table td {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 2px;
   text-align: center;
 }
 

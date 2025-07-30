@@ -14,12 +14,12 @@ body{
 
 }
 html {
-  user-select: none; /* يمنع تحديد النص */
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
+  /* "auto" هو الوضع الافتراضي الذي يسمح بتحديد النص */
+  user-select: auto;
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
 }
-
 :root{
     --primary: #B38D46;
     --dark:#383F49;
@@ -65,4 +65,18 @@ html {
         height: 40px;
     }
   }
-  
+  /* --- أضف هذا الكود في نهاية ملف app.scss --- */
+
+/* 1. حاوية المحتوى الرئيسية الجديدة */
+.page-content-wrapper {
+  width: 100%;
+  padding: 20px; /* هوامش داخلية على الشاشات الكبيرة */
+  box-sizing: border-box; /* لضمان حساب الأبعاد بشكل صحيح */
+}
+
+/* 2. جعل الحاوية متجاوبة مع الهواتف */
+@media (max-width: 768px) {
+  .page-content-wrapper {
+    padding: 10px; /* تقليل الهوامش الداخلية على الشاشات الصغيرة */
+  }
+}

@@ -108,8 +108,15 @@ const reservationId = reservationData?._id || id;
       }
 
       await Api.post(url, payload);
-      dispatch(fetchReservation_payments(id));
-      handleClose();
+     // ✅ نستخدم المتغير الصحيح ونضيف شرط تحقق
+    if (reservationId) {
+      dispatch(fetchReservation_payments(reservationId)); 
+    }
+    
+    // استدعاء الدالة للإبلاغ عن النجاح وإغلاق النافذة
+    if(onPaymentSuccess) onPaymentSuccess(); 
+    else handleClose();
+
     } catch (err) {
       console.error("Error saving payment:", err?.response?.data?.message || err.message);
     } finally {

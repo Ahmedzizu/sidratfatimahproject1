@@ -23,7 +23,22 @@ const Reset = ({ data, totalInsurance, totalPaid, totalServices }) => {
         return "";
     }
   }
+  const formatTime12Hour = (timeString, lang) => {
+    if (!timeString || !timeString.includes(":")) return "";
 
+    const [hour, minute] = timeString.split(":");
+    let h = parseInt(hour, 10);
+
+    // ✅ تحديد الاختصار بناءً على اللغة الحالية
+    const ampm = lang === "ar" ? (h >= 12 ? "م" : "ص") : h >= 12 ? "PM" : "AM";
+
+    h = h % 12;
+    h = h ? h : 12; // الساعة 0 يجب أن تكون 12
+
+    const minuteStr = minute.padStart(2, "0");
+
+    return `${h}:${minuteStr} ${ampm}`;
+  };
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchChalets());
@@ -67,60 +82,41 @@ const Reset = ({ data, totalInsurance, totalPaid, totalServices }) => {
     }
   }
 
-  var dayNames = [
-    "الأحد",
-    "الاثنين",
-    "التلات",
-    "الاربع",
-    "الخميس",
-    "الجمعة",
-    "السبت",
-    "الأحد",
-  ];
   function getDay(data) {
-    let date = new Date(data).getDay();
-    return dayNames[date];
+    if (!data) return "";
+    const date = new Date(data);
+    // 'ar-EG' للغة العربية، و 'long' لعرض اسم اليوم كاملاً
+    return date.toLocaleDateString("ar-EG", { weekday: "long" });
   }
 
   return (
     <div className="border">
       <div className="resert-container">
-        <div className="reset-header">
-          <img src={logo} alt="logo" />
-          <div className="header-data">
-            <h3>{data?.entity?.name} </h3>
-            {/* <h5>الفترة : {renderPeriod()}</h5> */}
-            {/* <h5>للحفلات و المناسبات و الايجار اليومي</h5> */}
-            {/* <p>الأحساء - الجبيل - طريق القرى</p> */}
-            <p>مجموعة سدرة فاطمة </p>
-            <p> قاعة مناسبات - شاليهات </p>
-            <p>الحجوزات : 0505966297 - 0569500033</p>
+        <div className="receipt-header">
+          <div className="company-details">
+            <h3>مجموعة سدرة فاطمة</h3>
+            <p>قاعة مناسبات - شاليهات</p>
+            <p>للحجوزات: 0505966297 - 0569500033</p>
           </div>
+          <img src={logo} alt="logo" className="company-logo" />
         </div>
-        <div
-          className="title"
-          style={{
-            margin: "0",
-            marginRight: "auto",
-            justifyContent: "space-around",
-            width: "73%",
-          }}
-        >
-          <p className="title-p">NO. {data?.contractNumber}</p>
-          <h3>عقد ايجار </h3>
+
+        <div className="contract-title">
+          <h2>عقد إيجار</h2>
+          <p className="contract-number">رقم العقد: {data?.contractNumber}</p>
         </div>
         <div class="table-box">
           <div class="table-row">
             <p class="table-heading">اسم العميل</p>
             <p class="table-data">{data?.client?.name || "-"}</p>
             <p class="table-heading">رقم الهوية</p>
-            <p class="table-data">{user?.nationalId || "-"}</p>
+            <p class="table-data">{user?.idNumber || "-"}</p>
           </div>
           <div class="table-row">
             <p class="table-heading">رقم الجوال</p>
             <p class="table-data">{data?.client?.phone || "-"}</p>
-            <p class="table-heading">رقم الجوال2</p>
-            <p class="table-data">{user?.phone2 || "-"}</p>
+            <p class="table-heading">المكان</p>
+            <p class="table-data">{data?.entity?.name}</p>
           </div>
           <div class="table-row">
             <p class="table-heading">قيمة الاستئجار</p>
@@ -128,87 +124,83 @@ const Reset = ({ data, totalInsurance, totalPaid, totalServices }) => {
             <p class="table-heading"> مبلغ التأمين</p>
             <p class="table-data">{totalInsurance}</p>
           </div>
-          {/*<div class="table-row">
-                    <p class="table-heading">ساعة القدوم</p>
-                    <p class="table-data">{renderTime("start")}</p>
-                    <p class="table-heading"> ساعة المغادرة</p>
-                    <p class="table-data">{renderTime("end")}</p>
-                </div>*/}
+
           <div class="table-row">
             <p class="table-heading">تاريخ الدخول</p>
             <p class="table-data">{data?.period?.startDate}</p>
             <p class="table-heading">تاريخ المغادرة</p>
-            <p class="table-data">
-              {data?.period?.endDate || data?.period?.startDate}
-            </p>
+            <p class="table-data">{data?.period?.startDate}</p>
           </div>
           <div class="table-row">
             <p class="table-heading">فترة الدخول</p>
-            <p class="table-data">{data?.period?.checkInPeriod }</p>
+            <p class="table-data">
+              {data?.period?.checkIn?.name} (
+              {formatTime12Hour(data?.period?.checkIn?.time)})
+            </p>
             <p class="table-heading">فترة المغادرة</p>
-            <p class="table-data">{data?.period?.checkOutPeriod}</p>
+            <p class="table-data">
+              {data?.period?.checkOut?.name} (
+              {formatTime12Hour(data?.period?.checkOut?.time)})
+            </p>
           </div>
 
           <div class="table-row">
-            <p class="table-heading">المكان</p>
-            <p class="table-data">{data?.entity?.name}</p>
-            <p class="table-heading">يوم الحجز</p>
+            <p class="table-heading">يوم الدخول </p>
             <p class="table-data">{getDay(data?.period?.startDate)}</p>
+            <p class="table-heading">يوم المغادرة </p>
+            <p class="table-data">{getDay(data?.period?.endDate)}</p>
           </div>
-          <div class="table-row"></div>
-          <div class="table-row"></div>
         </div>
         <h3 className="rules-title">الرجاء قراءة الشروط قبل التوقيع </h3>
         <ul className="rules">
-          <li> * عند إلغاء الحجز لا يتم استرداد أي مبالغ مدفوعة اطلاقاً </li>
-          <li>
+          <li>*عند إلغاء الحجز لا يتم استرداد أي مبالغ مدفوعة اطلاقاً </li>
+          <li>*
             {" "}
-            * في حال تأجيل الحجز يتم التأجيل لمرة واحده وسط الأسبوع حسب اليوم
+            في حال تأجيل الحجز يتم التأجيل لمرة واحده وسط الأسبوع حسب اليوم
             المتوفر مع احتساب فرق السعر أن وجد
           </li>
-          <li> * يمنع اصطحاب الاطفال داخل الشاليهات</li>
-          <li>
+          <li>* يمنع اصطحاب الاطفال داخل الشاليهات</li>
+          <li>*
             {" "}
-            * على صاحب المناسبة الانتباه للأطفال أثناء السباحة والادارة غير
-            مسئولة عن ذلك
+            على صاحب المناسبة الانتباه للأطفال أثناء السباحة والادارة غير مسئولة
+            عن ذلك
           </li>
-          <li>
+          <li>*
             {" "}
-            * في حال التأخير عن الوقت المحدد للخروج في العقد يتم احتساب مبلغ
+            في حال التأخير عن الوقت المحدد للخروج في العقد يتم احتساب مبلغ
             إضافية عن كل ساعة
           </li>
-          <li> * لا يحق للمستأجر التأجير لطرف ثالث إطلاقاً</li>
-          <li> * يجب دفع متبقي مبلغ الإيجار قبل موعد المناسبة بـ 30 يوم</li>
-          <li>
+          <li>* لا يحق للمستأجر التأجير لطرف ثالث إطلاقاً</li>
+          <li>* يجب دفع متبقي مبلغ الإيجار قبل موعد المناسبة بـ 30 يوم</li>
+          <li>*
             {" "}
-            * في حالة استئجار كوشة أو تنسيق يجب التنبيه عليهم بعدم وضع ملصقات
-            على الجدران أو الأثاث
+            في حالة استئجار كوشة أو تنسيق يجب التنبيه عليهم بعدم وضع ملصقات على
+            الجدران أو الأثاث
           </li>
-          <li> * ادارة المكان غير مسؤولة عن فقدان أو ضياع الاغراض الشخصية</li>
-          <li> * يتعهد الطرف الثاني باستعمال الموقع للغرض الذي أُعده له</li>
-          <li>
+          <li>* ادارة المكان غير مسؤولة عن فقدان أو ضياع الاغراض الشخصية</li>
+          <li>* يتعهد الطرف الثاني باستعمال الموقع للغرض الذي أُعده له</li>
+          <li>*
             {" "}
-            * يتعهد الطرف الثاني بمسؤولية عن كل حريق، تلفيات أو سرقة تحصل للموقع
+            يتعهد الطرف الثاني بمسؤولية عن كل حريق، تلفيات أو سرقة تحصل للموقع
             أو موجوداته مهما كانت الأسباب
           </li>
-          <li>
+          <li>*
             {" "}
-            * يتعهد الطرف الثاني بعدم حمل السلاح أو إطلاق نار أو استخدام الألعاب
+            يتعهد الطرف الثاني بعدم حمل السلاح أو إطلاق نار أو استخدام الألعاب
             النارية من قبله أو من قبل المدعوين
           </li>
-          <li>
+          <li>*
             {" "}
-            * عند إنقطاع الكهرباء خارج عن إرادتنا لا يحق للمستأجر المطالبة
+            عند إنقطاع الكهرباء خارج عن إرادتنا لا يحق للمستأجر المطالبة
             بالتعويض
           </li>
-          <li>
+          <li>*
             {" "}
-            * في حال إقفال المنشاة من قبل الجهات الأمنية لأسباب تتعلق بالحظر أو
+            في حال إقفال المنشاة من قبل الجهات الأمنية لأسباب تتعلق بالحظر أو
             لأي سبب كان، فلا يحق للمستأجر المطالبة بالمبالغ المدفوعة ويمكن
             تعويضه بيوم آخر بعد فتح المنشاة
           </li>
         </ul>
-        {/* <h5 className='notes' >- الملاحظات :</h5> */}
         <div className="line"></div>
         <Grid
           container
@@ -243,9 +235,6 @@ const Reset = ({ data, totalInsurance, totalPaid, totalServices }) => {
 
         <div className="line"></div>
         <p style={{ margin: "10px " }}>الموظف : {employee?.name}</p>
-        {/* <div className="line"></div> */}
-        {/* <h5 className='promise'>تعهد</h5> */}
-        {/* <p> اتعهد انا {data?.client?.name} أن أكون متواجدا ز مسئولا عن المسبح و عن مرتاديه و مرتدياته خلال فترة الايجار خالي المسئولية عن ما يترتب على ذلك و على ذلك اوقع     التوقيع :</p> */}
       </div>
     </div>
   );

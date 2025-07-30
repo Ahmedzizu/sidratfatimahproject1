@@ -33,12 +33,12 @@ import PaymentReset from "../components/PaymentReset";
 import ServicePrint from "../components/ServicePrint";
 import html2canvas from "html2canvas";
 import AllPaymentsReset from "../components/AllPaymentsReset";
-import ConfirmEditDialoge from '../components/ConfirmEditDialoge';
 
 const ReservationDetails = () => {
   // ✅ دالة لتنسيق التاريخ والوقت بشكل مناسب للعرض
-const formatDateTimeForDisplay = (dateString) => {
-  if (!dateString) return "غير محدد";
+// ✅ دالة لتنسيق التاريخ والوقت (مُعدَّلة)
+const formatDateTimeForDisplay = (dateString, lang) => {
+  if (!dateString) return t('common.notSpecified'); // استخدام الترجمة للقيمة الافتراضية
   
   const options = {
     year: 'numeric', 
@@ -47,11 +47,27 @@ const formatDateTimeForDisplay = (dateString) => {
     hour: 'numeric', 
     minute: '2-digit', 
     hour12: true,
-    calendar: 'gregory' // لضمان التقويم الميلادي
   };
 
-  // 'ar-EG' (مصر) هو خيار ممتاز وموثوق للتواريخ الميلادية بالعربية
-  return new Date(dateString).toLocaleString('ar-EG', options);
+  // استخدام متغير اللغة 'lang' لتحديد لغة العرض
+  return new Date(dateString).toLocaleString(lang, options);
+};
+
+// ✅ دالة لتنسيق التاريخ مع اليوم (مُعدَّلة)
+const formatDateWithDay = (dateString, lang) => {
+  if (!dateString) return t('common.dateNotAvailable'); // استخدام الترجمة للقيمة الافتراضية
+
+  const date = new Date(dateString);
+  
+  const options = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  };
+
+  // استخدام متغير اللغة 'lang' لتحديد لغة العرض
+  return date.toLocaleDateString(lang, options);
 };
   let share = useSelector((state) => state.reservation.value.share);
   const { id } = useParams();
@@ -308,15 +324,16 @@ const reservation = allReservations.find((ele) => ele._id === id);
     }
   };
 
-  // ✅ تكوين الرسالة الجاهزة للواتساب
-   // ✅✅✅  تم تعديل رسالة الواتساب لتستخدم الحساب الصحيح  ✅✅✅
-// ✅ دالة مساعدة لتنسيق الوقت بصيغة 12 ساعة
-const formatTime12Hour = (timeString) => {
-  if (!timeString || !timeString.includes(':')) return ''; // إرجاع نص فارغ إذا كان الوقت غير صالح
-  
+ const formatTime12Hour = (timeString, lang) => {
+  if (!timeString || !timeString.includes(':')) return '';
+
   const [hour, minute] = timeString.split(':');
   let h = parseInt(hour, 10);
-  const ampm = h >= 12 ? 'مساءً' : 'صباحًا';
+  
+  // ✅ تحديد الاختصار بناءً على اللغة الحالية
+  const ampm = (lang === 'ar')
+    ? (h >= 12 ? 'م' : 'ص')
+    : (h >= 12 ? 'PM' : 'AM');
   
   h = h % 12;
   h = h ? h : 12; // الساعة 0 يجب أن تكون 12
@@ -325,6 +342,7 @@ const formatTime12Hour = (timeString) => {
   
   return `${h}:${minuteStr} ${ampm}`;
 };
+  // ✅ تكوين الرسالة الجاهزة للواتساب
 
 const message = `
 مجموعة سدرة فاطمة
@@ -475,585 +493,299 @@ const waLink = `https://wa.me/${reservation?.client?.phone}?text=${encodedMessag
       {/* المحتوى الفعلي للصفحة (يظهر فقط عندما لا تكون في وضع الطباعة) */}
       {!loading && !paymentLoading && !serviceLoading && (
         <>
-          <header>
-            <div className="share-box">
-              <LocalPrintshopIcon
-                id="share"
-                className="onshare"
-                onClick={handlePrint}
-              />
-            </div>
-            <div className="details shareon">
-              <div className="text">
-                <p>تفاصيل الحجز بجميع الخدمات</p>
-                <p> اسم العميل : {reservation?.client?.name} </p>
-                <p> رقم العميل : {reservation?.client?.phone} </p>
-              </div>
-              <img src={logo} alt="logo" height="60px" width="60px" />
-            </div>
-          </header>
+           {/* <header>
+                        <div className="share-box">
+                            <LocalPrintshopIcon id="share" className="onshare" onClick={handlePrint} />
+                        </div>
+                        <div className="details shareon">
+                            <div className="text">
+                                <p>{t('details.mainTitle')}</p>
+                                <p>{t('details.customerNameLabel')} : {reservation?.client?.name}</p>
+                                <p>{t('details.customerPhoneLabel')} : {reservation?.client?.phone}</p>
+                            </div>
+                            <img src={logo} alt="logo" height="60px" width="60px" />
+                        </div>
+                    </header> */}
 
-          <TableContainer component={Paper} className="table-print">
-            <Table aria-label="simple table">
-              <TableRow
-                style={{ border: 0 }}
-                className="shareon hide"
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell
-                  align="center"
-                  colSpan={2}
-                  style={{ border: 0 }}
-                  className="table-data"
-                >
-                  <img src={logo} alt="logo" height="60px" width="60px" />
-                  <h2>سدرة فاطمة</h2>
-                  <p>تفاصيل الحجز بجميع الحجوزات</p>
-                </TableCell>
-              </TableRow>
-              <TableBody style={{ border: "1px solid" }}>
-                <TableRow
-                  className="shareon hide"
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell align="center" className="table-data">
-                    اسم العميل
-                  </TableCell>
-                  <TableCell align="center" className="table-data">
-                    {" "}
-                    {reservation?.client?.name}
-                  </TableCell>
-                </TableRow>
-                <TableRow
-                  className="shareon hide"
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell align="center" className="table-data">
-                    رقم العميل
-                  </TableCell>
-                  <TableCell align="center" className="table-data">
-                    {" "}
-                    {reservation?.client?.phone}
-                  </TableCell>
-                </TableRow>
+                    <TableContainer component={Paper} className="table-print">
+                  
+                        <Table aria-label="simple table">
+                            <TableRow>
+                                <TableCell align="center" colSpan={2}>
+                                    <img src={logo} alt="logo" height="100px" width="100px" />
+                                    <h2>{t('brandName')}</h2>
+                                    <p>{t('details.tableTitle')}</p>
+                                      <div className="share-box">
+                            <LocalPrintshopIcon id="share" className="onshare" onClick={handlePrint} />
+                        </div>
+                                </TableCell>
+                                
+                            </TableRow>
+                            <TableBody style={{ border: "1px solid" }}>
+                                  <TableRow>
+                                    <TableCell align="center" className="table-data">{t('details.customerName')}</TableCell>
+                                    <TableCell align="center" className="table-data">{reservation?.client?.name}</TableCell>
+                                </TableRow>
+                              <TableRow>
+    <TableCell align="center" className="table-data">{t('details.customerPhone')}</TableCell>
+    <TableCell align="center" className="table-data">
+        {/* جعلنا الخلية بأكملها رابط واتساب قابل للضغط */}
+        <a 
+            href={waLink} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            style={{ 
+                textDecoration: 'none', 
+                color: 'inherit', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                gap: '8px' 
+            }}
+        >
+            <span>{reservation?.client?.phone}</span>
+            <img src={whatsappIcon} alt="WhatsApp" style={{ width: "24px", height: "24px" }} />
+        </a>
+    </TableCell>
+</TableRow><TableRow>
+                                    <TableCell align="center" className="table-data">{t('details.contractNumber')}</TableCell>
+                                    <TableCell align="center" className="table-data">{reservation?.contractNumber}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align="center" className="table-data">
+                                        {t(reservation?.type === "hall" ? 'entityTypes.hall' : 'entityTypes.chalet')}
+                                    </TableCell>
+                                    <TableCell align="center" className="table-data">{reservation?.entity.name}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align="center" className="table-data">{t('details.reservationStatus')}</TableCell>
+                                    <TableCell align="center" className="table-data">{getStatusInArabic(reservation?.status)}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align="center" className="table-data">{t('details.paymentMethod')}</TableCell>
+                                    <TableCell align="center" className="table-data">{reservation?.payment.method}</TableCell>
+                                </TableRow>
+                                {reservation?.payment?.method === "bank" && (
+                                    <TableRow>
+                                        <TableCell align="center" className="table-data">{t('details.bank')}</TableCell>
+                                        <TableCell align="center" className="table-data">
+                                            {reservation?.payment?.bank?.name || reservation?.payment?.bankName || t('common.notSpecified')}
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                                <TableRow>
+                                    <TableCell align="center" className="table-data">{t('details.discount')}</TableCell>
+                                    <TableCell align="center" className="table-data">{reservation?.discountAmount || "0"} {t('currency.SAR')}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align="center" className="table-data">{t('details.bookingAmount')}</TableCell>
+                                    <TableCell align="center" className="table-data">{reservation?.cost}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align="center" className="table-data">{t('details.period')}</TableCell>
+                                    <TableCell align="center" className="table-data">
+                                        {reservation?.period?.type === "days" ? t('details.multiplePeriods') : reservation?.period?.dayPeriod || t('details.aPeriod')}
+                                    </TableCell>
+                                </TableRow>
+                               <TableRow>
+    <TableCell align="center" className="table-data">{t('details.checkInDetails')}</TableCell>
+    <TableCell align="center" className="table-data">
+        <strong>{t('details.checkInLabel')}: </strong> {formatDateWithDay(reservation?.period.startDate, i18n.language)}
+        <strong> : </strong> 
+        {/* ✅ تم التعديل هنا */}
+{`${reservation?.period?.checkIn?.name || ''} (${formatTime12Hour(reservation?.period?.checkIn?.time, i18n.language) || ''})`}
+    </TableCell>
+</TableRow>
+<TableRow>
+    <TableCell align="center" className="table-data">{t('details.checkOutDetails')}</TableCell>
+    <TableCell align="center" className="table-data">
+        <strong>{t('details.checkOutLabel')}: </strong> {formatDateWithDay(reservation?.period.endDate, i18n.language)}
+        <strong> : </strong> 
+        {/* ✅ تم التعديل هنا */}
+        {`${reservation?.period?.checkOut?.name || ''} (${formatTime12Hour(reservation?.period?.checkOut?.time, i18n.language) || ''})`}
+    </TableCell>
+</TableRow>
+                                <TableRow>
+                                    <TableCell align="center" className="table-data">{t('details.network')}</TableCell>
+                                    <TableCell align="center" className="table-data">{totalInsurance || "0"}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align="center" className="table-data">{t('details.paid')}</TableCell>
+                                    <TableCell align="center" className="table-data">{totalPaid || "0"}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align="center" className="table-data">{t('details.additionalServices')}</TableCell>
+                                    <TableCell align="center" className="table-data">{totalServices || "0"}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align="center" className="table-data" style={{fontWeight: 'bold'}}>{t('details.remaining')}</TableCell>
+                                    <TableCell align="center" className="table-data">{remainingAmount.toFixed(2) || "0"}</TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+        {/* Payments Section */}
+                    <div className="pay shareoff">
+                        <Button variant="contained" onClick={() => setPayment({ ...payment, open: true, update: false })} disabled={isReservationClosed}>
+                            {t('payments.title')} <AddIcon />
+                        </Button>
+                        <Button variant="contained" color="secondary" onClick={handleAllPaymentsPrint}>
+                            {t('payments.printAll')} <LocalPrintshopIcon />
+                        </Button>
+                        <TableContainer component={Paper}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="center">{t('payments.table.type')}</TableCell>
+                                        <TableCell align="center">{t('payments.table.amount')}</TableCell>
+                                        <TableCell align="center">{t('payments.table.insurance')}</TableCell>
+                                        <TableCell align="center">{t('payments.table.bank')}</TableCell>
+                                        <TableCell align="center">{t('payments.table.source')}</TableCell>
+                                        <TableCell align="center">{t('payments.table.employee')}</TableCell>
+                                        <TableCell align="center">{t('payments.table.dateTime')}</TableCell>
+                                        <TableCell colSpan={3}></TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {reservationPayments?.map((ele, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell align="center">{ele?.type}</TableCell>
+                                            <TableCell align="center">{ele?.paid}</TableCell>
+                                            <TableCell align="center">{ele?.insurance}</TableCell>
+                                            <TableCell align="center">{ele.type === 'تحويل بنكي' ? (ele.bank?.name || t('common.notSpecified')) : '---'}</TableCell>
+                                            <TableCell align="center">{ele.employee?.name || t('common.notSpecified')}</TableCell>
+                                            <TableCell align="center">{ele.employee?.name || t('common.notSpecified')}</TableCell>
+                                            <TableCell align="center">{formatDateTimeForDisplay(ele.paymentDate , i18n.language)}</TableCell>
+                                            <TableCell align="center"><Button color="warning" onClick={() => setPayment({ open: true, update: true, data: ele })}>{t('common.edit')}</Button></TableCell>
+                                            <TableCell align="center"><Button color="error" onClick={() => handeleDeletePayment(ele._id)}>{t('common.delete')}</Button></TableCell>
+                                            <TableCell align="center"><Button onClick={() => handlePaymentPrint(ele)}>{t('common.print')}</Button></TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>
 
-                {/* رابط الواتساب المعدل مع الرسالة الجاهزة */}
-                <a
-                  href={waLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ marginLeft: "10px", display: "inline-block" }}
-                >
-                  <img
-                    src={whatsappIcon}
-                    alt="WhatsApp"
-                    style={{ width: "40px", height: "40px", cursor: "pointer" }}
-                  />
-                  واتساب العميل
-                </a>
-
-                <TableRow
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell align="center" className="table-data">
-                    رقم العقد
-                  </TableCell>
-                  <TableCell align="center" className="table-data">
-                    {" "}
-                    {reservation?.contractNumber}
-                  </TableCell>
-                </TableRow>
-                <TableRow
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell align="center" className="table-data">
-                    {reservation?.type === "hall"
-                      ? "قاعة"
-                      : reservation?.type === "chalet"
-                      ? "الملتقى"
-                      : reservation?.entity.name}
-                  </TableCell>
-                  <TableCell align="center" className="table-data">
-                    {" "}
-                    {reservation?.entity.name}
-                  </TableCell>
-                </TableRow>
-
-     {/* حالة الحجز */}
-                   <TableRow>
-                     <TableCell align="center" className="table-data">
-                       حالة الحجز
-                     </TableCell>
-                     <TableCell align="center" className="table-data">
-                       {getStatusInArabic(reservation?.status)}
-                     </TableCell>
-                   </TableRow>
-                {/* طريقة الدفع */}
+        <div className="pay shareoff">
+    <Button variant="contained" className="onshare" id="btn" onClick={() => setFreeServices({ ...freeServices, open: true, update: false })}>
+        {t('freeServices.title')} <AddIcon />
+    </Button>
+    <TableContainer component={Paper} className="table-print">
+        <Table aria-label="simple table">
+            <TableHead className="tablehead">
                 <TableRow>
-                  <TableCell align="center" className="table-data">
-                    طريقة الدفع
-                  </TableCell>
-                  <TableCell align="center" className="table-data">
-                    {reservation?.payment.method}
-                  </TableCell>
+                    <TableCell align="center" className="table-row">{t('freeServices.table.service')}</TableCell>
+                    <TableCell align="center" className="table-row">{t('freeServices.table.count')}</TableCell>
+                    <TableCell align="center" className="table-row">{t('freeServices.table.notes')}</TableCell>
+                    <TableCell colSpan={2}></TableCell>
                 </TableRow>
-
-                {reservation?.payment?.method === "bank" && (
-                  <TableRow>
-                    <TableCell align="center" className="table-data">
-                      البنك
-                    </TableCell>
-                    <TableCell align="center" className="table-data">
-                      {reservation?.payment?.bank?.name ||
-                        reservation?.payment?.bankName ||
-                        "غير محدد"}
-                    </TableCell>
-                  </TableRow>
-                )}
-
-                {/* مبلغ الخصم */}
-                <TableRow>
-                  <TableCell align="center" className="table-data">
-                    الخصم
-                  </TableCell>
-                  <TableCell align="center" className="table-data">
-                    {reservation?.discountAmount || "0"} ريال
-                  </TableCell>
-                </TableRow>
-
-                <TableRow>
-                  <TableCell align="center" className="table-data">
-                    مبلغ الحجز
-                  </TableCell>
-                  <TableCell align="center" className="table-data">
-                    {" "}
-                    {reservation?.cost}
-                  </TableCell>
-                </TableRow>
-
-                  {/* الفترة */}
-                {reservation?.period?.type === "days" && ( 
-                <TableRow>
-                  <TableCell align="center" className="table-data">
-                    الفترة
-                  </TableCell>
-                  <TableCell align="center" className="table-data">
-                    {"فترات  متعددة"}
-                  </TableCell>
-                </TableRow>
-              )}
-    {reservation?.period?.type === "dayPeriod" && ( 
-                <TableRow>
-                  <TableCell align="center" className="table-data">
-                    الفترة
-                  </TableCell>
-                  <TableCell align="center" className="table-data">
-                    {reservation?.period?.dayPeriod || "فتره "}
-                  </TableCell>
-                </TableRow>
-              )}
-
-                {/* تاريخ الحجز */}
-                <TableRow>
-                  <TableCell align="center" className="table-data">
-                    تاريخ الحجز
-                  </TableCell>
-                  <TableCell align="center" className="table-data">
-                    <strong></strong>{" "}
-                    {formatDate(reservation?.period.startDate)}
-                    {" ←  "}
-                    <strong></strong> {formatDate(reservation?.period.endDate)}
-                  </TableCell>
-                </TableRow>
-
-              {/* تفاصيل الدخول والخروج إذا كانت الفترة كامل اليوم */}
-                {/* {reservation?.period?.dayPeriod === "كامل اليوم" && ( */}
-                 <TableRow>
-                        <TableCell align="center" className="table-data">
-                          تفاصيل الدخول والخروج
+            </TableHead>
+            <TableBody>
+                {freeServicesDate.map((row) => (
+                    <TableRow key={row._id}>
+                        <TableCell align="center">{row.service}</TableCell>
+                        <TableCell align="center">{row.number}</TableCell>
+                        <TableCell align="center">{row.note}</TableCell>
+                        <TableCell align="center">
+                            <Button variant="contained" color="warning" onClick={() => setFreeServices({ ...freeServices, open: true, update: true, data: row })} >
+                                {t('common.edit')}
+                            </Button>
                         </TableCell>
-                        <TableCell align="center" className="table-data">
-                          <strong>دخول:</strong>{" "}
-                          {/* ✅ نقرأ الآن من الهيكل الجديد ونجمع الاسم والوقت */}
-                          {`${reservation?.period?.checkIn?.name || ''} (${reservation?.period?.checkIn?.time || ''})`}
-                          {" ←  "}
-                          <strong>خروج:</strong>{" "}
-                          {/* ✅ نقرأ الآن من الهيكل الجديد ونجمع الاسم والوقت */}
-                          {`${reservation?.period?.checkOut?.name || ''} (${reservation?.period?.checkOut?.time || ''})`}
+                        <TableCell align="center">
+                            <Button variant="contained" color="error" onClick={() => handleDelete(row._id)}>
+                                {t('common.delete')}
+                            </Button>
                         </TableCell>
-                      </TableRow>
-                {/* )} */}
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    </TableContainer>
+</div>
 
-                <TableRow>
-                  <TableCell align="center" className="table-data">
-                    الشبكة
-                  </TableCell>
-                  <TableCell align="center" className="table-data">
-                    {totalInsurance || "0"}
-                  </TableCell>
-                </TableRow>
-
-                <TableRow>
-                  <TableCell align="center" className="table-data">
-                    المدفوع
-                  </TableCell>
-                  <TableCell align="center" className="table-data">
-                    {totalPaid || "0"}
-                  </TableCell>
-                </TableRow>
-
-                <TableRow>
-                  <TableCell align="center" className="table-data">
-                    الخدمات الاضافية
-                  </TableCell>
-                  <TableCell align="center" className="table-data">
-                    {totalServices || "0"}
-                  </TableCell>
-                </TableRow>
-
-                 {/* ✅✅✅  تم تعديل خلية المبلغ المتبقي لتستخدم الحساب الصحيح  ✅✅✅ */}
-                <TableRow>
-                  <TableCell align="center" className="table-data" style={{fontWeight: 'bold'}}>
-                    المتبقي
-                  </TableCell>
-                  <TableCell align="center" className="table-data">
-                    {reservation?.cost + totalServices - totalPaid || "0"}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-
-          <Divider />
-
-          {/* دفعات */}
+        {/* الخدمات الاضافية */}
 <div className="pay shareoff">
-    <Button
-        variant="contained"
-        className="onshare"
-        id="btn"
-        onClick={() => setPayment({ ...payment, open: true, update: false })}
-        disabled={isReservationClosed} // ✅ تعطيل الزر
-    >
-        دفعات <AddIcon />
+    <Button variant="contained" className="onshare" id="btn" onClick={() => setServices({ ...services, open: true, update: false })} disabled={isReservationClosed}>
+        {t('additionalServices.title')} <AddIcon />
     </Button>
-            {/* ✅ الزر الجديد لطباعة كل الدفعات */}
-            <Button variant="contained" color="secondary" className="onshare" id="btn" style={{ margin: "0 10px" }} onClick={handleAllPaymentsPrint}>
-              طباعة كل الدفعات <LocalPrintshopIcon />
-            </Button>
-            <TableContainer component={Paper} className="table-print">
-              <Table aria-label="simple table">
-                <TableHead className="tablehead">
-                  <TableRow>
-                    <TableCell align="center" className="table-row">
-                      نوع الدفع
-                    </TableCell>
-                    <TableCell align="center" className="table-row">
-                      المبلغ
-                    </TableCell>
-                    <TableCell align="center" className="table-row">
-                      مبلغ التأمين
-                    </TableCell>
-                    <TableCell align="center" className="table-row">
-                      البنك
-                    </TableCell>
-                        <TableCell align="center" className="table-row">الموظف</TableCell> 
-
-                    <TableCell align='center' className='table-row'>تاريخ ووقت الدفعة</TableCell>
-                    <TableCell align="center"></TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {reservationPayments?.map((ele, index) => (
-                    
-                    <TableRow key={index}>
-                      <TableCell align="center"> {ele?.type}</TableCell>
-                      <TableCell align="center"> {ele?.paid}</TableCell>
-                      <TableCell align="center"> {ele?.insurance}</TableCell>
-                     <TableCell align="center">
-      {ele.type === 'تحويل بنكي' ? (
-        ele.bank?.name || 'غير محدد'
-      ) : (
-        '---'
-      )}
-    </TableCell>
-    <TableCell align="center" style={{ fontWeight: 'bold' }}>
-      {ele.employee?.name || 'غير محدد'}
-    </TableCell>
-                       {/* ✅✅✅ أضف هذه الخلية لعرض التاريخ والوTقت ✅✅✅ */}
-      <TableCell align="center">
-        {formatDateTimeForDisplay(ele.paymentDate)}
-      </TableCell>
-                      <TableCell align="center">
-                        <Button
-                          variant="contained"
-                          color="warning"
-                          onClick={() =>
-                            setPayment({
-                              ...payment,
-                              open: true,
-                              update: true,
-                              data: ele,
-                            })
-                          }
-                        >
-                          تعديل
-                        </Button>
-                      </TableCell>
-                      <TableCell align="center">
-                        <Button
-                          variant="contained"
-                          color="error"
-                          onClick={() => handeleDeletePayment(ele._id)}
-                        >
-                          حذف
-                        </Button>
-                      </TableCell>
-                      <TableCell align="center">
-                        <Button
-                          sx={{ margin: "0 5px" }}
-                          variant="contained"
-                          onClick={() => handlePaymentPrint(ele)}
-                        >
-                          طباعة
-                        </Button>
-                      </TableCell>
-
-                      <TableCell align="center">
-                        <Button
-                          sx={{ margin: "0 5px" }}
-                          variant="contained"
-                          color="success"
-                          onClick={handleDownloadReceiptImage}
-                        >
-                          تحميل الوصل
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </div>
-
-          {/* الخدمات المجانية */}
-          <div className="pay shareoff">
-            <Button
-              variant="contained"
-              className="onshare"
-              id="btn"
-              onClick={() =>
-                setFreeServices({ ...freeServices, open: true, update: false })
-              }
-            >
-              الخدمات المجانية <AddIcon />
-            </Button>
-            <TableContainer component={Paper} className="table-print">
-              <Table aria-label="simple table">
-                <TableHead className="tablehead">
-                  <TableRow>
-                    <TableCell align="center" className="table-row">
-                      الخدمة المجانية
-                    </TableCell>
-                    <TableCell align="center" className="table-row">
-                      العدد
-                    </TableCell>
-                    <TableCell align="center" className="table-row">
-                      الملاحظات
-                    </TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {freeServicesDate.map((row) => (
-                    <TableRow key={row._id}>
-                      <TableCell align="center"> {row.service}</TableCell>
-                      <TableCell align="center"> {row.number}</TableCell>
-                      <TableCell align="center"> {row.note}</TableCell>
-                      <TableCell align="center">
-                        <Button
-                          variant="contained"
-                          color="warning"
-                          onClick={() =>
-                            setFreeServices({
-                              ...freeServices,
-                              open: true,
-                              update: true,
-                            })
-                          }
-                        >
-                          تعديل
-                        </Button>
-                      </TableCell>
-                      <TableCell align="center">
-                        <Button
-                          variant="contained"
-                          color="error"
-                          onClick={() => handleDelete(row._id)}
-                        >
-                          حذف
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </div>
-
-          {/* الخدمات الاضافية */}
-         <div className="pay shareoff">
-    <Button
-        variant="contained"
-        className="onshare"
-        id="btn"
-        onClick={() => setServices({ ...services, open: true, update: false })}
-        disabled={isReservationClosed} // ✅ تعطيل الزر
-    >
-        الخدمات الاضافية <AddIcon />
+    <Button sx={{ margin: "0 5px" }} variant="contained" className="onshare" id="btn" onClick={() => handleservicePrint()}>
+        {t('additionalServices.printReceipt')} <LocalPrintshopIcon style={{ margin: "0 5px" }} />
     </Button>
-            <Button
-              sx={{ margin: "0 5px" }}
-              variant="contained"
-              className="onshare"
-              id="btn"
-              onClick={() => handleservicePrint()}
-            >
-              طباعة ايصال <LocalPrintshopIcon style={{ margin: "0 5px" }} />
-            </Button>
-            <TableContainer component={Paper} className="table-print">
-              <Table aria-label="simple table">
-                <TableHead className="tablehead">
-                  <TableRow>
-                    <TableCell align="center" className="table-row">
-                      الخدمة الاضافية
-                    </TableCell>
-                    <TableCell align="center" className="table-row">
-                      النوع
-                    </TableCell>
-                    <TableCell align="center" className="table-row">
-                      العدد
-                    </TableCell>
-                    <TableCell align="center" className="table-row">
-                      المبلغ الكلي
-                    </TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {servicesData.map((row) => (
+    <TableContainer component={Paper} className="table-print">
+        <Table aria-label="simple table">
+            <TableHead className="tablehead">
+                <TableRow>
+                    <TableCell align="center" className="table-row">{t('additionalServices.table.service')}</TableCell>
+                    <TableCell align="center" className="table-row">{t('additionalServices.table.type')}</TableCell>
+                    <TableCell align="center" className="table-row">{t('additionalServices.table.count')}</TableCell>
+                    <TableCell align="center" className="table-row">{t('additionalServices.table.totalAmount')}</TableCell>
+                    <TableCell colSpan={2}></TableCell>
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {servicesData.map((row) => (
                     <TableRow key={row._id}>
-                      <TableCell align="center"> {row.service}</TableCell>
-                      <TableCell align="center"> {row.package}</TableCell>
-                      <TableCell align="center"> {row.number}</TableCell>
-                      <TableCell align="center"> {row.price}</TableCell>
-                      <TableCell align="center">
-                        <Button
-                          variant="contained"
-                          color="warning"
-                          onClick={() =>
-                            setServices({
-                              ...services,
-                              open: true,
-                              update: true,
-                              data: row,
-                            })
-                          }
-                        >
-                          تعديل
-                        </Button>
-                      </TableCell>
-                      <TableCell align="center">
-                        <Button
-                          variant="contained"
-                          color="error"
-                          onClick={() => handleDelete(row._id)}
-                        >
-                          حذف
-                        </Button>
-                      </TableCell>
+                        <TableCell align="center">{row.service}</TableCell>
+                        <TableCell align="center">{row.package}</TableCell>
+                        <TableCell align="center">{row.number}</TableCell>
+                        <TableCell align="center">{row.price}</TableCell>
+                        <TableCell align="center">
+                            <Button variant="contained" color="warning" onClick={() => setServices({ ...services, open: true, update: true, data: row })}>
+                                {t('common.edit')}
+                            </Button>
+                        </TableCell>
+                        <TableCell align="center">
+                            <Button variant="contained" color="error" onClick={() => handleDelete(row._id)}>
+                                {t('common.delete')}
+                            </Button>
+                        </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </div>
+                ))}
+            </TableBody>
+        </Table>
+    </TableContainer>
+</div>
 
-          {/* المطالب (Request) */}
-          <div className="pay shareoff">
-    <Button
-        variant="contained"
-        className="onshare"
-        id="btn"
-        onClick={() => setRequest({ ...request, open: true, update: false })}
-        disabled={isReservationClosed} // ✅ تعطيل الزر
-    >
-        اضافة مطلب <AddIcon />
+{/* المطالب (Request) */}
+<div className="pay shareoff">
+    <Button variant="contained" className="onshare" id="btn" onClick={() => setRequest({ ...request, open: true, update: false })} disabled={isReservationClosed}>
+        {t('requests.addRequest')} <AddIcon />
     </Button>
-            <TableContainer component={Paper} className="table-print">
-              <Table aria-label="simple table">
-                <TableHead className="tablehead">
-                  <TableRow>
-                    <TableCell align="center" className="table-row">
-                      الخدمة الاضافية
-                    </TableCell>
-                    <TableCell align="center" className="table-row">
-                      البيان
-                    </TableCell>
-                    <TableCell align="center" className="table-row">
-                      السعر
-                    </TableCell>
-                    <TableCell align="center" className="table-row">
-                      الملاحظات
-                    </TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {requestDate.map((row) => (
+    <TableContainer component={Paper} className="table-print">
+        <Table aria-label="simple table">
+            <TableHead className="tablehead">
+                <TableRow>
+                    <TableCell align="center" className="table-row">{t('requests.table.service')}</TableCell>
+                    <TableCell align="center" className="table-row">{t('requests.table.statement')}</TableCell>
+                    <TableCell align="center" className="table-row">{t('requests.table.price')}</TableCell>
+                    <TableCell align="center" className="table-row">{t('requests.table.notes')}</TableCell>
+                    <TableCell colSpan={2}></TableCell>
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {requestDate.map((row) => (
                     <TableRow key={row._id}>
-                      <TableCell align="center"> {row.service}</TableCell>
-                      <TableCell align="center"> {row.statement}</TableCell>
-                      <TableCell align="center"> {row.price}</TableCell>
-                      <TableCell align="center"> {row.note}</TableCell>
-                      <TableCell align="center">
-                        <Button
-                          variant="contained"
-                          color="warning"
-                          onClick={() =>
-                            setRequest({
-                              ...request,
-                              open: true,
-                              update: true,
-                              data: row,
-                            })
-                          }
-                        >
-                          تعديل
-                        </Button>
-                      </TableCell>
-                      <TableCell align="center">
-                        <Button
-                          variant="contained"
-                          color="error"
-                          onClick={() => handleDelete(row._id)}
-                        >
-                          حذف
-                        </Button>
-                      </TableCell>
+                        <TableCell align="center">{row.service}</TableCell>
+                        <TableCell align="center">{row.statement}</TableCell>
+                        <TableCell align="center">{row.price}</TableCell>
+                        <TableCell align="center">{row.note}</TableCell>
+                        <TableCell align="center">
+                            <Button variant="contained" color="warning" onClick={() => setRequest({ ...request, open: true, update: true, data: row })}>
+                                {t('common.edit')}
+                            </Button>
+                        </TableCell>
+                        <TableCell align="center">
+                            <Button variant="contained" color="error" onClick={() => handleDelete(row._id)}>
+                                {t('common.delete')}
+                            </Button>
+                        </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </div>
+                ))}
+            </TableBody>
+        </Table>
+    </TableContainer>
+</div>
+
         </>
       )}
 

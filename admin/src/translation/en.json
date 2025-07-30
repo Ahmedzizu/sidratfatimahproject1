@@ -1,4 +1,94 @@
 {
+  "brandName": "Sidrat Fatimah Group",
+  "loading": {
+    "reservation": "Loading reservation data..."
+  },
+  "details": {
+    "mainTitle": "Reservation Details with all Services",
+    "tableTitle": "Reservation Details",
+    "customerNameLabel": "Customer Name",
+    "customerPhoneLabel": "Customer Phone",
+    "customerName": "Customer Name",
+    "customerPhone": "Customer Phone",
+    "customerWhatsapp": "Customer WhatsApp",
+    "contractNumber": "Contract Number",
+    "reservationStatus": "Reservation Status",
+    "paymentMethod": "Payment Method",
+    "bank": "Bank",
+    "discount": "Discount",
+    "bookingAmount": "Booking Amount",
+    "period": "Period",
+    "multiplePeriods": "Multiple Periods",
+    "aPeriod": "A Period",
+    "checkInDetails": "Check-in Details",
+    "checkInLabel": "Check-in",
+    "checkOutDetails": "Check-out Details",
+    "checkOutLabel": "Check-out",
+    "network": "Card/Network",
+    "paid": "Paid",
+    "additionalServices": "Additional Services",
+    "remaining": "Remaining"
+  },
+  
+  "freeServices": {
+    "title": "Free Services",
+    "table": {
+      "service": "Free Service",
+      "count": "Quantity",
+      "notes": "Notes"
+    }
+  },
+  "additionalServices": {
+    "title": "Additional Services",
+    "printReceipt": "Print Receipt",
+    "table": {
+      "service": "Additional Service",
+      "type": "Type",
+      "count": "Quantity",
+      "totalAmount": "Total Amount"
+    }
+  },
+  "requests": {
+    "addRequest": "Add Request",
+    "table": {
+      "service": "Request",
+      "statement": "Description",
+      "price": "Price",
+      "notes": "Notes"
+    }
+  }
+,
+  "entityTypes": {
+    "hall": "Hall",
+    "chalet": "Chalet"
+  },
+  "payments": {
+    "title": "Payments",
+    "printAll": "Print All Payments",
+    "table": {
+      "type": "Payment Type",
+      "amount": "Amount",
+      "insurance": "Insurance Amount",
+      "bank": "Bank",
+      "source": "Source",
+      "employee": "Employee",
+      "dateTime": "Payment Date & Time"
+    }
+  },
+  "common": {
+    "notSpecified": "Not Specified",
+    "edit": "Edit",
+    "delete": "Delete",
+    "print": "Print",
+     "search": "Search...",
+    "date": "Date",
+    "currency": "SAR"
+  },
+  "currency": {
+    "SAR": "SAR"
+  }
+,
+
   "MngChalet":"Chalets Booking Management",
   "إدارة الحجوزات الجديدة": "New Reservations Management",
   "جميع الجهات": "All Entities",
@@ -236,6 +326,7 @@
     },
     "status": {
         "confirmed": "Confirmed",
+        "completed":"completed",
         "unConfirmed": "Unconfirmed",
         "deferred": "Deferred",
         "canceled": "Canceled",
@@ -349,6 +440,20 @@
         "return":"return"
     },
     "finance":{
+      
+    "sortByDate": "Sort by Date",
+    
+    "employee": "Employee",
+    
+    "fromDate": "From Date",
+    "toDate": "To Date",
+    
+    "total": "Total",
+    
+    
+    "addedBy": "Added By",
+    "invoice": "Invoice",
+    "bankName": "Bank Name",
         "expenses":"Expense Control",
         "addExpenses":"Add new Expenses",
         "receiver":"Receiver",
