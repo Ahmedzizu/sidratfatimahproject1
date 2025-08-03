@@ -18,6 +18,10 @@ const Notification = require("../model/notification");
 const loggerEvent = require("../services/logger");
 const logger = loggerEvent("reservations");
 const mongoose = require("mongoose");
+const { sendWhatsappMsg } = require('../services/twillo'); 
+const ReservationServices = require("../model/reservationServices");// <== تأكد من صحة المسار
+const axios = require('axios');
+// تأكد من صحة المسار
 
 // ✅ دالة مساعدة لتحويل الوقت إلى دقائق من منتصف الليل (لتسهيل المقارنة)
 const timeToMinutes = (timeString) => { // e.g., "09:00" -> 540
@@ -25,7 +29,24 @@ const timeToMinutes = (timeString) => { // e.g., "09:00" -> 540
     const [hours, minutes] = timeString.split(':').map(Number);
     return hours * 60 + minutes;
 };
+function getDayName(dateString) {
+  const date = new Date(dateString);
+  const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+  return days[date.getDay()];
+}
 
+// ✨ دالة جديدة لتنسيق الوقت بنظام 12 ساعة
+function formatTime12Hour(timeString) {
+  if (!timeString || !timeString.includes(':')) {
+    return ''; // إرجاع قيمة فارغة إذا كان التنسيق غير صالح
+  }
+  const [hour24, minute] = timeString.split(':').map(Number);
+  const period = hour24 >= 12 ? 'مساءً' : 'صباحًا';
+  let hour12 = hour24 % 12;
+  hour12 = hour12 ? hour12 : 12; // التعامل مع منتصف الليل (0 يصبح 12)
+  const minuteStr = String(minute).padStart(2, '0');
+  return `${hour12}:${minuteStr} ${period}`;
+}
 // ✅ دالة للتحقق من تداخل الفترات الزمنية
 // hallPrices: كائن يحتوي على أسعار القاعة (dayStartHour, nightEndHour, etc.)
 // existingReservations: مصفوفة من كائنات الحجوزات من الـ DB
@@ -392,6 +413,7 @@ const reservation = {
             });
             
             await newReservation.save();
+ 
 
             res.status(201).json({
                 message: "User reservation created successfully. Please wait for admin confirmation.",
@@ -400,7 +422,6 @@ const reservation = {
                 remainingAmount: totalCost - parseFloat(paidAmount || 0),
                 reservationId: newReservation._id
             });
-
         } catch (error) {
             console.error("🔥 Error in postUserUnconfirmedReservation:", error.message, error);
             if (error.code === 11000) {
@@ -624,92 +645,92 @@ getReservationsWithRemaining: async (req, res) => {
 
 
 
- updateAdminReservation: async (req, res) => {
-  try {
-    logger.info(req.body);
-    let {
-      clientName,
-      startDate,
-      endDate,
-      cost,
-      entityId,
-      dayPeriod,
-      _id,
-      entityName,
-      phone,
-      clientId,
-      modifiedBy, // 👈 يجب إرساله من الواجهة (هو الموظف اللي عدل)
-    } = req.body;
+//  updateAdminReservation: async (req, res) => {
+//   try {
+//     logger.info(req.body);
+//     let {
+//       clientName,
+//       startDate,
+//       endDate,
+//       cost,
+//       entityId,
+//       dayPeriod,
+//       _id,
+//       entityName,
+//       phone,
+//       clientId,
+//       modifiedBy, // 👈 يجب إرساله من الواجهة (هو الموظف اللي عدل)
+//     } = req.body;
 
-    let reservation = await Reservation.findById(_id);
-    if (!reservation) return res.status(404).send("Reservation not found");
+//     let reservation = await Reservation.findById(_id);
+//     if (!reservation) return res.status(404).send("Reservation not found");
 
-    let modifications = [];
+//     let modifications = [];
 
-    if (reservation.client.name !== clientName) {
-      modifications.push(`تعديل اسم العميل من ${reservation.client.name} إلى ${clientName}`);
-    }
+//     if (reservation.client.name !== clientName) {
+//       modifications.push(`تعديل اسم العميل من ${reservation.client.name} إلى ${clientName}`);
+//     }
 
-    if (reservation.client.phone !== phone) {
-      modifications.push(`تعديل رقم الهاتف من ${reservation.client.phone} إلى ${phone}`);
-    }
+//     if (reservation.client.phone !== phone) {
+//       modifications.push(`تعديل رقم الهاتف من ${reservation.client.phone} إلى ${phone}`);
+//     }
 
-    if (reservation.period.startDate.toISOString().slice(0,10) !== startDate) {
-      modifications.push(`تعديل تاريخ البداية من ${reservation.period.startDate.toISOString().slice(0,10)} إلى ${startDate}`);
-    }
+//     if (reservation.period.startDate.toISOString().slice(0,10) !== startDate) {
+//       modifications.push(`تعديل تاريخ البداية من ${reservation.period.startDate.toISOString().slice(0,10)} إلى ${startDate}`);
+//     }
 
-    if (reservation.period.endDate.toISOString().slice(0,10) !== endDate) {
-      modifications.push(`تعديل تاريخ النهاية من ${reservation.period.endDate.toISOString().slice(0,10)} إلى ${endDate}`);
-    }
+//     if (reservation.period.endDate.toISOString().slice(0,10) !== endDate) {
+//       modifications.push(`تعديل تاريخ النهاية من ${reservation.period.endDate.toISOString().slice(0,10)} إلى ${endDate}`);
+//     }
 
-    if (reservation.period.dayPeriod !== dayPeriod) {
-      modifications.push(`تعديل الفترة من ${reservation.period.dayPeriod} إلى ${dayPeriod}`);
-    }
+//     if (reservation.period.dayPeriod !== dayPeriod) {
+//       modifications.push(`تعديل الفترة من ${reservation.period.dayPeriod} إلى ${dayPeriod}`);
+//     }
 
-    if (reservation.cost !== cost) {
-      modifications.push(`تعديل السعر من ${reservation.cost} إلى ${cost}`);
-    }
+//     if (reservation.cost !== cost) {
+//       modifications.push(`تعديل السعر من ${reservation.cost} إلى ${cost}`);
+//     }
 
-    if (reservation.entity.name !== entityName) {
-      modifications.push(`تعديل اسم القاعة/الشاليه من ${reservation.entity.name} إلى ${entityName}`);
-    }
+//     if (reservation.entity.name !== entityName) {
+//       modifications.push(`تعديل اسم القاعة/الشاليه من ${reservation.entity.name} إلى ${entityName}`);
+//     }
 
-    if (reservation.entity.id.toString() !== entityId) {
-      modifications.push(`تعديل القاعة/الشاليه`);
-    }
+//     if (reservation.entity.id.toString() !== entityId) {
+//       modifications.push(`تعديل القاعة/الشاليه`);
+//     }
 
-    let type = startDate == endDate ? "dayPeriod" : "days";
+//     let type = startDate == endDate ? "dayPeriod" : "days";
 
-    // ✅ تنفيذ التعديل
-    await Reservation.findByIdAndUpdate(_id, {
-      "client.name": clientName,
-      "client.phone": phone,
-      "client.id": clientId,
-      "entity.name": entityName,
-      "entity.id": entityId,
-      cost: cost,
-      "period.startDate": startDate,
-      "period.endDate": endDate,
-      "period.dayPeriod": dayPeriod,
-      "period.type": type,
-      // ✅ إضافة سجل التعديلات
-      $push: modifications.length > 0
-        ? {
-            modificationHistory: {
-              modifiedBy,
-              modifiedAt: new Date(),
-              changes: modifications.join(" | "),
-            },
-          }
-        : {},
-    });
+//     // ✅ تنفيذ التعديل
+//     await Reservation.findByIdAndUpdate(_id, {
+//       "client.name": clientName,
+//       "client.phone": phone,
+//       "client.id": clientId,
+//       "entity.name": entityName,
+//       "entity.id": entityId,
+//       cost: cost,
+//       "period.startDate": startDate,
+//       "period.endDate": endDate,
+//       "period.dayPeriod": dayPeriod,
+//       "period.type": type,
+//       // ✅ إضافة سجل التعديلات
+//       $push: modifications.length > 0
+//         ? {
+//             modificationHistory: {
+//               modifiedBy,
+//               modifiedAt: new Date(),
+//               changes: modifications.join(" | "),
+//             },
+//           }
+//         : {},
+//     });
 
-    res.send("done");
-  } catch (error) {
-    logger.error(error.message);
-    res.status(500).send({ error: error.message });
-  }
-},
+//     res.send("done");
+//   } catch (error) {
+//     logger.error(error.message);
+//     res.status(500).send({ error: error.message });
+//   }
+// },
 
   deleteAdminReservation: async (req, res) => {
     try {
@@ -729,7 +750,13 @@ getReservationsWithRemaining: async (req, res) => {
     }
   },
 
-  // انااحمد
+// في أعلى ملف reservationController.js، تأكد من إضافة هذا السطر
+
+
+// ...
+
+/// في ملف reservationController.js
+
 confirmOrder: async (req, res, nxt) => {
   try {
     const { _id, confirmRequest } = req.body;
@@ -738,7 +765,12 @@ confirmOrder: async (req, res, nxt) => {
       return res.status(400).json({ error: "❌ لا يمكن تأكيد الحجز بدون إجراء صريح." });
     }
 
-    const reservation = await Reservation.findById(_id);
+    // ================================================================
+    // ✨✨ هذا هو السطر الذي تم إصلاحه ✨✨
+    // ================================================================
+    const reservation = await Reservation.findById(_id).populate('client.id');
+    console.log("DEBUG: بيانات الحجز بعد عملية populate:", JSON.stringify(reservation, null, 2));
+
     if (!reservation) {
       return res.status(404).json({ error: "❌ الحجز غير موجود." });
     }
@@ -748,16 +780,64 @@ confirmOrder: async (req, res, nxt) => {
       return res.status(400).json({ error: "❌ يجب دفع مبلغ قبل تأكيد الحجز." });
     }
 
+    // 1. تحديث حالة الحجز
     await Reservation.findByIdAndUpdate(_id, { status: "confirmed" });
+
+    // 2. إرسال رسالة الواتساب عبر البوت
+    try {
+      // الآن، reservation.client.id.phone سيحتوي على الرقم الصحيح
+      const clientPhoneNumber = reservation.client.id.phone.replace('+', '');
+      
+      const whatsappPayload = {
+        phone: clientPhoneNumber,
+                 message: `مجموعة سدرة فاطمة
+
+مضيفنا العزيز: ${existingReservation.client.name}
+نبارك لك حجزك المؤكد
+يوم ${existingReservation.period.startDate}
+
+--------------
+تفاصيل الحجز
+--------------
+${existingReservation.entity.name}
+
+من تاريخ: ${existingReservation.period.startDate}
+وحتى تاريخ: ${existingReservation.period.endDate}
+دخول: ${existingReservation.period.checkIn.name} (${existingReservation.period.checkIn.time})
+خروج: ${existingReservation.period.checkOut.name} (${existingReservation.period.checkOut.time})
+
+الاجمالي: ${existingReservation.cost.toFixed(2)}
+اجمالي الخدمات: 0.00
+الخصم: ${existingReservation.discountAmount.toFixed(2)}
+المدفوع: ${totalPaid.toFixed(2)}
+المتبقي: ${remainingAmount.toFixed(2)}
+
+نتمنى لك إقامة سعيدة!
+
+--------------
+مدير الحجوزات: 0505966297
+العامل المسئول: 560225991
+
+اللوكيشن: https://maps.app.goo.gl/bUvZp5cDYiSevgSo6`
+          };
+
+ axios.post(`${process.env.WHATSAPP_BOT_URL}/api/whatsapp/send`, whatsappPayload);
+      
+      console.log('✅ تم إرسال طلب رسالة التأكيد إلى بوت الواتساب.');
+
+    } catch (error) {
+      console.error('❌ فشل إرسال الطلب إلى بوت الواتساب:', error.message);
+    }
+
+    // 3. تمرير التحكم للدالة التالية
     req.type = "confirmed";
     nxt();
+
   } catch (error) {
-    logger.error(error.message);
+    console.error("Error in confirmOrder:", error);
     res.status(500).send(error.message);
   }
 },
-
-
 
    postConfirmedReservations: async (req, res, nxt) => {
      try {
@@ -827,8 +907,8 @@ updateAdvancedReservation: async (req, res) => {
     const numericAdditionalCharge = parseFloat(additionalCharge || 0);
 
     // 2. جلب البيانات الأصلية
-    const originalReservation = await Reservation.findById(_id);
-    if (!originalReservation) {
+ const originalReservation = await Reservation.findById(_id).populate('client.id');
+     if (!originalReservation) {
       return res.status(404).send({ error: "الحجز غير موجود" });
     }
     
@@ -899,7 +979,19 @@ updateAdvancedReservation: async (req, res) => {
     if (originalReservation.additionalCharge !== numericAdditionalCharge) changes.push(`تعديل المبلغ الإضافي إلى ${numericAdditionalCharge}`);
     if (originalReservation.cost !== finalCost) changes.push(`تغيير السعر الإجمالي من ${originalReservation.cost} إلى ${finalCost}`);
 
-
+  if (changes.length === 0) {
+      return res.status(200).send({ success: true, message: "لم يتم إجراء أي تغييرات." });
+    }
+    
+    // ================================================================
+    // ✨✨ تم تحديث منطق الحسابات هنا ✨✨
+    // ================================================================
+    // 1. جلب كل الدفعات السابقة للحجز
+    const allPayments = await Payments.find({ reservation: _id });
+    const totalPaidAmount = allPayments.reduce((sum, payment) => sum + (payment.paid || 0), 0);
+    
+    // 2. حساب المبلغ المتبقي الجديد بناءً على السعر النهائي الجديد
+    const newRemainingAmount = finalCost - totalPaidAmount;
     // 6. بناء كائن التحديث النهائي
     const updateData = {
       "client.name": clientName,
@@ -911,6 +1003,8 @@ updateAdvancedReservation: async (req, res) => {
       discountPercentage: numericDiscountPercentage,
       discountAmount: newDiscountAmount,
       additionalCharge: numericAdditionalCharge,
+      "payment.paidAmount": totalPaidAmount, // تحديث إجمالي المدفوع
+      "payment.remainingAmount": newRemainingAmount,
     };
     
     const updatePayload = { $set: updateData };
@@ -923,6 +1017,47 @@ updateAdvancedReservation: async (req, res) => {
         return res.status(200).send({ success: true, message: "لم يتم إجراء أي تغييرات." });
     }
 
+    // ================================================================
+    // ✨✨ الخطوة 2: إضافة منطق إرسال رسالة الواتساب هنا ✨✨
+    // ================================================================
+    try {
+      if (originalReservation.client && originalReservation.client.id && originalReservation.client.id.phone) {
+        const clientPhoneNumber = originalReservation.client.id.phone.replace('+', '');
+        
+        // تجهيز نص التعديلات للرسالة
+        const changesText = changes.join('\n- ');
+
+     const messageText = `مجموعة سدرة فاطمة
+
+مضيفنا العزيز: ${originalReservation.client.name}
+تم تعديل حجزك رقم ${originalReservation.contractNumber} بنجاح.
+
+التعديلات التي تمت:
+- ${changesText}
+
+---
+الحالة المالية الجديدة:
+- المبلغ الإجمالي الجديد: ${finalCost.toFixed(2)}
+- إجمالي المدفوع: ${totalPaidAmount.toFixed(2)}
+- المبلغ المتبقي الجديد: ${newRemainingAmount.toFixed(2)}
+
+إذا كانت لديك أي استفسارات، يرجى التواصل معنا.
+--------------
+مدير الحجوزات: 0505966297
+العامل المسئول: 560225991`;
+        const whatsappPayload = {
+          phone: clientPhoneNumber,
+          message: messageText
+        };
+
+ axios.post(`${process.env.WHATSAPP_BOT_URL}/api/whatsapp/send`, whatsappPayload);
+        console.log('✅ تم إرسال إشعار تعديل الحجز عبر الواتساب.');
+      } else {
+        console.error('❌ فشل إرسال واتساب التعديل: بيانات العميل أو رقم الهاتف غير موجودة.');
+      }
+    } catch (error) {
+      console.error('❌ فشل إرسال طلب إشعار التعديل إلى بوت الواتساب:', error.message);
+    }
     // 7. تنفيذ التحديث
     await Reservation.findByIdAndUpdate(_id, updatePayload, { new: true, runValidators: true });
     res.status(200).send({ success: true, message: "تم تعديل الحجز بنجاح" });
@@ -970,7 +1105,8 @@ const newPeriodInfo = periodDetails[newCheckInName];
 if (!newPeriodInfo) {
   return res.status(400).send({ error: "اسم الفترة الجديد غير صالح" });
 }
-    const reservation = await Reservation.findById(_id);
+      const reservation = await Reservation.findById(_id).populate('client.id');
+
     if (!reservation) {
       return res.status(404).send({ error: "الحجز غير موجود" });
     }
@@ -1085,6 +1221,39 @@ if (changes.length > 0) {
     }
 
     res.status(200).send({ success: true, message: "تم تأخير الحجز بنجاح" });
+  // ✨ 7. إرسال رسالة الواتساب في الخلفية
+    try {
+      if (reservation.client && reservation.client.id && reservation.client.id.phone) {
+        const clientPhoneNumber = reservation.client.id.phone.replace('+', '');
+         
+        
+        const newCheckInDetails = `${getDayName(finalNewStartDate)} - ${newCheckInName} (${formatTime12Hour(newCheckInTime || newPeriodInfo.checkInTime)})`;
+        const newCheckOutDetails = `${getDayName(finalNewEndDate)} - ${newPeriodInfo.checkOutName} (${formatTime12Hour(newPeriodInfo.checkOutTime)})`;
+        
+        const changesText = changes.join('\n- ');
+        const messageText = `مجموعة سدرة فاطمة
+
+مضيفنا العزيز: ${reservation.client.name}
+تم تأخير حجزك رقم ${reservation.contractNumber} .
+
+التفاصيل الجديدة:
+
+تاريخ الدخول: ${finalNewStartDate} (${newCheckInDetails})
+تاريخ الخروج: ${finalNewEndDate} (${newCheckOutDetails})
+
+إذا كانت لديك أي استفسارات، يرجى التواصل معنا.
+--------------
+مدير الحجوزات: 0505966297
+العامل المسئول: 560225991`;
+        const whatsappPayload = { phone: clientPhoneNumber, message: messageText };
+         axios.post(`${process.env.WHATSAPP_BOT_URL}/api/whatsapp/send`, whatsappPayload)
+
+          .then(() => console.log('✅ تم إرسال إشعار تأخير الحجز عبر الواتساب.'))
+          .catch(err => console.error('❌ فشل إرسال إشعار تأخير الحجز:', err.message));
+      }
+    } catch (error) {
+      console.error('❌ خطأ أثناء محاولة إرسال إشعار التأخير:', error.message);
+    }
 
   } catch (error) {
     console.error("🔥 Error in postponeReservationStart:", error);
@@ -1104,7 +1273,7 @@ extendReservation: async (req, res) => {
       return res.status(400).send({ error: "البيانات المطلوبة غير كاملة" });
     }
 
-    const reservation = await Reservation.findById(_id);
+    const reservation = await Reservation.findById(_id).populate('client.id');
     if (!reservation) return res.status(404).send({ error: "الحجز غير موجود" });
 
     // ✅ 2. التحقق المنطقي من تاريخ التمديد
@@ -1188,6 +1357,44 @@ extendReservation: async (req, res) => {
     });
 
     res.status(200).send({ success: true, message: "تم تمديد الحجز بنجاح" });
+  // ✨ 7. إرسال رسالة الواتساب في الخلفية
+    try {
+      if (reservation.client && reservation.client.id && reservation.client.id.phone) {
+        const clientPhoneNumber = reservation.client.id.phone.replace('+', '');
+         
+    const originalCheckInDetails = `${getDayName(reservation.period.startDate)} - ${reservation.period.checkIn.name} (${formatTime12Hour(reservation.period.checkIn.time)})`;
+        const newCheckOutDetails = `${getDayName(newEndDate)} - ${newCheckOutName} (${formatTime12Hour(newCheckOutTime)})`;
+
+        const messageText = `مجموعة سدرة فاطمة
+
+مضيفنا العزيز: ${reservation.client.name}
+
+تم تمديد حجزك بنجاح.
+رقم العقد: ${reservation.contractNumber}
+
+التفاصيل الجديدة
+--------------
+تاريخ الدخول: ${reservation.period.startDate} (${originalCheckInDetails})
+تاريخ الخروج: ${newEndDate} (${newCheckOutDetails})
+
+الحالة المالية الجديدة:
+- المبلغ الإجمالي الجديد: ${newTotalCost.toFixed(2)}
+- المبلغ المتبقي الجديد: ${newRemainingAmount.toFixed(2)}
+
+
+إذا كانت لديك أي استفسارات، يرجى التواصل معنا.
+--------------
+مدير الحجوزات: 0505966297
+العامل المسئول: 560225991`;
+        const whatsappPayload = { phone: clientPhoneNumber, message: messageText };
+        axios.post(`${process.env.WHATSAPP_BOT_URL}/api/whatsapp/send`, whatsappPayload)
+
+          .then(() => console.log('✅ تم إرسال إشعار تمديد الحجز عبر الواتساب.'))
+          .catch(err => console.error('❌ فشل إرسال إشعار تمديد الحجز:', err.message));
+      }
+    } catch (error) {
+      console.error('❌ خطأ أثناء محاولة إرسال إشعار التمديد:', error.message);
+    }
 
   } catch (error) {
     console.error("🔥 Error in extendReservation:", error);
@@ -1702,7 +1909,59 @@ getReservationByType: async (req, res) => {
                 });
                 await newPayment.save();
             }
+  // 2. إرسال رسالة تأكيد للعميل عبر الواتساب
 
+  
+    try {
+      if (finalClient && finalClient.phone) {
+        const clientPhoneNumber = finalClient.phone.replace('+', '');
+            const services = await ReservationServices.find({ reservationId: savedReservation._id });
+
+        let totalServicesCost = services.reduce((sum, service) => sum + (service.price * service.number), 0);
+        const periodName = savedReservation.period.type === 'days' ? 'لعدة أيام' : savedReservation.period.dayPeriod;
+                // ✨ تم استخدام دالة تنسيق الوقت هنا
+        const checkInDetails = `${getDayName(savedReservation.period.startDate)} - ${savedReservation.period.checkIn.name} (${formatTime12Hour(savedReservation.period.checkIn.time)})`;
+        const checkOutDetails = `${getDayName(savedReservation.period.endDate)} - ${savedReservation.period.checkOut.name} (${formatTime12Hour(savedReservation.period.checkOut.time)})`;
+        
+
+const messageText = `مجموعة سدرة فاطمة
+مضيفنا العزيز: ${savedReservation.client.name}
+نبارك لك حجزك المؤكد
+رقم العقد: ${savedReservation.contractNumber}
+--------------
+تفاصيل الحجز
+--------------
+المكان: ${savedReservation.entity.name}
+نوع الفترة: ${periodName}
+تاريخ الدخول: ${savedReservation.period.startDate} (${checkInDetails})
+تاريخ الخروج: ${savedReservation.period.endDate} (${checkOutDetails})
+
+--------------
+التفاصيل المالية
+--------------
+مبلغ الحجز: ${savedReservation.cost.toFixed(2)}
+اجمالي الخدمات: ${totalServicesCost.toFixed(2)}
+الخصم: ${savedReservation.discountAmount.toFixed(2)}
+طريقة الدفع: ${savedReservation.payment.method}
+المدفوع: ${savedReservation.payment.paidAmount.toFixed(2)}
+-------
+المتبقي: ${savedReservation.payment.remainingAmount.toFixed(2)}
+
+نتمنى لك إقامة سعيدة!
+--------------
+مدير الحجوزات: 0505966297
+العامل المسئول: 560225991
+اللوكيشن: https://maps.app.goo.gl/bUvZp5cDYiSevgSo6`;
+
+        const whatsappPayload = { phone: clientPhoneNumber, message: messageText };
+ axios.post(`${process.env.WHATSAPP_BOT_URL}/api/whatsapp/send`, whatsappPayload);
+          console.log('✅ تم إرسال طلب رسالة واتساب بنجاح.');
+    } else {
+          console.error('❌ فشل إرسال الواتساب: بيانات العميل أو رقم الهاتف غير موجودة.');
+        }
+      } catch (error) {
+        console.error('❌ فشل إرسال الطلب إلى بوت الواتساب:', error.message);
+      }
             res.status(201).send({
                 message: "Admin reservation created successfully.",
                 reservation: savedReservation
@@ -1858,64 +2117,66 @@ getUnpaidClients: async (req, res) => {
 
 // في ملف reservationController.js
 
-addReservationPayment: async (req, res) => {
-    try {
-        const { reservationId, amount, type, bankName, notes } = req.body;
+// addReservationPayment: async (req, res) => {
+//     try {
+//         const { reservationId, amount, type, bankName, notes } = req.body;
 
-        if (!reservationId || !amount || !type) {
-            return res.status(400).send({ error: "البيانات المطلوبة غير كاملة (reservationId, amount, type)." });
-        }
+//         if (!reservationId || !amount || !type) {
+//             return res.status(400).send({ error: "البيانات المطلوبة غير كاملة (reservationId, amount, type)." });
+//         }
 
-        const paidAmount = parseFloat(amount);
-        if (isNaN(paidAmount) || paidAmount <= 0) {
-            return res.status(400).send({ error: "المبلغ المدفوع غير صحيح." });
-        }
+//         const paidAmount = parseFloat(amount);
+//         if (isNaN(paidAmount) || paidAmount <= 0) {
+//             return res.status(400).send({ error: "المبلغ المدفوع غير صحيح." });
+//         }
         
-        const reservation = await Reservation.findById(reservationId);
-        if (!reservation) {
-            return res.status(404).send({ error: "الحجز غير موجود." });
-        }
+//         const reservation = await Reservation.findById(reservationId);
+//         if (!reservation) {
+//             return res.status(404).send({ error: "الحجز غير موجود." });
+//         }
 
-        // --- تعديل رقم 1: اسم الموظف ---
-        // سنستخدم قيمة افتراضية آمنة في حالة عدم وجود req.user
-        const employeeName = req.user ? req.user.name : "النظام";
+//         // --- تعديل رقم 1: اسم الموظف ---
+//         // سنستخدم قيمة افتراضية آمنة في حالة عدم وجود req.user
+//         const employeeName = req.user ? req.user.name : "النظام";
 
-        const newPayment = new ReservationPayments({
-            paid: paidAmount,
-            type: type,
-            bank: bankName || null,
-            notes: notes || '',
-            reservation: reservationId,
-            employee: employeeName, // <-- استخدام المتغير الآمن
-            date: new Date().toISOString().split('T')[0],
-        });
-        await newPayment.save();
+//         const newPayment = new ReservationPayments({
+//             paid: paidAmount,
+//             type: type,
+//             bank: bankName || null,
+//             notes: notes || '',
+//             reservation: reservationId,
+//             employee: employeeName, // <-- استخدام المتغير الآمن
+//             date: new Date().toISOString().split('T')[0],
+//         });
+//         await newPayment.save();
 
-        if (type === 'نقدي') {
-            const cashDeposit = new BankTransactions({
-                bank: "الخزنة النقدية",
-                amount: paidAmount,
-                date: new Date().toISOString().split('T')[0],
-                reciver: "النظام (إيداع من حجز)",
-                donater: `عميل: ${reservation.client.name}`,
+//         if (type === 'نقدي') {
+//             const cashDeposit = new BankTransactions({
+//                 bank: "الخزنة النقدية",
+//                 amount: paidAmount,
+//                 date: new Date().toISOString().split('T')[0],
+//                 reciver: "النظام (إيداع من حجز)",
+//                 donater: `عميل: ${reservation.client.name}`,
                 
-                // --- تعديل رقم 2: اسم الموظف هنا أيضًا ---
-                employee: employeeName, // <-- استخدام نفس المتغير الآمن
-            });
-            await cashDeposit.save(); // <-- هذا السطر سيعمل الآن
-            console.log(`💰 تم إيداع مبلغ نقدي بقيمة ${paidAmount} في الخزنة.`);
-        }
+//                 // --- تعديل رقم 2: اسم الموظف هنا أيضًا ---
+//                 employee: employeeName, // <-- استخدام نفس المتغير الآمن
+//             });
+//             await cashDeposit.save(); // <-- هذا السطر سيعمل الآن
+//             console.log(`💰 تم إيداع مبلغ نقدي بقيمة ${paidAmount} في الخزنة.`);
+//         }
 
-        console.log(`💳 تم تسجيل دفعة بقيمة ${paidAmount} للحجز ${reservationId}`);
-        res.status(201).send({ success: true, message: "تمت إضافة الدفعة بنجاح." });
+//         console.log(`💳 تم تسجيل دفعة بقيمة ${paidAmount} للحجز ${reservationId}`);
+//         res.status(201).send({ success: true, message: "تمت إضافة الدفعة بنجاح." });
 
-    } catch (error) {
-        console.error("🔥 خطأ في دالة addReservationPayment:", error.message);
-        logger.error(`Error in addReservationPayment: ${error.message}`);
-        res.status(500).send({ error: error.message });
-    }
-},
+//     } catch (error) {
+//         console.error("🔥 خطأ في دالة addReservationPayment:", error.message);
+//         logger.error(`Error in addReservationPayment: ${error.message}`);
+//         res.status(500).send({ error: error.message });
+//     }
+// },
 
 
 };
+// At the end of reservationController.js
+
 module.exports = reservation;

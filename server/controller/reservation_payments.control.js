@@ -2,78 +2,178 @@ const Payments = require("../model/reservationPayments");
 const Reservation = require("../model/reservation");
 const Discount = require("../model/Discount");
 const CashTransaction = require("../model/cashTransaction"); // استيراد الموديل
-
+const axios = require('axios'); // ✨ الخطوة 1: استيراد axios
+const ReservationServices = require("../model/reservationServices"); // ✨ الخطوة 1: استيراد موديل الخدمات
+const Bank = require("../model/bank.model");
+// ✨ دالة مساعدة لتحويل التاريخ إلى يوم الأسبوع بالعربية
+function getDayName(dateString) {
+  const date = new Date(dateString);
+  const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+  return days[date.getDay()];
+}
 const PaymentsCtl = {
-  addPayment: async (req, res) => {
-  try {
-    console.log("🟡 Request Body:", req.body);
-    const { reservation: reservationId, paid, type } = req.body;
+ addPayment: async (req, res) => {
+    try {
+      console.log("🟡 Request Body:", req.body);
+      const { reservation: reservationId, paid, type, bank: bankId } = req.body;
 
-    if (!reservationId) {
-      return res.status(400).send({ error: "Reservation ID is required" });
-    }
+      if (!reservationId) {
+        return res.status(400).send({ error: "Reservation ID is required" });
+      }
 
-    const existingReservation = await Reservation.findById(reservationId);
-    if (!existingReservation) {
-      return res.status(404).send({ error: "Reservation not found" });
-    }
+      const existingReservation = await Reservation.findById(reservationId).populate('client.id');
+      
+      if (!existingReservation) {
+        return res.status(404).send({ error: "Reservation not found" });
+      }
 
-    // توليد رقم الإيصال الفريد داخل payments فقط
-    let paymentPrefix = "5";
-    let paymentBaseNumber = 50000;
-    let paymentLastNumber = paymentBaseNumber;
+      const originalStatus = existingReservation.status;
+      
+      let paymentPrefix = "5";
+      let paymentBaseNumber = 50000;
+      let paymentLastNumber = paymentBaseNumber;
 
-    while (true) {
-      const existingPayment = await Payments.findOne({
-        paymentContractNumber: paymentPrefix + paymentLastNumber,
-      });
-      if (!existingPayment) break;
-      paymentLastNumber++;
-    }
+      while (true) {
+        const existingPayment = await Payments.findOne({
+          paymentContractNumber: paymentPrefix + paymentLastNumber,
+        });
+        if (!existingPayment) break;
+        paymentLastNumber++;
+      }
+      const paymentContractNumber = paymentPrefix + paymentLastNumber;
+      const employeeId = req.user._id;
 
-    const paymentContractNumber = paymentPrefix + paymentLastNumber;
-    const employeeId = req.user._id;
-
-    // الخطوة 1: حفظ الدفعة
-    const newPayment = new Payments({
-      ...req.body,
-      paymentContractNumber,
-      employee: employeeId,
-    });
-
-    await newPayment.save();
-    console.log(`✅ تم إنشاء إيصال دفع برقم: ${paymentContractNumber}`);
-
-    // الخطوة 2: تسجيل إيداع نقدي في الخزنة
-    if (type === 'نقدي') {
-      const cashDeposit = new CashTransaction({
-        type: 'إيداع',
-        amount: parseFloat(paid),
-        details: `دفعة من حجز العميل: ${existingReservation.client.name} (رقم العقد: ${existingReservation.contractNumber})`,
-        reservationId: existingReservation._id,
+      // الخطوة 1: حفظ الدفعة الجديدة
+      const newPayment = new Payments({
+        ...req.body,
+        paymentContractNumber,
         employee: employeeId,
       });
-      await cashDeposit.save();
-      console.log(`💰 تم تسجيل إيداع نقدي بقيمة ${paid} في الخزنة.`);
+      await newPayment.save();
+      console.log(`✅ تم إنشاء إيصال دفع برقم: ${paymentContractNumber}`);
+
+      // ================================================================
+      // ✨✨ تم إصلاح منطق الحسابات بشكل كامل هنا ✨✨
+      // ================================================================
+      // 2. جلب كل الدفعات (القديمة والجديدة) لهذا الحجز
+      const allPaymentsForReservation = await Payments.find({ reservation: reservationId });
+
+      // 3. حساب إجمالي المبلغ المدفوع عن طريق جمع كل الدفعات
+      const newTotalPaid = allPaymentsForReservation.reduce((sum, payment) => sum + (payment.paid || 0), 0);
+      const newRemainingAmount = existingReservation.cost - newTotalPaid;
+
+      // 4. تحديث سجل الحجز الرئيسي بالقيم الصحيحة والدقيقة
+      existingReservation.payment.paidAmount = newTotalPaid;
+      existingReservation.payment.remainingAmount = newRemainingAmount;
+      existingReservation.status = "confirmed";
+      await existingReservation.save();
+      console.log(`✅ Reservation ${reservationId} updated with correct totals.`);
+
+      // تسجيل إيداع نقدي
+      if (type === 'نقدي') {
+        const cashDeposit = new CashTransaction({
+          type: 'إيداع',
+          amount: parseFloat(paid),
+          details: `دفعة من حجز العميل: ${existingReservation.client.name} (رقم العقد: ${existingReservation.contractNumber})`,
+          reservationId: existingReservation._id,
+          employee: employeeId,
+        });
+        await cashDeposit.save();
+        console.log(`💰 تم تسجيل إيداع نقدي بقيمة ${paid} في الخزنة.`);
+      }
+
+      // إرسال رسالة الواتساب بالبيانات الصحيحة
+      try {
+        if (existingReservation.client && existingReservation.client.id && existingReservation.client.id.phone) {
+          
+          const clientPhoneNumber = existingReservation.client.id.phone.replace('+', '');
+          let messageText = '';
+
+          if (originalStatus === 'unConfirmed') {
+            // ... (رسالة التأكيد الكاملة)
+            const services = await ReservationServices.find({ reservationId: existingReservation._id });
+            let totalServicesCost = services.reduce((sum, service) => sum + (service.price * service.number), 0);
+            const periodName = existingReservation.period.type === 'days' ? 'لعدة أيام' : existingReservation.period.dayPeriod;
+           // ✨ استخدام الدالة الجديدة لتنسيق الوقت
+            const checkInDetails = `${getDayName(existingReservation.period.startDate)} - ${existingReservation.period.checkIn.name} (${formatTime12Hour(existingReservation.period.checkIn.time)})`;
+            const checkOutDetails = `${getDayName(existingReservation.period.endDate)} - ${existingReservation.period.checkOut.name} (${formatTime12Hour(existingReservation.period.checkOut.time)})`;
+            
+            messageText = `مجموعة سدرة فاطمة
+مضيفنا العزيز: ${existingReservation.client.name}
+نبارك لك حجزك المؤكد
+رقم العقد: ${existingReservation.contractNumber}
+--------------
+تفاصيل الحجز
+--------------
+المكان: ${existingReservation.entity.name}
+نوع الفترة: ${periodName}
+
+تاريخ الدخول: ${existingReservation.period.startDate} (${checkInDetails})
+تاريخ الخروج: ${existingReservation.period.endDate} (${checkOutDetails})
+
+مبلغ الحجز: ${existingReservation.cost.toFixed(2)}
+
+اجمالي الخدمات: ${totalServicesCost.toFixed(2)}
+الخصم: ${existingReservation.discountAmount.toFixed(2)}
+المدفوع: ${newTotalPaid.toFixed(2)}
+-------
+المتبقي: ${newRemainingAmount.toFixed(2)}
+
+نتمنى لك إقامة سعيدة!
+--------------
+مدير الحجوزات: 0505966297
+العامل المسئول: 560225991
+اللوكيشن: https://maps.app.goo.gl/bUvZp5cDYiSevgSo6`;
+
+          } else {
+            // --- رسالة إضافة دفعة جديدة ---
+            let bankName = '';
+            if (type === 'تحويل بنكي' && bankId) {
+              const bank = await Bank.findById(bankId);
+              if (bank) bankName = `\n- اسم البنك: ${bank.name}`;
+            }
+            
+            messageText = `مجموعة سدرة فاطمة
+مضيفنا العزيز: ${existingReservation.client.name}
+تم استلام مبلغ  جديد بنجاح من   
+ حجز رقم: ${existingReservation.contractNumber}
+
+- نوع الدفع: ${type}${bankName}
+- رقم إيصال الدفع: ${paymentContractNumber}
+- مبلغ الحجز الإجمالي: ${existingReservation.cost.toFixed(2)}
+
+- المبلغ المدفوع حديثًا: ${parseFloat(paid).toFixed(2)}
+- إجمالي المدفوع حتى الآن: ${newTotalPaid.toFixed(2)}
+---------
+- المبلغ المتبقي: ${newRemainingAmount.toFixed(2)}
+
+نتمنى لك إقامة سعيدة!
+--------------
+مدير الحجوزات: 0505966297
+العامل المسئول: 560225991`
+          }
+
+          const whatsappPayload = { phone: clientPhoneNumber, message: messageText };
+ axios.post(`${process.env.WHATSAPP_BOT_URL}/api/whatsapp/send`, whatsappPayload);
+          console.log('✅ تم إرسال طلب رسالة واتساب بنجاح.');
+
+        } else {
+          console.error('❌ فشل إرسال الواتساب: بيانات العميل أو رقم الهاتف غير موجودة.');
+        }
+      } catch (error) {
+        console.error('❌ فشل إرسال الطلب إلى بوت الواتساب:', error.message);
+      }
+
+      res.send({
+        message: "Payment added and reservation status updated.",
+        paymentContractNumber,
+      });
+
+    } catch (error) {
+      console.error("❌ Error in addPayment:", error.message);
+      res.status(500).send({ message: error.message });
     }
-
-    // الخطوة 3: تحديث حالة الحجز فقط بدون حفظ رقم الإيصال
-    existingReservation.status = "confirmed";
-    await existingReservation.save();
-    console.log(`✅ Reservation ${reservationId} confirmed successfully.`);
-
-    res.send({
-      message: "Payment added and reservation confirmed successfully.",
-      paymentContractNumber,
-    });
-
-  } catch (error) {
-    console.error("❌ Error in addPayment:", error.message);
-    res.status(500).send({ message: error.message });
-  }
-},
-
-
+  },
   getAllDiscounts: async (req, res) => {
     try {
       const discounts = await Discount.find({});
@@ -194,6 +294,16 @@ const PaymentsCtl = {
       res.status(500).send({ message: error.message });
     }
   },
+  // داخل PaymentsCtl object
+getSources: async (req, res) => {
+  try {
+    // .distinct() تجلب قائمة فريدة من نوعها بدون تكرار
+    const sources = await Payments.find({ source: { $ne: null } }).distinct('source');
+    res.status(200).send(sources);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+},
 };
 
 module.exports = PaymentsCtl;

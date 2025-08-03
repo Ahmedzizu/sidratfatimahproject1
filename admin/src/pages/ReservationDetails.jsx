@@ -163,12 +163,11 @@ const reservation = allReservations.find((ele) => ele._id === id);
   };
 
   function handleClose() {
-    setPayment({ open: false, update: false, data: { type: "نقدي" } });
-    setFreeServices({ open: false, update: false });
-    setServices({ open: false, update: false });
-    setRequest({ open: false, update: false });
-  }
-
+    setPayment({ open: false, update: false, data: { type: "نقدي" } });
+    setFreeServices({ open: false, update: false, data: {} });
+    setServices({ open: false, update: false, data: {} });
+    setRequest({ open: false, update: false, data: {} });
+  }
   const handleDelete = async (serviceId) => {
     await Api.delete(`/admin/reservation/service/${serviceId}`).then(() =>
       fetchServices()
@@ -493,19 +492,7 @@ const waLink = `https://wa.me/${reservation?.client?.phone}?text=${encodedMessag
       {/* المحتوى الفعلي للصفحة (يظهر فقط عندما لا تكون في وضع الطباعة) */}
       {!loading && !paymentLoading && !serviceLoading && (
         <>
-           {/* <header>
-                        <div className="share-box">
-                            <LocalPrintshopIcon id="share" className="onshare" onClick={handlePrint} />
-                        </div>
-                        <div className="details shareon">
-                            <div className="text">
-                                <p>{t('details.mainTitle')}</p>
-                                <p>{t('details.customerNameLabel')} : {reservation?.client?.name}</p>
-                                <p>{t('details.customerPhoneLabel')} : {reservation?.client?.phone}</p>
-                            </div>
-                            <img src={logo} alt="logo" height="60px" width="60px" />
-                        </div>
-                    </header> */}
+        
 
                     <TableContainer component={Paper} className="table-print">
                   
@@ -575,7 +562,7 @@ const waLink = `https://wa.me/${reservation?.client?.phone}?text=${encodedMessag
                                 )}
                                 <TableRow>
                                     <TableCell align="center" className="table-data">{t('details.discount')}</TableCell>
-                                    <TableCell align="center" className="table-data">{reservation?.discountAmount || "0"} {t('currency.SAR')}</TableCell>
+                                    <TableCell align="center" className="table-data">{reservation?.discountAmount || "0"} {t('common.currency')}</TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell align="center" className="table-data">{t('details.bookingAmount')}</TableCell>
@@ -653,8 +640,9 @@ const waLink = `https://wa.me/${reservation?.client?.phone}?text=${encodedMessag
                                             <TableCell align="center">{ele?.paid}</TableCell>
                                             <TableCell align="center">{ele?.insurance}</TableCell>
                                             <TableCell align="center">{ele.type === 'تحويل بنكي' ? (ele.bank?.name || t('common.notSpecified')) : '---'}</TableCell>
+                                             <TableCell align="center">{ele.source|| t('common.notSpecified')}</TableCell>
                                             <TableCell align="center">{ele.employee?.name || t('common.notSpecified')}</TableCell>
-                                            <TableCell align="center">{ele.employee?.name || t('common.notSpecified')}</TableCell>
+                                           
                                             <TableCell align="center">{formatDateTimeForDisplay(ele.paymentDate , i18n.language)}</TableCell>
                                             <TableCell align="center"><Button color="warning" onClick={() => setPayment({ open: true, update: true, data: ele })}>{t('common.edit')}</Button></TableCell>
                                             <TableCell align="center"><Button color="error" onClick={() => handeleDeletePayment(ele._id)}>{t('common.delete')}</Button></TableCell>
@@ -711,36 +699,44 @@ const waLink = `https://wa.me/${reservation?.client?.phone}?text=${encodedMessag
     <Button sx={{ margin: "0 5px" }} variant="contained" className="onshare" id="btn" onClick={() => handleservicePrint()}>
         {t('additionalServices.printReceipt')} <LocalPrintshopIcon style={{ margin: "0 5px" }} />
     </Button>
-    <TableContainer component={Paper} className="table-print">
-        <Table aria-label="simple table">
-            <TableHead className="tablehead">
-                <TableRow>
-                    <TableCell align="center" className="table-row">{t('additionalServices.table.service')}</TableCell>
-                    <TableCell align="center" className="table-row">{t('additionalServices.table.type')}</TableCell>
-                    <TableCell align="center" className="table-row">{t('additionalServices.table.count')}</TableCell>
-                    <TableCell align="center" className="table-row">{t('additionalServices.table.totalAmount')}</TableCell>
-                    <TableCell colSpan={2}></TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {servicesData.map((row) => (
-                    <TableRow key={row._id}>
-                        <TableCell align="center">{row.service}</TableCell>
-                        <TableCell align="center">{row.package}</TableCell>
-                        <TableCell align="center">{row.number}</TableCell>
-                        <TableCell align="center">{row.price}</TableCell>
-                        <TableCell align="center">
-                            <Button variant="contained" color="warning" onClick={() => setServices({ ...services, open: true, update: true, data: row })}>
-                                {t('common.edit')}
-                            </Button>
-                        </TableCell>
-                        <TableCell align="center">
-                            <Button variant="contained" color="error" onClick={() => handleDelete(row._id)}>
-                                {t('common.delete')}
-                            </Button>
-                        </TableCell>
-                    </TableRow>
-                ))}
+    <TableContainer component={Paper}>
+                {/* ✨ This is the corrected table display logic ✨ */}
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="center">{t('additionalServices.table.service')}</TableCell>
+                            <TableCell align="center">{t('additionalServices.table.type')}</TableCell>
+                            <TableCell align="center">{t('additionalServices.table.count')}</TableCell>
+                            <TableCell align="center">{t('additionalServices.table.pricePerUnit')}</TableCell>
+                            <TableCell align="center">{t('additionalServices.table.discount')}</TableCell>
+                            <TableCell align="center">{t('additionalServices.table.totalAmount')}</TableCell>
+                            <TableCell colSpan={2}></TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {servicesData.map((row) => {
+                            const originalPricePerUnit = (row.price + (row.discount || 0)) / row.number;
+                            return (
+                                <TableRow key={row._id}>
+                                    <TableCell align="center">{row.service}</TableCell>
+                                    <TableCell align="center">{row.package}</TableCell>
+                                    <TableCell align="center">{row.number}</TableCell>
+                                    <TableCell align="center">{originalPricePerUnit.toFixed(2)}</TableCell>
+                                    <TableCell align="center">{row.discount || 0}</TableCell>
+                                    <TableCell align="center">{row.price.toFixed(2)}</TableCell>
+                                    <TableCell align="center">
+                                        <Button variant="contained" color="warning" onClick={() => setServices({ open: true, update: true, data: row })}>
+                                            {t('common.edit')}
+                                        </Button>
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <Button variant="contained" color="error" onClick={() => handleDelete(row._id)}>
+                                            {t('common.delete')}
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })}
             </TableBody>
         </Table>
     </TableContainer>

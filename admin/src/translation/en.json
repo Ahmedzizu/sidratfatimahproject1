@@ -45,7 +45,9 @@
       "service": "Additional Service",
       "type": "Type",
       "count": "Quantity",
-      "totalAmount": "Total Amount"
+      "totalAmount": "Total Amount",
+      "pricePerUnit": "pricePerUnit",
+      "discount": "discount"
     }
   },
   "requests": {

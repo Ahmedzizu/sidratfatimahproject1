@@ -88,7 +88,7 @@ router.post(
     reservationController.postAdminReservation
 );
 // مسارات التعديل الشاملة
-router.post('/admin/reservations/update-advanced', reservationController.updateAdvancedReservation);
+router.post('/admin/reservations/update-advanced',reservationController.updateAdvancedReservation);
 router.post('/admin/reservations/postpone-start', reservationController.postponeReservationStart);
 router.post('/admin/reservations/extend', reservationController.extendReservation);
 
@@ -102,9 +102,7 @@ router.get('/admin/reservations-with-remaining', reservationController.getReserv
 
 // مسارات الإلغاء والتأكيد والانتهاء
 router.post('/admin/reservation/cancel', reservationController.cancelReservation);
-router.patch("/admin/reservation/confirm", validReservation.checkPeriod, reservationController.confirmOrder, twilo.sendWhatsappMsg, reservationController.postNotification);
-
-// مسارات التأمين (Insurance)
+router.patch("/admin/reservation/confirm", validReservation.checkPeriod, reservationController.confirmOrder, reservationController.postNotification);// مسارات التأمين (Insurance)
 router.patch('/admin/insurance', reservationController.retriveInsurance);
 router.patch("/admin/insurance/finance", reservationController.insuranceFinance);
 
@@ -118,7 +116,7 @@ router.post('/admin/reservation/discount', reservationController.updateReservati
 router.delete('/admin/reservation/delete/:id', reservationController.deleteAdminReservation);
 
 // مسار تحديث الحجز القديم (لو لازالت مستخدمة)
-router.post('/admin/reservation/update', validReservation.checkPeriod, reservationController.updateAdminReservation);
+// router.post('/admin/reservation/update', validReservation.checkPeriod, reservationController.updateAdminReservation);
 
 // مسار إكمال الحجز
 router.patch('/admin/reservation/:id/complete', reservationController.completeReservation);

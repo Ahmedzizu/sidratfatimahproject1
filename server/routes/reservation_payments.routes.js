@@ -12,6 +12,7 @@ router.post("/discounts/add", paymentCtl.addDiscount); // 🔹 إضافة كود
 router.get("/discounts", paymentCtl.getAllDiscounts);
 router.put("/discounts/update/:id", paymentCtl.updateDiscount);
 router.delete("/discounts/delete/:id", paymentCtl.deleteDiscount);
+router.get("/sources/all", adminAuthorization, paymentCtl.getSources);
 
 // The correct route includes the ID parameter
 router.get('/reservation-payments/:id', paymentCtl.getPayments);

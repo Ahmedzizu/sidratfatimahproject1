@@ -82,8 +82,7 @@ const NewReservations = () => {
       return;
     }
     setConfirmOpen(false);
-    Api.patch('/admin/reservation', { _id: confirmData._id, confirmRequest: true })
-      .then(() => fetchNewReservations())
+Api.patch('/admin/reservation/confirm', { _id: confirmData._id, confirmRequest: true })      .then(() => fetchNewReservations())
       .catch((err) => {
         if (err.response?.status === 403) setSnackOpen(true);
       });

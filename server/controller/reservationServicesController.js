@@ -9,7 +9,7 @@ const reservationService = {
         date: format(new Date(), "yyyy-MM-dd"),
       });
       await service.save();
-      res.send();
+      res.status(201).send(service);
     } catch (error) {
       console.log(error.message);
       res.status(500).send({ message: error.message });
@@ -26,29 +26,38 @@ const reservationService = {
       res.status(500).send({ message: error.message });
     }
   },
+
+  // ✨ This function has been corrected ✨
   updateService: async (req, res) => {
     try {
-      await ReservationServices.findByIdAndUpdate(req.body._id, req.body)
-        .then((result) => {
-          res.send();
-        })
-        .catch((error) => {
-          console.log(error.message);
-          res.status(500).send({ message: error.message });
-        });
+      // 1. Get the service ID from the URL parameters
+      const serviceId = req.params.id;
+      // 2. Get the new data from the request body
+      const updateData = req.body;
+
+      const updatedService = await ReservationServices.findByIdAndUpdate(serviceId, updateData, { new: true });
+
+      if (!updatedService) {
+        return res.status(404).send({ message: "Service not found." });
+      }
+
+      res.status(200).send(updatedService);
+
     } catch (error) {
       console.log(error.message);
       res.status(500).send({ message: error.message });
     }
   },
+
   deleteService: async (req, res) => {
     try {
-      await ReservationServices.findByIdAndDelete(req.params.id)
-        .then(() => res.send())
-        .catch((error) => {
-          console.log(error.message);
-          res.status(500).send({ message: error.message });
-        });
+      const deletedService = await ReservationServices.findByIdAndDelete(req.params.id);
+      
+      if (!deletedService) {
+          return res.status(404).send({ message: "Service not found." });
+      }
+
+      res.status(200).send({ message: "Service deleted successfully." });
     } catch (error) {
       console.log(error.message);
       res.status(500).send({ message: error.message });
@@ -64,4 +73,5 @@ const reservationService = {
     }
   },
 };
+
 module.exports = reservationService;

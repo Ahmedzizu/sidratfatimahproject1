@@ -40,13 +40,16 @@
     }
   },
   "additionalServices": {
+    
     "title": "الخدمات الإضافية",
     "printReceipt": "طباعة إيصال",
     "table": {
       "service": "الخدمة الإضافية",
       "type": "النوع",
       "count": "العدد",
-      "totalAmount": "المبلغ الكلي"
+      "totalAmount": "المبلغ الكلي",
+      "pricePerUnit": "سعر الوحدة",
+      "discount": "الخصم"
     }
   },
   "requests": {
@@ -136,7 +139,7 @@
         "searchBox":"الجهة - العميل"
     },
     "employee":{
-      "employeeSalaries":"مرتبات الموظفين",
+      "employeeSalaries":"رواتب الموظفين",
         "print":"سند قبض",
         "title":"ادارة الموظفين",
         "add":"اضافة موظف جديد",
@@ -409,6 +412,8 @@
 
         
       },
+
+
       "currency": "ريال",
       "tables": {
         "expenses": "المصروفات",

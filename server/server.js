@@ -6,10 +6,11 @@ const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const upload = require('express-fileupload');
 const axios = require('axios');
-
+const bodyParser = require('body-parser');
 const app = express();
+const wppconnect = require('@wppconnect-team/wppconnect');
 
-// ✅ تحميل المتغيرات البيئية من ملف .env
+
 dotenv.config();
 // axios.get('/employee/user/profile'); // تأكد من وجود هذا في السيرفر
 axios.get(`${process.env.BASE_URL}/employee/user/profile`)
@@ -38,34 +39,15 @@ const expensesRoutes = require('./routes/expensesRoutes');
 const treasuryRoutes = require('./routes/treasuryRoutes'); // استدعاء الراوت الجديد
 const shiftClosuresRoutes = require("./routes/shiftClosuresRoutes");
 const drawerRoutes = require('./routes/drawerRoutes'); // تأكد من صحة المسار
-
+const whatsappRoutes = require('./routes/whatsappRoutes');
+const PORT = process.env.PORT || 5000;
+const { initializeWhatsApp } = require('./services/whatsappService');
 
 // ✅ الاتصال بقاعدة البيانات
 const databaseConnection = require('./connection/connect');
 databaseConnection();
 
-// ✅ إعداد CORS للسماح بالطلبات من نطاقات محددة
-// const allowedOrigins = [
-//   'https://teal-gorilla-464304.hostingersite.com',
-//   'https://www.wasenahon.com',
-//   'http://sedra-fatma-admin.infinityfreeapp.com',
-//   'https://sidra-fatima.onrender.com',
-//   'https://sidra-fatima-user.onrender.com',
-//   'https://sidra-fatima-admin-0g3u.onrender.com'
-// ];
-
-// const corsOptions = {
-//   origin: (origin, callback) => {
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-//   credentials: true, // ✅ السماح بإرسال الكوكيز
-// };
-
-// app.use(cors(corsOptions));
+initializeWhatsApp();
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -76,7 +58,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
 
 // ✅ إعدادات الأمان باستخدام Helmet
 app.use(
@@ -95,14 +76,6 @@ app.use(express.json());
 
 // ✅ تحليل الكوكيز
 app.use(cookieParser());
-
-// // ✅ إعداد تحميل الملفات مع تحديد الحد الأقصى للحجم
-// app.use(
-//   upload({
-//     limits: { fileSize: 4 * 1024 * 1024 }, // ✅ الحد الأقصى للحجم: 4 ميجابايت
-//   })
-// );
-
 
 // ✅ تعريف المسارات
 app.use('/reservation-payments', reservationPaymentsRoutes);
@@ -123,7 +96,7 @@ app.use('/api/treasury', treasuryRoutes);
 app.use("/api/shift-closures", shiftClosuresRoutes);
 app.use('/api/drawers', drawerRoutes); // أي طلب يبدأ بـ /api/drawers سيتم توجيهه إلى drawerRoutes
 
-
+app.use('/api/whatsapp', whatsappRoutes);
 
 
 // backend/server.js
@@ -165,10 +138,8 @@ app.use((err, req, res, next) => {
 });
 
 // ✅ بدء الخادم
-const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  console.log(`🚀 App is running on port ${PORT}`);
-  console.log(`📸 Try accessing an image: https://sidra-fatima.onrender.com/uploads/chalet/example.jpg`);
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`📸 Try accessing an image: http://localhost:${PORT}/uploads/chalet/example.jpg`);
 });
-
-

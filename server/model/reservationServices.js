@@ -12,6 +12,8 @@ const reservationServices = new Schema({
   number: { type: Number, default: 1 },
   price: { type: Number, trim: true, default: 0 },
   note: { type: String, trim: true },
+    discount: { type: Number, default: 0 },
+
   package: { type: String, trim: true },
   type: { type: String, required: true }, // service,free,request
   statement: { type: String, trim: true },

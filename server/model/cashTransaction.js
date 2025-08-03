@@ -14,6 +14,7 @@ const cashTransactionSchema = new mongoose.Schema({
     type: Date,
     default: Date.now, // هذه القيمة تضمن تسجيل التاريخ والوقت الحالي تلقائياً
   },
+  source: { type: String, trim: true }, 
 
     // تفاصيل توضح مصدر الحركة (مثال: "دفعة من حجز" أو "شراء مستلزمات مكتبية")
     details: { type: String, required: true }, 

@@ -227,14 +227,13 @@ const Reset = ({ data, totalInsurance, totalPaid, totalServices }) => {
           <Grid item xs={6}>
             التوقيع : ...........................................
           </Grid>
-          <Grid item xs={6} textAlign={"center"} sx={{ margin: "24px 0" }}>
+          <Grid item xs={6} textAlign={"center"} sx={{ margin: "2px 0" }}>
             {" "}
             ...................................................
           </Grid>
-        </Grid>
+                  <p style={{ margin: "10px " }}>الموظف : {employee?.name}</p>
 
-        <div className="line"></div>
-        <p style={{ margin: "10px " }}>الموظف : {employee?.name}</p>
+        </Grid>
       </div>
     </div>
   );

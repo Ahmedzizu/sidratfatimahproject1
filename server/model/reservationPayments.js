@@ -14,6 +14,8 @@ const paymentsSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'BankDetails',
 },
+  source: { type: String, trim: true }, 
+
     reservation: { type: mongoose.Types.ObjectId, ref: "reservations" },
     employee: { type: mongoose.Types.ObjectId, ref: "employee" },
     paymentContractNumber: { type: String }, // ✅ إضافة رقم الإيصال

@@ -1,20 +1,14 @@
-import React ,{useEffect , useState ,useRef} from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import "../scss/addChalets.scss"
-import { Grid, InputLabel, MenuItem, Select } from '@mui/material';
-import { TextField } from '@mui/material';
+import "../scss/addChalets.scss";
+import { Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import Api from './../config/config';
 import { useTranslation } from 'react-i18next';
-import { fetchChalets } from './../redux/reducers/chalet';
 import { useDispatch, useSelector } from 'react-redux';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { notifyError } from '../components/Notify';
-import { fetchEmploees ,fetchEmployeeFinance } from '../redux/reducers/employee';
-
+import { fetchEmploees, fetchEmployeeFinance } from '../redux/reducers/employee';
 
 const style = {
   position: 'absolute',
@@ -27,104 +21,124 @@ const style = {
   p: 4,
 };
 
-function AddEmployeeFinance({ handleClose, update, data: data2, open, onFinish }) {
- const [data,setData]=useState({employee:"",date:"",type:"bonus",bonusHours:0,amount:""})
- const inputFile=useRef()
- const { t, i18n } = useTranslation();
- const dispatch=useDispatch()
- const [loading,setLoading] =useState(false) 
+function AddEmployeeFinance({ handleClose, data: data2, open, onFinish }) {
+  // ✨ 1. تم تعيين تاريخ اليوم تلقائيًا
+  const [data, setData] = useState({
+    employee: "",
+    date: new Date().toISOString().split('T')[0], // YYYY-MM-DD format
+    type: "bonus",
+    bonusHours: 0,
+    amount: ""
+  });
 
-useEffect(()=>{
-    dispatch(fetchEmployeeFinance())
-    dispatch(fetchEmploees())
-},[])
+  const { t, i18n } = useTranslation();
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const employees = useSelector((state) => state.employee.value.data);
 
+  useEffect(() => {
+    dispatch(fetchEmploees());
+  }, [dispatch]);
 
-let employees=useSelector((state)=>state.employee.value.data)
-
-function handleSubmit(e) {
-  e.preventDefault();
-  setLoading(true);
-  Api.post("/employee/finance", data)
-  .then(() => {
-    setData({
-      employee: "",
-      date: "",
-      type: "bonus",
-      bonusHours: 0,
-      amount: "",
-    });
-    setLoading(false);
-
-   if (onFinish) {
-  onFinish(); // هو اللي بيحتوي على handleClose و Snackbar
-} else {
-  handleClose(); // fallback
-}
-  })
-    .catch((err) => {
-      console.log(err?.response);
-      setLoading(false);
-    });
-}
+  // ✨ 2. useEffect جديد لحساب المبلغ تلقائيًا
+  useEffect(() => {
+    // يعمل فقط إذا كان النوع "اضافة" ויש ساعات إضافية
+    if (data.type === 'bonus' && data.employee && data.bonusHours > 0) {
+      const selectedEmployee = employees.find(e => e._id === data.employee);
+      
+      // تأكد من وجود الموظف وراتبه
+      if (selectedEmployee && selectedEmployee.salary) {
+        const hourlyRate = selectedEmployee.salary / 26 / 12; // راتب الساعة
+        const calculatedAmount = hourlyRate * data.bonusHours;
+        setData(prevData => ({ ...prevData, amount: calculatedAmount.toFixed(2) }));
+      }
+    } else if (data.type === 'discount') {
+      // يمكنك ترك حقل المبلغ فارغًا عند التحويل إلى خصم
+      setData(prevData => ({ ...prevData, amount: '' }));
+    }
+  }, [data.employee, data.bonusHours, data.type, employees]);
 
 
+  function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    Api.post("/employee/finance", data)
+      .then(() => {
+        setData({
+          employee: "",
+          date: new Date().toISOString().split('T')[0],
+          type: "bonus",
+          bonusHours: 0,
+          amount: "",
+        });
+        setLoading(false);
+        if (onFinish) {
+          onFinish();
+        } else {
+          handleClose();
+        }
+      })
+      .catch((err) => {
+        console.log(err?.response);
+        setLoading(false);
+      });
+  }
 
-
-
- return (
+  return (
     <div>
-      <Modal style={{direction:i18n.language=='en'?'ltr':'rtl'}} open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description" >
+      <Modal style={{ direction: i18n.language === 'en' ? 'ltr' : 'rtl' }} open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={style} className='model'>
-          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{marginBottom:5}}>
-             أضافة او خصم  
+          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ marginBottom: 5 }}>
+            أضافة او خصم
           </Typography>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
-                <Grid item xs={6}>
-                   <InputLabel htmlFor="chaletImg">{t("employee.name")}</InputLabel>
-                  <Select fullWidth value={data.employee} required onChange={(e)=> setData({...data,employee:e.target.value})}>
-                    {
-                     employees.map((ele) => (
-  <MenuItem key={ele._id} value={ele._id}>{ele.name}</MenuItem>
-))
-
-                    }
+              <Grid item xs={6}>
+                <InputLabel>{t("employee.name")}</InputLabel>
+                <Select fullWidth value={data.employee} required onChange={(e) => setData({ ...data, employee: e.target.value })}>
+                  {employees.map((ele) => (
+                    <MenuItem key={ele._id} value={ele._id}>{ele.name}</MenuItem>
+                  ))}
                 </Select>
-                </Grid>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel>النوع</InputLabel>
+                <Select fullWidth value={data.type} required onChange={(e) => setData({ ...data, type: e.target.value })}>
+                  <MenuItem value="bonus">اضافة</MenuItem>
+                  <MenuItem value="discount">خصم</MenuItem>
+                </Select>
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel>المبلغ</InputLabel>
+                {/* ✨ 3. تم تعطيل حقل المبلغ في حالة الإضافة */}
+              <TextField 
+  variant="outlined" 
+  required 
+  type="number" 
+  value={data.amount} 
+  onChange={(e) => setData({ ...data, amount: e.target.value })}
+/>
+              </Grid>
+              {data.type === "bonus" && (
                 <Grid item xs={6}>
-                   <InputLabel >النوع</InputLabel>
-                    <Select fullWidth value={data.type} required onChange={(e)=> setData({...data,type:e.target.value})}>
-                        <MenuItem value="bonus">اضافة</MenuItem>
-                        <MenuItem value="discount">خصم</MenuItem>
-                    </Select>
+                  <InputLabel>ساعات اضافية</InputLabel>
+                  <TextField variant="outlined" required type="number" value={data.bonusHours} onChange={(e) => setData({ ...data, bonusHours: e.target.value })} />
                 </Grid>
-                <Grid item xs={6}>
-                   <InputLabel >المبلغ</InputLabel>
-                    <TextField variant="outlined" required type="number" value={data.amount} onChange={(e)=>setData({...data,amount:e.target.value})}/>
-                </Grid>
-                {
-                    data.type=="bonus" &&
-                    <Grid item xs={6}>
-                    <InputLabel >ساعات اضافية</InputLabel>
-                     <TextField variant="outlined" required type="number" value={data.bonusHours} onChange={(e)=>setData({...data,bonusHours:e.target.value})}/>
-                 </Grid>
+              )}
+              <Grid item xs={6}>
+                <InputLabel>{t("employee.date")}</InputLabel>
+                <TextField variant="outlined" fullWidth required type="date" value={data.date} onChange={(e) => setData({ ...data, date: e.target.value })} />
+              </Grid>
+              <Grid item xs={6}>
+                <InputLabel>{t("employee.note")}</InputLabel>
+                <TextField variant="outlined" fullWidth type="text" value={data.notes || ''} onChange={(e) => setData({ ...data, notes: e.target.value })} />
+              </Grid>
+              <Grid item xs={12}>
+                {loading ?
+                  <Button variant='contained' disabled type='submit' fullWidth style={{ backgroundColor: "#B38D46", height: "50px", fontSize: "1rem" }}>Loading ...</Button>
+                  : <Button variant='contained' type='submit' fullWidth style={{ backgroundColor: "#B38D46", height: "50px", fontSize: "1rem" }}>اضافة</Button>
                 }
-                <Grid item xs={6}>
-                   <InputLabel >{t("employee.date")}</InputLabel>
-                    <TextField variant="outlined" fullWidth required type="date" value={data.date} onChange={(e)=>setData({...data,date:e.target.value})}/>
-                </Grid>
-                <Grid item xs={6}>
-                   <InputLabel >{t("employee.note")}</InputLabel>
-                    <TextField variant="outlined" fullWidth type="text" value={data.notes} onChange={(e)=>setData({...data,notes:e.target.value})}/>
-                </Grid>
-
-                <Grid item xs={12}>
-                    {loading? 
-                    <Button variant='contained'disabled type='submit' fullWidth style={{backgroundColor:"#B38D46",height:"50px" ,fontSize:"1rem"}}>Loading ...</Button>
-                    :<Button variant='contained' type='submit' fullWidth style={{backgroundColor:"#B38D46",height:"50px" ,fontSize:"1rem"}}>اضافة</Button>
-                    }
-                </Grid>
+              </Grid>
             </Grid>
           </form>
         </Box>
@@ -133,5 +147,3 @@ function handleSubmit(e) {
   );
 }
 export default AddEmployeeFinance;
-
- 

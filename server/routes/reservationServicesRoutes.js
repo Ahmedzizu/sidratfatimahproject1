@@ -4,7 +4,7 @@ const router = express.Router();
 const middlware = require('../middlewares/middleware');
 
 router.post("/reservation/service",services.postService)
-router.post("/reservation/service/update",services.updateService)
+router.post("/reservation/service/update/:id", services.updateService)
 router.route("/reservation/service/:id")
 .get(services.getService)
 .delete(services.deleteService)
