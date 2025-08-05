@@ -1,9 +1,12 @@
 const path = require("path");
 
 const hallFileUpload = async (req, res, next) => {
+  console.log("📂 المفاتيح المستلمة:", Object.keys(req.files || {}));
+
   try {
     console.log("🚀 بدء استقبال الملفات...");
-    
+    console.log("🧾 req.files:", req.files);
+
     req.imgNames = [];
     req.videoNames = [];
 

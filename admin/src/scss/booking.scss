@@ -1,7 +1,28 @@
-body{
+/* أنماط أساسية */
+:root {
+  --primary-color: #262f3d;
+  --secondary-color: #ff9f1c;
+  --accent-color: #c4862e;
+  --dark-color: #383f49;
+  --light-color: #f8f9fa;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #fd7e14;
+  --gold-color: #b8860b;
+  --text-dark: #212529;
+  --text-light: #f8f9fa;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+body {
   margin: 20px 80px;
   font-family: 'Cairo', sans-serif;
+  background-color: #f5f7fa;
+  color: var(--text-dark);
+  line-height: 1.6;
 }
+
 @font-face {
   font-family: 'Cairo';
   src: url('/assets/cairo.ttf') format('truetype');
@@ -9,189 +30,491 @@ body{
   font-style: normal;
 }
 
-.booking-container {
-  max-width: 1200px; /* ✅ تحديد حد أقصى للعرض */
-  width: 100%;
-  margin: auto; /* ✅ يجعل العنصر في المنتصف */
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* ✅ يجعل جميع العناصر في المنتصف */
-}
-
+/* تأثيرات حركية */
 @keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.booking-title {
-  font-family: 'Cairo', sans-serif !important;
-  text-align: center;
-  font-size: 27px;
-  font-weight: bold;
-  margin-bottom: 10px !important;
-}
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
 
-.submit-button2 {
-  transition: all 0.3s ease-in-out !important;
+  50% {
+    transform: scale(1.05);
+  }
 
-  font-family: 'Cairo', sans-serif !important; 
-  background: #b8860b !important;
-  color: white;
-  font-weight: bold;
-  padding: 10px 52px !important;
-  border-radius: 60px !important;
-  transition: 0.3s;
-
-  &:hover {
-    background: #383f49;
+  100% {
+    transform: scale(1);
   }
 }
 
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: scale(20, 20);
+    opacity: 0;
+  }
+}
+
+/* حاوية الحجز */
+.booking-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.booking-title {
+  font-family: 'Cairo', sans-serif;
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+  position: relative;
+  padding-bottom: 10px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.booking-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+  border-radius: 3px;
+}
+
+/* الأزرار */
+.submit-button2 {
+  font-family: 'Cairo', sans-serif;
+  background: linear-gradient(135deg, var(--gold-color), #d4a017);
+  color: white;
+  font-weight: bold;
+  padding: 12px 52px;
+  border-radius: 60px;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.submit-button2:hover {
+  background: linear-gradient(135deg, var(--dark-color), #4a5568);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.submit-button2:active {
+  transform: translateY(1px);
+}
+
+.submit-button2::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.8);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%);
+  transform-origin: 50% 50%;
+}
+
+.submit-button2:focus:not(:active)::after {
+  animation: ripple 1s ease-out;
+}
+
+.submit-button-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* حقول الإدخال */
 .fields-container {
-  font-family: 'Cairo', sans-serif !important;
+  font-family: 'Cairo', sans-serif;
   width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px; /* ✅ زيادة التباعد بين الحقول */
+  gap: 25px;
+  animation: slideInRight 0.5s ease-out;
 }
 
+/* قسم الفترات الزمنية */
 .period-container {
-  font-family: 'Cairo', sans-serif !important;
+  font-family: 'Cairo', sans-serif;
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
 .period-option {
-  font-family: 'Cairo', sans-serif !important;
+  font-family: 'Cairo', sans-serif;
   flex: 1;
+  min-width: 120px;
   text-align: center;
-  padding: 12px;
+  padding: 15px 10px;
   cursor: pointer;
-  border-radius: 6px;
-  background: #f5f5f5;
-  transition: 0.3s;
+  border-radius: 8px;
+  background: white;
+  transition: var(--transition);
   display: flex;
   flex-direction: column;
   align-items: center;
   font-weight: bold;
+  box-shadow: var(--shadow);
+  border: 2px solid #e9ecef;
+}
+
+.period-option:hover:not(.disabled) {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--secondary-color);
 }
 
 .period-option.selected {
-  background: #383f49;
+  background: var(--dark-color);
   color: white;
+  border-color: var(--dark-color);
+  animation: pulse 0.5s ease;
+}
+
+.period-option.selected .period-time {
+  color: var(--secondary-color);
 }
 
 .period-option.disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  background: #f1f1f1;
+  border: 2px dashed #ccc;
 }
 
 .period-label {
   font-size: 16px;
+  margin-bottom: 5px;
 }
 
 .period-time {
   font-size: 14px;
-  color: #ca991b; /* برتقالي */
+  color: var(--gold-color);
   font-weight: bold;
   margin-top: 4px;
-}
-
-.section-title {
-  font-size: 18px;
-  font-weight: bold;
-  color: #383f49;
-  margin: 20px 0 10px;
-  border-bottom: 2px solid #383f49;
-  padding-bottom: 5px;
-}
-
-.period-time {
-  font-size: 14px;
-  color: #7b7669;
-  font-weight: bold;
-  margin-top: 4px;
-}
-  .booking-content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-        justify-content: center;
-  }
-  
-  .booking-section {
-    width: 200%;
-    max-width: 800px;
-    padding: 20px;
-    background: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-
-.section-title {
-  font-size: 18px;
-  font-weight: bold;
-  color: #383f49;
-  margin-bottom: 10px;
-}
-
-.booking-date {
-  font-size: 20px;
-  color: #5f5e5e;
-  margin-bottom: 30px;
-}
-
-.period-container {
-  display: flex;
-  justify-content: center; 
-  gap: 10px;
-}
-
-.period-time {
-  color: #ca991b;
-  font-weight: bold;
-}
-
-.back-button {
-  width: 100%;
-  background-color: #383f49 !important; /* لون داكن */
-  color: #fff !important; /* نص أبيض */
-  font-weight: bold;
-  padding: 10px 20px !important;
-  border-radius: 8px !important;
-  transition: all 0.3s ease-in-out !important;
-  display: flex;
-  align-items: center;
-  gap: 5px; /* تباعد بين الأيقونة والنص */
-  padding-bottom: 10px;
-  font-family: 'Cairo', sans-serif !important;
-}
-
-.back-button:hover {
-  background-color: #b8860b; /* لون ذهبي عند التمرير */
-  transform: scale(1.05); /* تأثير تكبير خفيف */
-}
-
-.back-button svg {
-  font-size: 20px; /* حجم الأيقونة */
-}
-.period-option.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background: #ffdddd;
-  border: 1px solid #ff4d4d;
 }
 
 .period-option.disabled .period-label,
 .period-option.disabled .period-time {
-  color: #ff4d4d;
+  color: #aaa;
+}
+
+/* أقسام الحجز */
+.booking-content {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.booking-section {
+  width: 100%;
+  max-width: 800px;
+  padding: 25px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  border-left: 4px solid var(--primary-color);
+  animation: slideInLeft 0.6s ease-out;
+}
+
+.booking-section:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin: 0 0 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e9ecef;
+  position: relative;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 50px;
+  height: 2px;
+  background: var(--secondary-color);
+}
+
+.booking-date {
+  font-size: 1.1rem;
+  color: #6c757d;
+  margin-bottom: 25px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* زر الرجوع */
+.back-button {
+  width: 100%;
+  max-width: 1500px;
+  padding: 15px 20px;
+  background: linear-gradient(135deg, var(--dark-color), #4a5568);
+  color: var(--text-light);
+  font-weight: bold;
+  border-radius: 8px;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none;
+  box-shadow: var(--shadow);
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.back-button:hover {
+  background: linear-gradient(135deg, var(--gold-color), #d4a017);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.back-button:active {
+  transform: translateY(1px);
+}
+
+.back-button svg {
+  font-size: 20px;
+  transition: var(--transition);
+}
+
+.back-button:hover svg {
+  transform: translateX(-3px);
+}
+
+/* قسم الملخص */
+.summary-section {
+  width: 100%;
+  max-width: 800px;
+  padding: 25px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--accent-color);
+  animation: scaleIn 0.6s ease-out;
+}
+
+.summary-section .section-title {
+  color: var(--accent-color);
+}
+
+/* تأثيرات للعناصر عند الظهور */
+[data-aos="fade-up"] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease;
+}
+
+[data-aos="fade-up"].aos-animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* تأثيرات للبطاقات */
+.card-hover-effect {
+  transition: var(--transition);
+}
+
+.card-hover-effect:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* ألوان إضافية للفترات */
+.period-option:nth-child(1) {
+  border-color: #4a6fa5;
+}
+
+.period-option:nth-child(2) {
+  border-color: #2ec4b6;
+}
+
+.period-option:nth-child(3) {
+  border-color: #ff9f1c;
+}
+
+.period-option:nth-child(4) {
+  border-color: #e71d36;
+}
+
+.period-option:nth-child(5) {
+  border-color: #6a4c93;
+}
+
+.period-option:nth-child(1):hover {
+  border-color: #3a5a8f;
+}
+
+.period-option:nth-child(2):hover {
+  border-color: #1eb4a6;
+}
+
+.period-option:nth-child(3):hover {
+  border-color: #e68f0c;
+}
+
+.period-option:nth-child(4):hover {
+  border-color: #d70d26;
+}
+
+.period-option:nth-child(5):hover {
+  border-color: #5a3c83;
+}
+
+/* تصميم متجاوب */
+@media (max-width: 768px) {
+  body {
+    margin: 15px 20px;
+  }
+
+  .booking-title {
+    font-size: 1.8rem;
+  }
+
+  .period-container {
+    flex-direction: column;
+  }
+
+  .booking-section,
+  .summary-section {
+    padding: 20px 15px;
+  }
+
+  .submit-button2,
+  .back-button {
+    padding: 12px 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    margin: 10px;
+  }
+
+  .fields-container {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-title {
+    font-size: 1.5rem;
+  }
+}
+
+/* تنسيقات إضافية للملخص المالي */
+.summary-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+  padding: 8px 0;
+  border-bottom: 1px dashed #e9ecef;
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: var(--primary-color);
+  padding-top: 15px;
+  margin-top: 5px;
+  border-top: 2px solid var(--accent-color);
+}
+
+.summary-item span:first-child {
+  color: #6c757d;
+}
+
+.summary-item .value {
+  font-weight: bold;
 }

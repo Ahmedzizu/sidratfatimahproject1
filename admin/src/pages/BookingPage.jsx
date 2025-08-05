@@ -1,7 +1,6 @@
-// F:\ractprojects\New folder (2)\ggg\admin\AG\src\pages\BookingPage.jsx
 
 import React, { useState, useEffect, useMemo } from "react";
-import { TextField, Button, MenuItem, Select, FormControl, InputLabel, Grid, Box, InputAdornment, Typography,Autocomplete ,createFilterOptions  } from "@mui/material"; 
+import { TextField, Button, MenuItem, Select, FormControl, InputLabel, Grid, Box, InputAdornment, Typography,Autocomplete ,createFilterOptions  } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -12,18 +11,18 @@ import BadgeIcon from "@mui/icons-material/Badge";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 
 // ✅ إضافة استيراد أيقونات Material-UI الجديدة
-import EmailIcon from "@mui/icons-material/Email"; 
-import LocationOnIcon from "@mui/icons-material/LocationOn"; 
+import EmailIcon from "@mui/icons-material/Email";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../scss/booking.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCustomer } from "../redux/reducers/customer";
-import { fetchBankDetails } from '../redux/reducers/bank'; 
-import { fetchReservations } from "../redux/reducers/reservation"; 
-import Api from '../config/config'; 
-import AddCustomerModal from '../modals/AddCustomer'; 
+import { fetchBankDetails } from '../redux/reducers/bank';
+import { fetchReservations } from "../redux/reducers/reservation";
+import Api from '../config/config';
+import AddCustomerModal from '../modals/AddCustomer';
 
 // --- دالة validPeriod لتحديد التوفر ---
 /**
@@ -61,13 +60,13 @@ function validPeriod(id, reservations, searchDate) {
                 if (isStartDay) {
                     if (ele?.period?.checkIn?.name === "صباحية") {
                         isMorningValid = false;
-                        isNightValid = false; 
+                        isNightValid = false;
                     } else if (ele?.period?.checkIn?.name === "مسائية") {
                         isNightValid = false;
                     }
                 } else if (isEndDay) {
                     if (ele?.period?.checkOut?.name === "مسائية") {
-                        isMorningValid = false; 
+                        isMorningValid = false;
                         isNightValid = false;
                     } else if (ele?.period?.checkOut?.name === "صباحية") {
                         isMorningValid = false;
@@ -79,7 +78,7 @@ function validPeriod(id, reservations, searchDate) {
             }
         }
     });
-    return { isMorningValid, isNightValid, wholeDay: isMorningValid && isNightValid }; 
+    return { isMorningValid, isNightValid, wholeDay: isMorningValid && isNightValid };
 }
 
 const DEFAULT_ENTITY_TIMES = {
@@ -99,7 +98,7 @@ const BookingPage = () => {
     const entityId = queryParams.get("entityId");
     const entityName = queryParams.get("name") || "مكان غير معروف";
     const initialDate = useMemo(() => queryParams.get("date") || new Date().toISOString().split('T')[0], [queryParams]);
-    
+
     const price = useMemo(() => {
         const parsedPrice = JSON.parse(queryParams.get("price")) || {};
         return {
@@ -140,7 +139,7 @@ const BookingPage = () => {
     const customers = useSelector((state) => state.customer.value.data) || [];
      const banks = useSelector((state) => state.bank.value.data) || [];
    
-    
+   
     let confirmedReservations = useSelector((state) => state.reservation.value.confirmed);
     let unConfirmedReservations = useSelector((state) => state.reservation.value.unConfirmed);
     let allReservations = useMemo(() => [...(confirmedReservations || []), ...(unConfirmedReservations || [])], [confirmedReservations, unConfirmedReservations]);
@@ -213,7 +212,7 @@ const BookingPage = () => {
 
         const discount = parseFloat(formData.discountAmount) || 0;
         const paid = parseFloat(formData.paidAmount) || 0;
-        
+
         const finalCostAfterDiscount = calculatedTotalCost - discount;
         const remaining = finalCostAfterDiscount - paid;
 
@@ -244,13 +243,13 @@ const BookingPage = () => {
     if (!selectedCustomer) {
         setFormData(prev => ({
             ...prev,
-            clientId: null, 
-            clientName: "", 
-            phone: "", 
-            email: "", 
-            address: "", 
-            nationality: "", 
-            idNumber: "" 
+            clientId: null,
+            clientName: "",
+            phone: "",
+            email: "",
+            address: "",
+            nationality: "",
+            idNumber: ""
         }));
         return;
     }
@@ -374,7 +373,7 @@ const BookingPage = () => {
             entityId: entityId,
             notes: formData.notes,
             paymentMethod: formData.paymentMethod,
-         
+
             // إرسال معرّف البنك بدلاً من اسمه
             bank: formData.paymentMethod === "تحويل بنكي" ? formData.bankId : null,
             paidAmount: parseFloat(formData.paidAmount) || 0,
@@ -415,6 +414,7 @@ const filterOptions = createFilterOptions({
 });
 
     return (
+         <div className="main-layout">
         <motion.div className="booking-container" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <ToastContainer position="top-center" autoClose={3000} />
             <Button startIcon={<ArrowBackIcon />} variant="outlined" className="back-button" onClick={() => navigate(-1)}>
@@ -432,7 +432,7 @@ const filterOptions = createFilterOptions({
                 <Grid item xs={12} md={7}>
                 <Box className="booking-section">
     <h3 className="section-title">1. معلومات العميل</h3>
-    
+
    <Autocomplete
     fullWidth
     options={[{ _id: 'new', name: '🆕 أضف عميل جديد' }, ...customers]}
@@ -440,10 +440,10 @@ const filterOptions = createFilterOptions({
     value={customers.find(c => c._id === formData.clientId) || null}
     onChange={(event, newValue) => handleCustomerChange(newValue)}
     isOptionEqualToValue={(option, value) => option._id === value._id}
-    
+
     // ✅✅✅ الخاصية الجديدة للبحث المتقدم ✅✅✅
-    filterOptions={filterOptions} 
-    
+    filterOptions={filterOptions}
+
     renderOption={(props, option) => (
         <Box component="li" {...props} key={option._id}>
             {option.name} {option.phone && `(${option.phone})`}
@@ -494,21 +494,21 @@ const filterOptions = createFilterOptions({
                                     fullWidth
                                     label="البريد الإلكتروني"
                                     value={formData.email}
-                                    InputProps={{ readOnly: true, startAdornment: <InputAdornment position="start"><EmailIcon className="input-icon" /></InputAdornment> }} 
+                                    InputProps={{ readOnly: true, startAdornment: <InputAdornment position="start"><EmailIcon className="input-icon" /></InputAdornment> }}
                                     variant="filled"
                                 />
                                 <TextField
                                     fullWidth
                                     label="العنوان"
                                     value={formData.address}
-                                    InputProps={{ readOnly: true, startAdornment: <InputAdornment position="start"><LocationOnIcon className="input-icon" /></InputAdornment> }} 
+                                    InputProps={{ readOnly: true, startAdornment: <InputAdornment position="start"><LocationOnIcon className="input-icon" /></InputAdornment> }}
                                     variant="filled"
                                 />
                             </Box>
                         )}
                     </Box>
 
-                    <Box className="booking-section">
+                    <Box className="booking-section"marginTop={3}>
                         <h3 className="section-title">2. فترة الحجز</h3>
                         <Box className="period-container">
                             {[
@@ -544,7 +544,7 @@ const filterOptions = createFilterOptions({
                     {/* ✅ إزالة الشرط هنا ليكون هذا القسم مرئيًا دائماً،
                          ممكن تحتاج تخفيه لو selectedPeriod مش wholeDay */}
                     {/* {formData.selectedPeriod === "wholeDay" && ( */}
-                        <Box className="booking-section">
+                        <Box className="booking-section" marginTop={3}>
                             <h3 className="section-title">3. وقت الدخول والخروج (للحجز متعدد الأيام أو كامل اليوم)</h3>
                             <Box className="fields-container">
                                 <Box className="input-group">
@@ -619,14 +619,8 @@ const filterOptions = createFilterOptions({
                                     />
                                 </Box>
                             </Box>
-                        </Box>
-                    {/* )} */}
-                
-
-                <Grid item xs={12} md={5}>
-             {/* ======================= بداية قسم الدفع والملخص المالي ======================= */}
-
-<Box className="booking-section">
+                    </Box>
+                    <Box className="booking-section" marginTop={3}>
     <h3 className="section-title">4. تفاصيل الدفع</h3>
     <Box className="fields-container">
         <FormControl fullWidth sx={{ mb: 1.5 }}>
@@ -677,9 +671,8 @@ const filterOptions = createFilterOptions({
         )}
         <TextField fullWidth label="ملاحظات" name="notes" value={formData.notes} onChange={handleChange} multiline rows={2} />
     </Box>
-</Box>
-
-<Box mt={2} textAlign="center" className="summary-section">
+                    </Box>
+                    <Box mt={2} textAlign="center" className="summary-section">
     <h3 className="section-title">الملخص المالي</h3>
     <div className="summary-item total">
         <span>التكلفة الكلية:</span>
@@ -693,9 +686,8 @@ const filterOptions = createFilterOptions({
         <span>المبلغ المتبقي:</span>
         <strong>{finalCosts.remaining.toFixed(2)} ريال</strong>
     </div>
-</Box>
-</Grid>
-<Box textAlign="center" marginTop={3}>
+                        </Box>
+                        <Box textAlign="center" marginTop={3}>
     <Button
         variant="contained"
         className="submit-button"
@@ -710,17 +702,31 @@ const filterOptions = createFilterOptions({
     </Button>
 </Box>
 
+                    {/* )} */}
+
+
+                <Grid item xs={24} >
+             {/* ======================= بداية قسم الدفع والملخص المالي ======================= */}
+
+
+
+
+                        </Grid>
+
+
 {/* ======================= نهاية قسم الدفع والملخص المالي ======================= */}
                 </Grid>
             </Grid>
 
-            
+
             <AddCustomerModal
     open={isAddCustomerModalOpen}
-    handleClose={() => setIsAddCustomerModalOpen(false)} 
+    handleClose={() => setIsAddCustomerModalOpen(false)}
     onCustomerAdded={handleCustomerAdded}
-/>
-        </motion.div>
+                />
+
+            </motion.div>
+            </div>
     );
 };
 

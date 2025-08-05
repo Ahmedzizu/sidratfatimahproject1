@@ -911,11 +911,20 @@ updateAdvancedReservation: async (req, res) => {
      if (!originalReservation) {
       return res.status(404).send({ error: "الحجز غير موجود" });
     }
-    
-    const finalEntityId = entityId || originalReservation.entity.id.toString();
-    const entity = (await Hall.findById(finalEntityId)) || (await Chalet.findById(finalEntityId)) || (await Resort.findById(finalEntityId));
-    if (!entity) return res.status(404).send({ error: "Entity not found" });
+        // --- ✨ تعديل رقم 1: تحديد النوع والجهة معًا ---
+        const finalEntityId = entityId || originalReservation.entity.id.toString();
 
+        let entity;
+    let newType;
+    if ((entity = await Hall.findById(finalEntityId))) {
+        newType = "hall";
+    } else if ((entity = await Chalet.findById(finalEntityId))) {
+        newType = "chalet";
+    } else if ((entity = await Resort.findById(finalEntityId))) {
+        newType = "resort";
+    }
+    if (!entity) return res.status(404).send({ error: "Entity not found" });
+  
     // 3. ✅ إعادة حساب السعر بالكامل (باستخدام المنطق الدقيق)
     let newOriginalCost = 0;
     const start = new Date(originalReservation.period.startDate);
@@ -972,6 +981,7 @@ updateAdvancedReservation: async (req, res) => {
 
     // 5. بناء سجل التعديلات
     const changes = [];
+    if (newType !== originalReservation.type) changes.push(`تغيير النوع من '${originalReservation.type}' إلى '${newType}'`);
     if (clientName && originalReservation.client.name !== clientName) changes.push(`تغيير اسم العميل إلى '${clientName}'`);
     if (clientPhone && originalReservation.client.phone !== clientPhone) changes.push(`تغيير الهاتف إلى '${clientPhone}'`);
     if (finalEntityId !== originalReservation.entity.id.toString()) changes.push(`تغيير الجهة من '${originalReservation.entity.name}' إلى '${entity.name}'`);
@@ -986,14 +996,22 @@ updateAdvancedReservation: async (req, res) => {
     // ================================================================
     // ✨✨ تم تحديث منطق الحسابات هنا ✨✨
     // ================================================================
-    // 1. جلب كل الدفعات السابقة للحجز
+  // 1. جلب كل الدفعات السابقة والخدمات
     const allPayments = await Payments.find({ reservation: _id });
-    const totalPaidAmount = allPayments.reduce((sum, payment) => sum + (payment.paid || 0), 0);
+    const services = await ReservationServices.find({ reservationId: _id });
     
-    // 2. حساب المبلغ المتبقي الجديد بناءً على السعر النهائي الجديد
-    const newRemainingAmount = finalCost - totalPaidAmount;
+    // 2. حساب إجمالي المدفوعات وتكلفة الخدمات
+    const totalPaidAmount = allPayments.reduce((sum, payment) => sum + (payment.paid || 0), 0);
+  const totalServicesCost = services.reduce((sum, service) => sum + (service.price || 0), 0);
+      // 3. حساب المبلغ الإجمالي الصحيح (تكلفة الحجز + تكلفة الخدمات)
+// السطر الصحيح
+const finalTotalCost = finalCost + totalServicesCost;
+    // 4. حساب المبلغ المتبقي الصحيح والنهائي
+    const newRemainingAmount = finalTotalCost - totalPaidAmount;
+    
     // 6. بناء كائن التحديث النهائي
     const updateData = {
+       type: newType,
       "client.name": clientName,
       "client.phone": clientPhone,
       "entity.id": finalEntityId,
@@ -1004,7 +1022,7 @@ updateAdvancedReservation: async (req, res) => {
       discountAmount: newDiscountAmount,
       additionalCharge: numericAdditionalCharge,
       "payment.paidAmount": totalPaidAmount, // تحديث إجمالي المدفوع
-      "payment.remainingAmount": newRemainingAmount,
+       "payment.remainingAmount": newRemainingAmount,
     };
     
     const updatePayload = { $set: updateData };
@@ -1037,7 +1055,8 @@ updateAdvancedReservation: async (req, res) => {
 
 ---
 الحالة المالية الجديدة:
-- المبلغ الإجمالي الجديد: ${finalCost.toFixed(2)}
+- مبلغ الحجز الجديد: ${finalCost.toFixed(2)}
+- إجمالي الخدمات: ${totalServicesCost.toFixed(2)}
 - إجمالي المدفوع: ${totalPaidAmount.toFixed(2)}
 - المبلغ المتبقي الجديد: ${newRemainingAmount.toFixed(2)}
 

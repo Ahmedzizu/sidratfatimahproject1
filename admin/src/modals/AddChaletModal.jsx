@@ -14,6 +14,15 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { notifyError } from '../components/Notify';
 
+// ✅ الخطوة 2.1: إضافة استيرادات جديدة
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import dayjs from 'dayjs';
+// Required for string format parsing
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -111,12 +120,11 @@ function handleSubmit(e) {
   }
 
   let url = update ? '/admin/chalet/update' : '/admin/chalet';
-
-  Api.post(url, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    }
-  })
+Api.post(url, formData, {
+  headers: {
+    'Content-Type': 'multipart/form-data',
+  }
+})
     .then(() => {
       dispatch(fetchChalets());
       setData({
@@ -263,11 +271,12 @@ function deleteDetails(ind){
           <Typography id="modal-modal-title" variant="h6" component="h2" sx={{marginBottom:1}}>
             {update?t("entity.update") :t("entity.chalet")}
           </Typography>
+           <LocalizationProvider dateAdapter={AdapterDayjs}>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
                 <Grid item xs={4}>
                   <InputLabel htmlFor="chaletImg">{t("entity.image")}</InputLabel>
-                  <TextField ref={inputFile} fullWidth id='chaletImg' variant="outlined"  name="file" type="file"  InputProps={{inputProps: { multiple: true}}}  onChange={uploadFiles}/>
+                  <TextField ref={inputFile} fullWidth id='chaletImg' variant="outlined"  name="file[]" type="file"  InputProps={{inputProps: { multiple: true}}}  onChange={uploadFiles}/>
                 </Grid>
                 <Grid item xs={8}>
                   <div className='imgStack'>
@@ -278,7 +287,7 @@ function deleteDetails(ind){
                 </Grid>
                 <Grid item xs={4}>
                   <InputLabel htmlFor="chaletvideo">{t("entity.video")}</InputLabel>
-                  <TextField ref={inputFile} fullWidth id='chaletvideo' variant="outlined" name="file" type="file"  InputProps={{inputProps: { multiple: true}}}  onChange={uploadvideos}/>
+                  <TextField ref={inputFile} fullWidth id='chaletvideo' variant="outlined" name="file[]" type="file"  InputProps={{inputProps: { multiple: true}}}  onChange={uploadvideos}/>
                 </Grid>
                 <Grid item xs={8}>
                   <div className='imgStack'>
@@ -323,22 +332,53 @@ function deleteDetails(ind){
                     <InputLabel htmlFor="chaletImg">{t("entity.wholePrice")}</InputLabel>
                     <TextField variant="outlined" required type="number"  value={data.wholeDayPrice} onChange={(e)=>setData({...data,wholeDayPrice:e.target.value})}/>
                 </Grid>
-                <Grid item xs={2}>
-                    <InputLabel htmlFor="chaletImg">{t("entity.dayStartHour")}</InputLabel>
-                    <TextField variant="outlined" required type="text"  value={data.dayStartHour} onChange={(e)=>setData({...data,dayStartHour:e.target.value})}/>
-                </Grid>
-                <Grid item xs={2}>
-                    <InputLabel htmlFor="chaletImg">{t("entity.dayEndHour")}</InputLabel>
-                    <TextField variant="outlined" required type="text" value={data.dayEndHour} onChange={(e)=>setData({...data,dayEndHour:e.target.value})}/>
-                </Grid>
-                <Grid item xs={2}>
-                    <InputLabel htmlFor="chaletImg">{t("entity.nightStartHour")}</InputLabel>
-                    <TextField variant="outlined" required type="text"  value={data.nightStartHour} onChange={(e)=>setData({...data,nightStartHour:e.target.value})}/>
-                </Grid>
-                <Grid item xs={2}>
-                    <InputLabel htmlFor="chaletImg">{t("entity.nightEndHour")}</InputLabel>
-                    <TextField variant="outlined" required type="text"  value={data.nightEndHour} onChange={(e)=>setData({...data,nightEndHour:e.target.value})}/>
-                </Grid>
+               <Grid item xs={3}>
+               <InputLabel htmlFor="chaletImg">{t("entity.dayStartHour")}</InputLabel>
+
+                                <TimePicker
+                                  label={t("entity.dayStartHour")}
+                                  value={data.dayStartHour ? dayjs(data.dayStartHour, 'HH:mm') : null}
+                                  onChange={(newValue) => {
+                                    setData({ ...data, dayStartHour: newValue ? newValue.format('HH:mm') : null });
+                                  }}
+                                  slotProps={{ textField: { fullWidth: true, required: true } }}
+                                />
+                              </Grid>
+                              <Grid item xs={3}>
+                                 <InputLabel htmlFor="chaletImg">{t("entity.dayEndHour")}</InputLabel>
+                                <TimePicker
+                                
+                                  label={t("entity.dayEndHour")}
+                                  value={data.dayEndHour ? dayjs(data.dayEndHour, 'HH:mm') : null}
+                                  onChange={(newValue) => {
+                                    setData({ ...data, dayEndHour: newValue ? newValue.format('HH:mm') : null });
+                                  }}
+                                  slotProps={{ textField: { fullWidth: true, required: true } }}
+                                />
+                          </Grid>
+                              <Grid item xs={3}>
+                                 <InputLabel htmlFor="chaletImg">{t("entity.nightStartHour")}</InputLabel>
+                                <TimePicker
+                                  label={t("entity.nightStartHour")}
+                                  value={data.nightStartHour ? dayjs(data.nightStartHour, 'HH:mm') : null}
+                                  onChange={(newValue) => {
+                                    setData({ ...data, nightStartHour: newValue ? newValue.format('HH:mm') : null });
+                                  }}
+                                  slotProps={{ textField: { fullWidth: true, required: true } }}
+                                />
+                              </Grid>
+                              <Grid item xs={3}>
+                                <InputLabel htmlFor="chaletImg">{t("entity.nightEndHour")}</InputLabel>
+
+                                <TimePicker
+                                  label={t("entity.nightEndHour")}
+                                  value={data.nightEndHour ? dayjs(data.nightEndHour, 'HH:mm') : null}
+                                  onChange={(newValue) => {
+                                    setData({ ...data, nightEndHour: newValue ? newValue.format('HH:mm') : null });
+                                  }}
+                                  slotProps={{ textField: { fullWidth: true, required: true } }}
+                                />
+                              </Grid>
                 <Grid item xs={2}>
                    <InputLabel htmlFor="chaletImg">{t("entity.address")}</InputLabel>
                     <TextField variant="outlined" required type="text"  value={data.address} onChange={(e)=>setData({...data,address:e.target.value})}/>
@@ -376,6 +416,7 @@ function deleteDetails(ind){
                 </Grid>
             </Grid>
           </form>
+          </LocalizationProvider>
         </Box>
       </Modal>
     </div>

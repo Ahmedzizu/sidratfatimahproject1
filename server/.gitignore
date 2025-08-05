@@ -30,4 +30,5 @@ req.rest
 # Ignore all .log files in the /logs directory
 /logs/*.log
 
+server/tokens/my-session/
 

@@ -57,11 +57,18 @@ const PaymentsCtl = {
       // ================================================================
       // 2. جلب كل الدفعات (القديمة والجديدة) لهذا الحجز
       const allPaymentsForReservation = await Payments.find({ reservation: reservationId });
+ const services = await ReservationServices.find({ reservationId: existingReservation._id });
 
       // 3. حساب إجمالي المبلغ المدفوع عن طريق جمع كل الدفعات
       const newTotalPaid = allPaymentsForReservation.reduce((sum, payment) => sum + (payment.paid || 0), 0);
-      const newRemainingAmount = existingReservation.cost - newTotalPaid;
+      
+  const totalServicesCost = services.reduce((sum, service) => sum + (service.price || 0), 0);
+      
+    // 4. حساب التكلفة الإجمالية الحقيقية (سعر الحجز + سعر الخدمات)
+    const trueTotalCost = existingReservation.cost + totalServicesCost;
 
+    // 5. حساب المبلغ المتبقي الصحيح بناءً على التكلفة الحقيقية
+    const newRemainingAmount = trueTotalCost - newTotalPaid;
       // 4. تحديث سجل الحجز الرئيسي بالقيم الصحيحة والدقيقة
       existingReservation.payment.paidAmount = newTotalPaid;
       existingReservation.payment.remainingAmount = newRemainingAmount;
@@ -140,7 +147,7 @@ const PaymentsCtl = {
 
 - نوع الدفع: ${type}${bankName}
 - رقم إيصال الدفع: ${paymentContractNumber}
-- مبلغ الحجز الإجمالي: ${existingReservation.cost.toFixed(2)}
+- المبلغ الإجمالي (شامل الخدمات): ${trueTotalCost.toFixed(2)}
 
 - المبلغ المدفوع حديثًا: ${parseFloat(paid).toFixed(2)}
 - إجمالي المدفوع حتى الآن: ${newTotalPaid.toFixed(2)}

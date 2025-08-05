@@ -1,75 +1,100 @@
 import React, { useEffect, useState } from 'react';
-// import { Button, Grid, Tooltip } from '@mui/material';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import listPlugin from '@fullcalendar/list';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux'; // Correct import for Redux hooks
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchReservationCounts } from '../redux/reducers/ReservationCounts';
 import { fetchReservations } from '../redux/reducers/reservation';
 import { useTranslation } from 'react-i18next';
 import AddReservation from '../modals/AddReservation';
-import { Grid, Typography, CircularProgress } from '@mui/material'; 
+import { Grid, Typography, TextField } from '@mui/material'; 
+import "../scss/dashboard.scss";
+
 const Dashboard = () => {
   const { t, i18n } = useTranslation();
   const [search, setSearch] = useState('');
   const [modal, setModal] = useState({ open: false, date: {} });
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [calendarView, setCalendarView] = useState('dayGridMonth');
+  const [dayMaxEvents, setDayMaxEvents] = useState(3);
 
-  const hallsCount = useSelector((state) => state.reservationCounts?.hallsCount ?? 0);
-  const chaletsCount = useSelector((state) => state.reservationCounts?.chaletsCount ?? 0);
-  const unconfirmedReservationsCount = useSelector((state) => state.reservationCounts?.unconfirmedReservationsCount ?? 0);
-  const unpaidClientsCount = useSelector((state) => state.reservationCounts?.unpaidClientsCount ?? 0);
-
-  const confirmedData = useSelector((state) => state.reservation?.value?.confirmed || []);
-
-  useEffect(() => {
-    dispatch(fetchReservationCounts());
-    dispatch(fetchReservations());
-  }, [dispatch]);
-
-  const handleClose = () => setModal({ open: false });
-
-  const filteredData = confirmedData.filter((ele) =>
-    ele.client?.name.toLowerCase().includes(search.toLowerCase())
-  );
- const {
-   
+  const {
+    hallsCount = 0,
+    chaletsCount = 0,
+    unconfirmedReservationsCount = 0,
+    unpaidClientsCount = 0,
     hallsStartingToday = 0,
     hallsEndingToday = 0,
     chaletsStartingToday = 0,
     chaletsEndingToday = 0
   } = useSelector((state) => state.reservationCounts || {});
 
-  const groupedEvents = filteredData.reduce((acc, ele) => {
-    const date = ele.period?.startDate;
-    if (!acc[date]) acc[date] = [];
+  const confirmedData = useSelector((state) => state.reservation?.value?.confirmed || []);
 
-    let eventColor = '#4CAF50'; // Default to green (Morning)
-    if (ele.period?.dayPeriod === 'صباحية') eventColor = '#4CAF50'; // Green
-    else if (ele.period?.dayPeriod === 'مسائية') eventColor = '#9C27B0'; // Purple
-    else if (ele.period?.dayPeriod === 'كامل اليوم') eventColor = '#F44336'; // Red
+  useEffect(() => {
+    dispatch(fetchReservationCounts());
+    dispatch(fetchReservations());
 
-    acc[date].push({
-      title: `${ele.client?.name}` || 'غير معروف',
-      date,
-      id: ele._id,
-      backgroundColor: eventColor,
-      borderColor: eventColor,
-      extendedProps: {
-        status: ele.status,
-        entity: ele.entity?.name,
-        amount: ele.cost,
-        dayPeriod: ele.period?.dayPeriod,
-        entityType: ele.entityType
-      },
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 768) {
+        setCalendarView('listWeek');
+        setDayMaxEvents(1);
+      } else if (width < 1200) {
+        setCalendarView('dayGridMonth');
+        setDayMaxEvents(2);
+      } else {
+        setCalendarView('dayGridMonth');
+        setDayMaxEvents(3);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [dispatch]);
+
+  const handleClose = () => setModal({ open: false });
+
+  const eventsForCalendar = confirmedData
+    .filter((ele) => ele.client?.name.toLowerCase().includes(search.toLowerCase()))
+    .flatMap((ele) => {
+      const eventClasses = ele.type?.toLowerCase() === 'hall' ? ['event-hall'] :
+        ele.period?.dayPeriod === 'صباحية' ? ['event-morning'] :
+        ele.period?.dayPeriod === 'مسائية' ? ['event-evening'] : ['event-full-day'];
+
+      const startDate = new Date(ele.period?.startDate);
+      const endDate = new Date(ele.period?.endDate);
+      let currentDate = new Date(startDate);
+      const events = [];
+
+      while (currentDate <= endDate) {
+        events.push({
+          title: `${ele.client?.name}` || 'غير معروف',
+          start: new Date(currentDate).toISOString().split('T')[0],
+          id: ele._id,
+          classNames: eventClasses,
+          extendedProps: {
+            status: ele.status,
+            entity: ele.entity?.name,
+            amount: ele.cost,
+            dayPeriod: ele.period?.dayPeriod,
+            entityType: ele.type,
+          },
+        });
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+
+      return events;
     });
-
-    return acc;
-  }, {});
-
-  const eventsForCalendar = Object.entries(groupedEvents).flatMap(([date, events]) => events);
+function getNextDay(dateStr) {
+  const date = new Date(dateStr);
+  date.setDate(date.getDate() + 1);
+  return date.toISOString().split('T')[0]; // يرجع التاريخ بصيغة YYYY-MM-DD
+}
 
   return (
     <div className="container" style={{ direction: i18n.language === 'en' ? 'ltr' : 'rtl' }}>
@@ -87,13 +112,6 @@ const Dashboard = () => {
             <p>{t('dashboard.Chalets')}</p>
           </div>
         </Grid>
-        {unconfirmedReservationsCount > 0 && (
-          <div className="global-alert">
-            <div className="alert-circle">
-              <span className="alert-icon">new</span>
-            </div>
-          </div>
-        )}
         <Grid item sm={6} md={3} xs={12}>
           <div className="box box-resorts" onClick={() => navigate('/newReservations')}>
             <div className="circle">{unconfirmedReservationsCount}</div>
@@ -108,86 +126,44 @@ const Dashboard = () => {
         </Grid>
       </Grid>
 
-      <div className="calender-header">
-        <h2>{t('dashboard.timatable')}</h2>
-        <div className="group">
-          <input
-            type="text"
-            className="search-input"
+      <Grid container spacing={2} style={{ marginTop: 20 }}>
+        <Grid item xs={12}>
+          <TextField
+            fullWidth
+            variant="outlined"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('dashboard.searchBox')}
           />
-          <button className="search-button" onClick={() => setSearch(search)}>
-            {t('dashboard.search')}
-          </button>
-        </div>
-      </div>
- <Grid container spacing={2} style={{ marginTop: '20px', marginBottom: '20px' }}>
-        {/* --- مربع القاعات لليوم --- */}
-        <Grid item md={6} xs={12}>
-            <div className="today-box halls-today">
-                <Typography variant="h6" className="today-box-title">حجوزات القاعات اليوم</Typography>
-                <div className="today-box-content">
-                    <div className="today-stat">
-                        <span className="count green">{hallsStartingToday}</span>
-                        <span className="label">حجز يبدأ اليوم</span>
-                    </div>
-                    <div className="divider"></div>
-                    <div className="today-stat">
-                        <span className="count red">{hallsEndingToday}</span>
-                        <span className="label">حجز ينتهي اليوم</span>
-                    </div>
-                </div>
-            </div>
-        </Grid>
-        {/* --- مربع الشاليهات لليوم --- */}
-        <Grid item md={6} xs={12}>
-            <div className="today-box chalets-today">
-                <Typography variant="h6" className="today-box-title">حجوزات الشاليهات اليوم</Typography>
-                <div className="today-box-content">
-                    <div className="today-stat">
-                        <span className="count green">{chaletsStartingToday}</span>
-                        <span className="label">حجز يبدأ اليوم</span>
-                    </div>
-                    <div className="divider"></div>
-                    <div className="today-stat">
-                        <span className="count red">{chaletsEndingToday}</span>
-                        <span className="label">حجز ينتهي اليوم</span>
-                    </div>
-                </div>
-            </div>
         </Grid>
       </Grid>
+<div className="calendar-wrapper">
       <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
+        plugins={[dayGridPlugin, interactionPlugin, listPlugin]}
+        initialView={calendarView}
+        headerToolbar={{ left: 'prev,next today', center: 'title', right: 'dayGridMonth,listWeek' }}
         events={eventsForCalendar}
         eventClassNames="event-btn"
-        eventDidMount={({ el, event }) => {
+         eventDidMount={({ el, event }) => {
           const tooltipContent = `
             👤 ${event.title}
             🏠 ${event.extendedProps.entity || 'غير معروف'}
             💵 ${event.extendedProps.amount || 0}
             ${event.extendedProps.dayPeriod ? `الوقت: ${event.extendedProps.dayPeriod}` : ''}
-            ${event.extendedProps.entityType ? `النوع: ${event.extendedProps.entityType}` : ''}
           `.trim();
           el.setAttribute('title', tooltipContent);
         }}
         eventClick={(info) => {
           const { id, extendedProps } = info.event;
-          const route =
-            extendedProps.status === 'confirmed'
-              ? `/reservationDetails/${id}`
-              : `/unConfermidReservationDetails/${id}`;
+          const route = extendedProps.status === 'confirmed' ? `/reservationDetails/${id}` : `/unConfermidReservationDetails/${id}`;
           navigate(route);
         }}
         dayCellContent={(info) => {
           const today = new Date().setHours(0, 0, 0, 0);
           const selectedDate = new Date(info.date).setHours(0, 0, 0, 0);
           return (
-            <div className="fc-day-content-wrapper"> {/* New wrapper div for day content */}
-              <div className="fc-daygrid-day-top"> {/* Existing class for day number and button */}
+            <div className="fc-day-content-wrapper">
+              <div className="fc-daygrid-day-top">
                 <span className="fc-daygrid-day-number">{info.dayNumberText}</span>
                 {selectedDate >= today && (
                   <button onClick={() => navigate(`/search?date=${new Date(info.date).toLocaleDateString('en-CA')}`)}>
@@ -195,16 +171,13 @@ const Dashboard = () => {
                   </button>
                 )}
               </div>
-              {/* Events will be rendered by FullCalendar here, below fc-daygrid-day-top */}
-              {/* No explicit element for events needed here, FullCalendar manages it */}
             </div>
           );
         }}
-        height="auto" // Allows CSS to fully control height
-        dayMaxEvents={true}
-        dayMaxEventRows={true}
+        height="auto"
+        dayMaxEvents={dayMaxEvents}
       />
-
+</div>
       <AddReservation open={modal.open} handleClose={handleClose} />
     </div>
   );

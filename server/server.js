@@ -76,6 +76,7 @@ app.use(express.json());
 
 // ✅ تحليل الكوكيز
 app.use(cookieParser());
+app.use(upload()); // ✅ تفعيل middleware لقراءة req.files
 
 // ✅ تعريف المسارات
 app.use('/reservation-payments', reservationPaymentsRoutes);
