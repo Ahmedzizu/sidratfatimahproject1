@@ -154,12 +154,17 @@ body{
     }
 }
 @media print{
+     @page {
+    size: A4 portrait;  
+  margin: 3mm 3mm 3mm 3mm;}
+
     .border{
         width: 100%;
         margin: auto;
         border:2px solid var(--primary);
         border-radius: 6px;
         padding: 4px;
+         page-break-inside: avoid !important;
         
         .resert-container{
             border:1px solid var(--primary);

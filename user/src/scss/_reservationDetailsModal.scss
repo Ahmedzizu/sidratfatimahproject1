@@ -1,0 +1,181 @@
+// src/scss/_reservationDetailsModal.scss
+
+// Variables
+$primary-color: #B38D46; // لون ذهبي/بني
+$secondary-color: #333; // لون نص أساسي
+$text-light: #666; // لون نص خفيف
+$background-color: #f8f8f8; // خلفية فاتحة
+$table-striping: #fafafa; // لون خلفية الصفوف الزوجية
+$border-color: #e0e0e0; // لون حدود خفيف
+$highlight-color: #d32f2f; // لون أحمر للمبالغ المتبقية
+$font-family: 'Cairo', sans-serif;
+
+// Mixins
+@mixin flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+// Global Styles for the Modal
+.reservation-details-modal {
+
+    .MuiPaper-root {
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.98) translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    .MuiDialogTitle-root {
+        padding: 24px 32px;
+        text-align: center;
+        border-bottom: 2px solid $primary-color;
+        position: relative;
+
+        h6 {
+            font-weight: 700;
+            color: $primary-color;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+        }
+
+        .MuiIconButton-root {
+            position: absolute;
+            right: 16px;
+            top: 16px;
+            color: $secondary-color;
+        }
+    }
+
+    .MuiDialogContent-root {
+        padding: 32px;
+        font-family: $font-family;
+        color: $secondary-color;
+
+        .loading-box {
+            @include flex-center;
+            min-height: 200px;
+        }
+
+        // تنسيق العناوين
+        .section-title {
+            font-weight: 600;
+            color: $secondary-color;
+            border-bottom: 2px solid lighten($primary-color, 20%);
+            padding-bottom: 8px;
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-size: 1.5rem;
+            text-transform: capitalize;
+        }
+
+        // تنسيق الجداول
+        .MuiTableContainer-root {
+            border: 1px solid $border-color;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .MuiTableHead-root {
+            background-color: $primary-color;
+
+            .MuiTableCell-root {
+                color: white;
+                font-weight: bold;
+                font-family: $font-family;
+                padding: 16px 20px;
+                white-space: nowrap; // منع التفاف النص
+                font-size: 1rem;
+                border-color: darken($primary-color, 10%);
+            }
+        }
+
+        .MuiTableBody-root {
+            .MuiTableRow-root {
+                transition: background-color 0.2s ease-in-out;
+
+                &:nth-of-type(even) {
+                    background-color: $table-striping;
+                }
+
+                &:hover {
+                    background-color: lighten($primary-color, 45%);
+                }
+
+                &:last-child .MuiTableCell-root {
+                    border-bottom: none;
+                }
+            }
+        }
+
+        .MuiTableCell-root {
+            font-family: $font-family;
+            color: $secondary-color;
+            padding: 12px 20px;
+            border-bottom: 1px dashed $border-color;
+        }
+
+        // تنسيقات العناصر المميزة
+        .remaining-amount {
+            font-weight: bold;
+            color: $highlight-color;
+            font-size: 1.2rem;
+        }
+
+        .date-details {
+            font-weight: 600;
+            color: $text-light;
+            font-style: italic;
+        }
+    }
+}
+
+// التنسيق على شاشات الهاتف
+@media (max-width: 768px) {
+    .reservation-details-modal {
+        .MuiPaper-root {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            max-height: 100vh;
+            border-radius: 0;
+        }
+
+        .MuiDialogTitle-root {
+            padding: 16px;
+
+            h6 {
+                font-size: 1.5rem;
+            }
+        }
+
+        .MuiDialogContent-root {
+            padding: 16px;
+
+            .section-title {
+                font-size: 1.2rem;
+            }
+
+            .MuiTableHead-root .MuiTableCell-root,
+            .MuiTableBody-root .MuiTableCell-root {
+                padding: 8px;
+                font-size: 0.8rem;
+                white-space: normal;
+                text-align: center;
+            }
+        }
+    }
+}

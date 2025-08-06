@@ -1,25 +1,38 @@
-// متغيرات الألوان (متوافقة مع باقي المشروع)
-$primary-color: #D4AF37; // اللون الذهبي الرئيسي
-$secondary-color: #B38D46; // اللون الذهبي الثانوي
-$dark-bg: #121212; // الخلفية الداكنة
-$card-bg: #1E1E1E; // خلفية البطاقات
-$light-text: #F5F5F5; // لون النص الفاتح
-$border-color: rgba(212, 175, 55, 0.4); // لون الحدود الذهبية (أكثر وضوحاً)
-$accent-dark: #2A2A2A; // لون داكن إضافي للعناصر الخلفية
-$accent-light: rgba(212, 175, 55, 0.15); // لون خفيف للعناصر المميزة (أكثر تشبعاً)
-$text-subtle: rgba($light-text, 0.75); // لون نص فرعي (أكثر وضوحاً)
-$glow-color: rgba($primary-color, 0.8); // لون التوهج الأساسي
-
-// Global Direction Variables (for RTL compatibility)
-$dir-left: left;
-$dir-right: right;
-
+// src/scss/chaletPage.scss - A professional and elegant page for displaying chalets
 
 // ===============================================
-// أنيميشنات متقدمة وقوية
+// *** Global Variables & Settings ***
 // ===============================================
+$primary-dark-blue: #0A1C2C; // لون داكن أنيق
+$primary-gold: #B8860B; // ذهبي متوسط وفخم
+$secondary-beige: #F5EFE1; // لون بيج فاتح ودافئ
+$soft-cream: #FCF9F1; // أبيض كريمي ناعم جداً
+$text-dark: #333333; // لون النص الداكن
+$text-subtle: #8A8A8A; // لون نص فرعي
+$text-light: #FFFFFF; // لون نص أبيض نقي
+$card-bg: #FFFFFF; // خلفية البطاقات (أبيض نقي)
+$border-color: rgba(197, 160, 86, 0.15); // حدود ذهبية شفافة
+$glow-color: rgba($primary-gold, 0.8); // لون التوهج الأساسي
+$shadow-light: rgba(0, 0, 0, 0.08);
+$shadow-hover-light: rgba(0, 0, 0, 0.15);
+$status-unavailable: #d9534f;
+$status-maintenance: #FF9800;
 
-// أنيميشن ظهور الصفحة بالكامل مع تحريك لأعلى وتأثير ضبابي خفيف
+// Typography
+$font-primary: 'Cairo', sans-serif;
+$font-secondary: 'Playfair Display', serif;
+
+// Transitions
+$transition-medium: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+// Border Radius
+$radius-sm: 8px;
+$radius-md: 16px;
+$radius-lg: 25px;
+
+// ===============================================
+// *** Animations ***
+// ===============================================
 @keyframes pageFadeInSlideUpBlur {
     from {
         opacity: 0;
@@ -34,128 +47,61 @@ $dir-right: right;
     }
 }
 
-// أنيميشن لعنوان القسم، يظهر مع توسع الخط السفلي وتوهج
 @keyframes sectionTitleReveal {
     0% {
         opacity: 0;
         transform: translateY(30px);
-        text-shadow: 0 0 0 rgba(0, 0, 0, 0);
-    }
-
-    50% {
-        opacity: 1;
-        transform: translateY(0);
-        text-shadow: 0 0 15px rgba($glow-color, 0.6);
     }
 
     100% {
         opacity: 1;
         transform: translateY(0);
-        text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
     }
 }
 
-@keyframes expandLineGlow {
-    0% {
-        width: 0;
-        opacity: 0;
-        transform: translateX(-50%);
-        /* لضمان التوسيع من المنتصف */
-        background-size: 0% 100%;
-    }
-
-    50% {
-        width: 100px;
-        opacity: 1;
-        transform: translateX(-50%);
-        background-size: 100% 100%;
-        box-shadow: 0 0 15px rgba($glow-color, 0.7);
-    }
-
-    100% {
-        width: 80px;
-        /* العرض النهائي */
-        opacity: 1;
-        transform: translateX(-50%);
-        background-size: 100% 100%;
-        box-shadow: 0 0 5px rgba($glow-color, 0.3);
-    }
-}
-
-// أنيميشن ظهور البطاقة الفردية مع تحريك وتوهج خفيف
 @keyframes cardEntrance {
     from {
         opacity: 0;
         transform: translateY(40px) scale(0.95);
-        box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-        filter: brightness(0.5);
     }
 
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-        filter: brightness(1);
-    }
-}
-
-// أنيميشن نبض خفيف للمسؤولية أو عناصر الحالة
-@keyframes pulseSubtle {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-
-    50% {
-        transform: scale(1.02);
-        opacity: 0.95;
-    }
-
-    100% {
-        transform: scale(1);
-        opacity: 1;
     }
 }
 
 // ===============================================
-// التصميم العام للصفحة
+// *** Page Styles ***
 // ===============================================
 .chalet-page-container {
     min-height: 100vh;
     padding: 100px 20px 60px;
-    /* زيادة التباعد العلوي والسفلي */
-    background-color: $dark-bg;
-    color: $light-text;
-    font-family: 'Tajawal', 'Roboto', sans-serif;
+    background-color: $soft-cream;
+    color: $text-dark;
+    font-family: $font-primary;
     animation: pageFadeInSlideUpBlur 1.2s ease-out forwards;
-    /* تطبيق أنيميشن ظهور الصفحة */
     overflow-x: hidden;
-    /* لمنع ظهور شريط التمرير الأفقي بسبب حركات الترجمة */
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* توسيط المحتوى */
+    position: relative;
+    max-width: 1400px;
+    margin: 0 auto;
 
     .section-title {
         margin: 0 auto 80px;
-        /* مسافة سفلية أكبر */
+        font-family: $font-secondary;
         font-size: 3.5rem;
-        /* حجم خط أكبر بكثير */
-        color: $primary-color;
+        color: $primary-dark-blue;
         text-align: center;
         font-weight: 900;
-        /* خط أثقل */
         position: relative;
         padding-bottom: 20px;
-        /* تباعد أكبر للخط السفلي */
-        text-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
-        /* ظل نص أعمق */
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         letter-spacing: 2px;
-        /* تباعد أحرف */
         opacity: 0;
-        /* يبدأ مخفيًا */
         animation: sectionTitleReveal 1.2s ease-out forwards 0.5s;
-        /* أنيميشن ظهور العنوان */
 
         &::after {
             content: '';
@@ -163,139 +109,16 @@ $dir-right: right;
             left: 50%;
             bottom: 0;
             transform: translateX(-50%);
-            width: 0;
-            /* سيبدأ من 0 ثم يتوسع */
+            width: 80px;
             height: 5px;
-            /* خط أسمك */
-            background: linear-gradient(90deg, $primary-color, $secondary-color);
+            background: linear-gradient(90deg, $primary-gold, $secondary-beige);
             border-radius: 5px;
-            animation: expandLineGlow 1.5s ease-out forwards 1.2s;
-            /* أنيميشن توسع الخط مع توهج */
-            box-shadow: 0 0 10px rgba($glow-color, 0.5);
-            /* توهج ابتدائي */
-        }
-    }
-
-    .chalet-grid {
-        /* يمكنك تسميته halls-grid أيضاً إذا كان عاماً */
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-        /* حجم بطاقة أكبر */
-        gap: 50px;
-        /* مسافة أكبر بين البطاقات */
-        justify-content: center;
-        padding: 20px 0;
-        width: 100%;
-        /* تأكد أن الشبكة تملأ العرض المتاح */
-        max-width: 1300px;
-        /* تحديد أقصى عرض للشبكة */
-
-        /* أنيميشن ظهور متتالٍ للبطاقات */
-        .MuiGrid-item {
-            /* هذا هو الـ Grid item الذي يلف الـ Card */
-            animation: cardEntrance 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-            opacity: 0;
-            /* تبدأ مخفية */
-            transform: translateY(40px) scale(0.95);
-
-            @for $i from 1 through 9 {
-
-                /* تطبيق تأخيرات لـ 9 بطاقات */
-                &:nth-child(#{$i}) {
-                    animation-delay: 0.8s + ($i - 1) * 0.15s;
-                    /* تأخير أطول بين البطاقات */
-                }
-            }
-        }
-    }
-
-    /* أنماط رسائل الحالة (التحميل، لا توجد نتائج) */
-    .loading-message,
-    .no-results-message {
-        text-align: center;
-        color: $text-subtle;
-        margin-top: 50px;
-        font-size: 1.8rem;
-        /* خط أكبر */
-        font-weight: 600;
-        animation: fadeInUp 0.8s ease-out;
-        /* استخدام أنيميشن fadeInUp لظهورها */
-        padding: 30px;
-        /* بادينج أكبر */
-        background-color: rgba($primary-color, 0.08);
-        /* خلفية أغمق قليلاً */
-        border-radius: 12px;
-        border: 2px solid $border-color;
-        /* حدود أوضح */
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    }
-
-    /* أنماط أزرار التنقل بين الصفحات */
-    .pagination-controls {
-        /* تم تغيير .pagination-container إلى pagination-controls ليتوافق مع Halls.jsx */
-        display: flex;
-        justify-content: center;
-        margin-top: 70px;
-        /* مسافة علوية أكبر */
-        padding: 25px 0;
-        animation: fadeInUp 0.8s ease-out 1s both;
-        /* تأخير أكبر لظهورها */
-
-        .MuiPaginationItem-root {
-            color: $light-text;
-            background-color: $card-bg;
-            border: 2px solid $border-color;
-            /* حدود أسمك وأوضح */
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            /* انتقال سلس */
-            margin: 0 8px;
-            /* مسافة أكبر بين الأرقام */
-            font-weight: 600;
-            /* خط أثقل */
-            font-size: 1.1rem;
-            /* خط أكبر */
-            min-width: 45px;
-            /* عرض أدنى للأزرار */
-            height: 45px;
-            /* ارتفاع للأزرار */
-            border-radius: 10px;
-            /* حواف مستديرة قليلاً */
-            font-family: 'Tajawal', 'Roboto', sans-serif;
-
-            &:hover {
-                background-color: rgba($primary-color, 0.25);
-                /* خلفية أغمق عند التحويم */
-                transform: translateY(-5px) scale(1.05);
-                /* حركة رفع وتكبير أكثر وضوحاً */
-                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-                border-color: $primary-color;
-                /* توهج للحدود */
-            }
-
-            &.Mui-selected {
-                background-color: $primary-color;
-                color: $dark-bg;
-                font-weight: bold;
-                box-shadow: 0 0 15px rgba($primary-color, 0.7);
-                /* توهج أكبر عند التحديد */
-                animation: glow 1.5s infinite alternate;
-                /* أنيميشن توهج عند التحديد */
-                transform: translateY(-2px);
-                /* رفع خفيف حتى عند التحديد */
-
-                &:hover {
-                    background-color: darken($primary-color, 8%);
-                    /* أغمق قليلاً عند التحويم على المحدد */
-                    transform: translateY(-7px) scale(1.08);
-                    /* حركة رفع وتكبير أكبر */
-                }
-            }
         }
     }
 }
 
 // ===============================================
-// تعديلات RTL
+// *** RTL Adjustments ***
 // ===============================================
 [dir="rtl"] {
     .chalet-page-container {
@@ -304,49 +127,13 @@ $dir-right: right;
             right: 50%;
             transform: translateX(50%);
         }
-
-        .status-message {
-            border-left: none;
-            border-right: 2px solid $primary-color;
-            /* حدود أرق قليلاً لـ RTL */
-        }
-
-        .pagination-controls {
-
-            /* تم تغيير .pagination-container إلى pagination-controls ليتوافق مع Halls.jsx */
-            .MuiPagination-ul {
-                flex-direction: row-reverse;
-                /* عكس ترتيب الأزرار */
-            }
-        }
     }
 }
 
 // ===============================================
-// تصميم متجاوب (Responsive Design)
+// *** Responsive Design ***
 // ===============================================
-@media (max-width: 1200px) {
-
-    /* Tablets and smaller laptops */
-    .chalet-page-container {
-        padding: 80px 15px 50px;
-
-        .section-title {
-            font-size: 3rem;
-            margin-bottom: 60px;
-        }
-
-        .chalet-grid {
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            /* تقليل حجم البطاقة */
-            gap: 40px;
-        }
-    }
-}
-
 @media (max-width: 992px) {
-
-    /* Smaller tablets and large phones */
     .chalet-page-container {
         padding: 60px 10px 40px;
 
@@ -354,62 +141,20 @@ $dir-right: right;
             font-size: 2.5rem;
             margin-bottom: 50px;
         }
-
-        .chalet-grid {
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            /* تقليل حجم البطاقة أكثر */
-            gap: 30px;
-        }
     }
 }
 
 @media (max-width: 768px) {
-
-    /* Medium phones */
     .chalet-page-container {
-        padding: 50px 10px 30px;
-
         .section-title {
             font-size: 2rem;
             margin-bottom: 40px;
             letter-spacing: 1.5px;
-
-            &::after {
-                width: 60px;
-                height: 4px;
-            }
-        }
-
-        .chalet-grid {
-            grid-template-columns: 1fr;
-            /* عمود واحد */
-            gap: 25px;
-            max-width: 400px;
-            /* تحديد أقصى عرض للشبكة ذات العمود الواحد */
-        }
-
-        .loading-message,
-        .no-results-message {
-            font-size: 1.5rem;
-            padding: 25px;
-        }
-
-        .pagination-controls {
-            margin-top: 40px;
-
-            .MuiPaginationItem-root {
-                min-width: 40px;
-                height: 40px;
-                font-size: 1rem;
-                margin: 0 4px;
-            }
         }
     }
 }
 
 @media (max-width: 480px) {
-
-    /* Small phones */
     .chalet-page-container {
         padding: 40px 8px 20px;
 
@@ -419,22 +164,6 @@ $dir-right: right;
 
             &::after {
                 height: 3px;
-            }
-        }
-
-        .loading-message,
-        .no-results-message {
-            font-size: 1.3rem;
-            padding: 20px;
-        }
-
-        .pagination-controls {
-            margin-top: 30px;
-
-            .MuiPaginationItem-root {
-                min-width: 35px;
-                height: 35px;
-                font-size: 0.9rem;
             }
         }
     }

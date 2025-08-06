@@ -1,3 +1,6 @@
-2025/08/05-05:47:35.504 5a80 Reusing MANIFEST D:\New folder (2)\final\server\tokens\my-session\Default\Local Storage\leveldb/MANIFEST-000001
-2025/08/05-05:47:35.518 5a80 Recovering log #24
-2025/08/05-05:47:35.522 5a80 Reusing old log D:\New folder (2)\final\server\tokens\my-session\Default\Local Storage\leveldb/000024.log 
+2025/08/06-04:17:58.267 878 Reusing MANIFEST D:\New folder (2)\final\server\tokens\my-session\Default\Local Storage\leveldb/MANIFEST-000001
+2025/08/06-04:17:58.295 878 Recovering log #49
+2025/08/06-04:17:58.304 878 Reusing old log D:\New folder (2)\final\server\tokens\my-session\Default\Local Storage\leveldb/000049.log 
+2025/08/06-04:19:59.419 f40 Level-0 table #53: started
+2025/08/06-04:19:59.433 f40 Level-0 table #53: 13533 bytes OK
+2025/08/06-04:19:59.438 f40 Delete type=0 #49

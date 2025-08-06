@@ -1,12 +1,15 @@
-2025/08/05-05:59:36.457 5a5c Reusing MANIFEST D:\New folder (2)\final\server\tokens\my-session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2025/08/05-05:59:36.459 5a5c Recovering log #369
-2025/08/05-05:59:36.485 5a5c Reusing old log D:\New folder (2)\final\server\tokens\my-session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000369.log 
-2025/08/05-05:59:38.245 2634 Level-0 table #375: started
-2025/08/05-05:59:38.261 2634 Level-0 table #375: 273771 bytes OK
-2025/08/05-05:59:38.266 2634 Delete type=0 #369
-2025/08/05-05:59:38.268 2634 Manual compaction at level-0 from '\x00r\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00s\x00\x00\x00' @ 0 : 0; will stop at (end)
-2025/08/05-05:59:41.713 2634 Compacting 1@1 + 2@2 files
-2025/08/05-05:59:41.822 2634 Generated table #376@1: 50564 keys, 2211496 bytes
-2025/08/05-05:59:41.895 2634 Generated table #377@1: 46646 keys, 1782293 bytes
-2025/08/05-05:59:41.895 2634 Compacted 1@1 + 2@2 files => 3993789 bytes
-2025/08/05-05:59:41.899 2634 compacted to: files[ 0 0 2 0 0 0 0 ]
+2025/08/06-04:30:20.128 220c Reusing MANIFEST D:\New folder (2)\final\server\tokens\my-session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/08/06-04:30:20.130 220c Recovering log #1167
+2025/08/06-04:30:20.182 220c Reusing old log D:\New folder (2)\final\server\tokens\my-session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/001167.log 
+2025/08/06-04:30:20.183 220c Delete type=2 #1164
+2025/08/06-04:30:20.184 220c Delete type=2 #1165
+2025/08/06-04:30:20.184 220c Delete type=2 #1168
+2025/08/06-04:30:22.501 3b7c Level-0 table #1173: started
+2025/08/06-04:30:22.533 3b7c Level-0 table #1173: 420284 bytes OK
+2025/08/06-04:30:22.536 3b7c Delete type=0 #1167
+2025/08/06-04:30:22.539 3b7c Manual compaction at level-0 from ' U\x01\x00\x00\x00' @ 72057594037927935 : 1 .. ' V\x01\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/08/06-04:30:30.874 df4 Compacting 1@1 + 2@2 files
+2025/08/06-04:30:31.188 df4 Generated table #1174@1: 30401 keys, 2183181 bytes
+2025/08/06-04:30:31.543 df4 Generated table #1175@1: 44655 keys, 1258870 bytes
+2025/08/06-04:30:31.544 df4 Compacted 1@1 + 2@2 files => 3442051 bytes
+2025/08/06-04:30:31.546 df4 compacted to: files[ 0 0 2 0 0 0 0 ]

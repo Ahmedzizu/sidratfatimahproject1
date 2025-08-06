@@ -96,7 +96,7 @@ const Reset = ({ data, totalInsurance, totalPaid, totalServices }) => {
           <div className="company-details">
             <h3>مجموعة سدرة فاطمة</h3>
             <p>قاعة مناسبات - شاليهات</p>
-            <p>للحجوزات: 0505966297 - 0569500033</p>
+            <p>للحجوزات: 0505966297 - 0543993687</p>
           </div>
           <img src={logo} alt="logo" className="company-logo" />
         </div>
@@ -133,33 +133,27 @@ const Reset = ({ data, totalInsurance, totalPaid, totalServices }) => {
           </div>
           <div class="table-row">
             <p class="table-heading">فترة الدخول</p>
-            <p class="table-data">
+            <p class="table-data" style={{whiteSpace: "nowrap"}}> {getDay(data?.period?.startDate)} -
               {data?.period?.checkIn?.name} (
               {formatTime12Hour(data?.period?.checkIn?.time)})
             </p>
             <p class="table-heading">فترة المغادرة</p>
-            <p class="table-data">
+            <p class="table-data" style={{whiteSpace: "nowrap"}}>{getDay(data?.period?.endDate)} -
               {data?.period?.checkOut?.name} (
-              {formatTime12Hour(data?.period?.checkOut?.time)})
+              {formatTime12Hour(data?.period?.checkOut?.time)})  
             </p>
           </div>
 
-          <div class="table-row">
-            <p class="table-heading">يوم الدخول </p>
-            <p class="table-data">{getDay(data?.period?.startDate)}</p>
-            <p class="table-heading">يوم المغادرة </p>
-            <p class="table-data">{getDay(data?.period?.endDate)}</p>
-          </div>
         </div>
         <h3 className="rules-title">الرجاء قراءة الشروط قبل التوقيع </h3>
         <ul className="rules">
-          <li>*عند إلغاء الحجز لا يتم استرداد أي مبالغ مدفوعة اطلاقاً </li>
+          <li>* عند إلغاء الحجز لا يتم استرداد أي مبالغ مدفوعة اطلاقاً </li>
           <li>*
             {" "}
             في حال تأجيل الحجز يتم التأجيل لمرة واحده وسط الأسبوع حسب اليوم
             المتوفر مع احتساب فرق السعر أن وجد
           </li>
-          <li>* يمنع اصطحاب الاطفال داخل الشاليهات</li>
+          <li>*  يمنع اصطحاب الاطفال داخل الشاليهات</li>
           <li>*
             {" "}
             على صاحب المناسبة الانتباه للأطفال أثناء السباحة والادارة غير مسئولة
@@ -170,15 +164,15 @@ const Reset = ({ data, totalInsurance, totalPaid, totalServices }) => {
             في حال التأخير عن الوقت المحدد للخروج في العقد يتم احتساب مبلغ
             إضافية عن كل ساعة
           </li>
-          <li>* لا يحق للمستأجر التأجير لطرف ثالث إطلاقاً</li>
-          <li>* يجب دفع متبقي مبلغ الإيجار قبل موعد المناسبة بـ 30 يوم</li>
+          <li>*   لا يحق للمستأجر التأجير لطرف ثالث إطلاقاً</li>
+          <li>*   يجب دفع متبقي مبلغ الإيجار قبل موعد المناسبة بـ 30 يوم</li>
           <li>*
             {" "}
             في حالة استئجار كوشة أو تنسيق يجب التنبيه عليهم بعدم وضع ملصقات على
             الجدران أو الأثاث
           </li>
-          <li>* ادارة المكان غير مسؤولة عن فقدان أو ضياع الاغراض الشخصية</li>
-          <li>* يتعهد الطرف الثاني باستعمال الموقع للغرض الذي أُعده له</li>
+          <li>*  ادارة المكان غير مسؤولة عن فقدان أو ضياع الاغراض الشخصية</li>
+          <li>*   يتعهد الطرف الثاني باستعمال الموقع للغرض الذي أُعده له</li>
           <li>*
             {" "}
             يتعهد الطرف الثاني بمسؤولية عن كل حريق، تلفيات أو سرقة تحصل للموقع
@@ -227,11 +221,12 @@ const Reset = ({ data, totalInsurance, totalPaid, totalServices }) => {
           <Grid item xs={6}>
             التوقيع : ...........................................
           </Grid>
-          <Grid item xs={6} textAlign={"center"} sx={{ margin: "2px 0" }}>
+          <Grid item xs={6} textAlign={"center"} sx={{ margin: "1px 0" }}>
             {" "}
             ...................................................
           </Grid>
-                  <p style={{ margin: "10px " }}>الموظف : {employee?.name}</p>
+                  <p style={{ margin: "-1px " }}>الموظف : {employee?.name}  {"    "}</p>
+                    <p style={{ margin: "-50 px "}} >{new Date().toLocaleString('EG')}  {"    "}</p>
 
         </Grid>
       </div>

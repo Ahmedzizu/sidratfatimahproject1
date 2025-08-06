@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../scss/signup.scss';
+import '../scss/signup.scss'; // The new SCSS file
 import logo from '../assets/Logo 1.png';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -7,66 +7,73 @@ import Api from '../config/config';
 import { useNavigate } from 'react-router-dom';
 import { notifyError, notifySuccess } from '../components/Notify';
 import * as yup from 'yup';
-import { Formik, Form } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik'; // Use Formik's Field and ErrorMessage components
 import CircularProgress from '@mui/material/CircularProgress';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Navbar from '../components/Navbar';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+
+// Error message component for a cleaner UI
+const CustomErrorMessage = ({ name }) => (
+    <div className="error-message">
+        <ErrorMessage name={name} />
+    </div>
+);
 
 const Signup = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    const [isPhoneFocused, setIsPhoneFocused] = useState(false); // حالة جديدة لتتبع التركيز على حقل الهاتف
+    const [isPhoneFocused, setIsPhoneFocused] = useState(false);
     const { t } = useTranslation();
 
     const validationSchema = yup.object({
-        name: yup.string().required(t('signup.nameRequired')),
-        email: yup.string().email(t('signup.emailInvalid')).required(t('signup.emailRequired')),
+        name: yup.string()
+            .required(t('signup.nameRequired'))
+            .min(3, t('signup.nameMinLength')),
+        email: yup.string()
+            .email(t('signup.emailInvalid'))
+            .required(t('signup.emailRequired')),
         phone: yup.string()
             .required(t('signup.phoneRequired'))
             .matches(/^\+[1-9]\d{1,14}$/, t('signup.phoneInvalid')),
-        password: yup.string().min(8, t('signup.passwordMinLength')).required(t('signup.passwordRequired')),
+        password: yup.string()
+            .min(8, t('signup.passwordMinLength'))
+            .required(t('signup.passwordRequired')),
         confirmPassword: yup.string()
             .oneOf([yup.ref('password'), null], t('signup.confirmPasswordMismatch'))
             .required(t('signup.confirmPasswordRequired')),
     });
 
-    const handleSubmit = async (values) => {
+    const handleSubmit = async (values, { setFieldError }) => {
         setLoading(true);
         try {
             const res = await Api.post('/users/signup', values);
             notifySuccess(res.data.message || t('signup.signupSuccess'));
             navigate(`/user/verify-email?email=${encodeURIComponent(values.email)}&userId=${res.data.userId}`);
         } catch (err) {
-        console.error('Signup error:', err);
-        const errorResponse = err.response?.data;
-        if (errorResponse) {
-            // Check for specific field errors first
-            if (errorResponse.email) {
-                notifyError(errorResponse.email);
-            } else if (errorResponse.phone) {
-                notifyError(errorResponse.phone);
-            } else if (errorResponse.name) {
-                notifyError(errorResponse.name);
-            } else if (errorResponse.password) {
-                notifyError(errorResponse.password);
-            }
-            // Then check for a general message, or fallback to a generic error
-            else if (errorResponse.message) {
-                notifyError(errorResponse.message);
+            console.error('Signup error:', err);
+            const errorResponse = err.response?.data;
+
+            if (errorResponse) {
+                if (errorResponse.errors) {
+                    errorResponse.errors.forEach(error => {
+                        setFieldError(error.path, error.msg);
+                    });
+                }
+                else if (errorResponse.message) {
+                    notifyError(errorResponse.message);
+                } else {
+                    notifyError(t('common.signupGenericError'));
+                }
             } else {
-                // Fallback for any other type of error response
-                notifyError(t('common.signupGenericError'));
+                notifyError(t('common.networkError'));
             }
-        } else {
-            // Network error or no response from server
-            notifyError(t('common.networkError'));
+        } finally {
+            setLoading(false);
         }
-    } finally {
-        setLoading(false);
-    }
     };
 
     return (
@@ -88,16 +95,20 @@ const Signup = () => {
                         initialValues={{ name: '', email: '', phone: '', password: '', confirmPassword: '' }}
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
+                        validateOnChange={true}
+                        validateOnBlur={true}
                     >
-                        {({ errors, touched, handleChange, handleBlur, values, setFieldValue }) => (
+                        {({ errors, touched, handleChange, handleBlur, values, setFieldValue, setFieldTouched }) => (
                             <Form className="auth-form">
                                 <h3 className="form-title">{t('signup.title')}</h3>
 
-                                <TextField
+                                {/* حقل الاسم الكامل */}
+                                <Field
+                                    as={TextField}
                                     fullWidth
                                     id="name"
                                     name="name"
-                                    placeholder={t('signup.namePlaceholder')}
+                                    label={t('signup.namePlaceholder')}
                                     value={values.name}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -105,95 +116,62 @@ const Signup = () => {
                                     helperText={touched.name && errors.name}
                                     variant="outlined"
                                     className="auth-input"
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            '& fieldset': { borderColor: '#B38D46' },
-                                            '&:hover fieldset': { borderColor: '#B38D46' },
-                                        },
-                                    }}
                                 />
 
-                                <TextField
+                                {/* حقل البريد الإلكتروني */}
+                                <Field
+                                    as={TextField}
                                     fullWidth
                                     id="email"
                                     name="email"
-                                    placeholder={t('signup.emailPlaceholder')}
+                                    label={t('signup.emailPlaceholder')}
                                     value={values.email}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     error={touched.email && Boolean(errors.email)}
                                     helperText={touched.email && errors.email}
                                     variant="outlined"
+                                    type="email"
                                     className="auth-input"
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            '& fieldset': { borderColor: '#B38D46' },
-                                            '&:hover fieldset': { borderColor: '#B38D46' },
-                                        },
-                                    }}
                                 />
 
-                                <div className={`phone-input-wrapper ${isPhoneFocused ? 'focused' : ''}`}> {/* إضافة كلاس 'focused' */}
+                                {/* حقل رقم الهاتف */}
+                                <div className={`phone-input-wrapper ${touched.phone && errors.phone ? 'has-error' : ''}`}>
                                     <PhoneInput
-                                        country={'eg'}
+                                        country={'sa'}
                                         value={values.phone}
                                         onChange={(phone) => setFieldValue('phone', '+' + phone)}
-                                        onFocus={() => setIsPhoneFocused(true)} // تحديث الحالة عند التركيز
+                                        onFocus={() => setIsPhoneFocused(true)}
                                         onBlur={(e) => {
-                                            handleBlur('phone')(e); // تأكد من استدعاء onBlur الخاص بـ Formik
-                                            setIsPhoneFocused(false); // تحديث الحالة عند فقدان التركيز
+                                            handleBlur('phone')(e);
+                                            setIsPhoneFocused(false);
+                                            setFieldTouched('phone', true, false);
                                         }}
                                         inputProps={{
                                             name: 'phone',
                                             id: 'phone',
                                             required: true,
                                         }}
+                                        inputClass="phone-input-field"
+                                        buttonClass="phone-input-button"
+                                        dropdownClass="phone-input-dropdown"
+                                        containerClass={`phone-input-container ${isPhoneFocused ? 'focused' : ''}`}
                                         placeholder={t('signup.phonePlaceholder')}
                                         enableSearch
                                         countryCodeEditable={false}
-                                        inputStyle={{
-                                            backgroundColor: '#1E1E1E',
-                                            border: '1px solid rgba(179, 141, 70, 0.4)',
-                                            borderRadius: '8px',
-                                            color: '#F5F5F5',
-                                            fontSize: '1rem',
-                                            height: '56px',
-                                            width: '100%',
-                                            paddingLeft: '60px',
-                                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)',
-                                            transition: 'all 0.3s ease',
-                                        }}
-                                        buttonStyle={{
-                                            backgroundColor: '#1E1E1E',
-                                            border: '1px solid rgba(179, 141, 70, 0.4)',
-                                            borderRight: 'none',
-                                            borderTopLeftRadius: '8px',
-                                            borderBottomLeftRadius: '8px',
-                                        }}
-                                        dropdownStyle={{
-                                            backgroundColor: '#1E1E1E',
-                                            border: '1px solid rgba(179, 141, 70, 0.4)',
-                                            borderRadius: '8px',
-                                            color: '#F5F5F5',
-                                        }}
-                                        searchStyle={{
-                                            backgroundColor: '#121212',
-                                            border: '1px solid rgba(179, 141, 70, 0.4)',
-                                            color: '#F5F5F5',
-                                            margin: '10px',
-                                            padding: '8px 10px',
-                                        }}
                                     />
                                     {touched.phone && errors.phone && (
-                                        <p className="error-message-phone">{errors.phone}</p>
+                                        <CustomErrorMessage name="phone" />
                                     )}
                                 </div>
-
-                                <TextField
+                                
+                                {/* حقل كلمة المرور */}
+                                <Field
+                                    as={TextField}
                                     fullWidth
                                     id="password"
                                     name="password"
-                                    placeholder={t('signup.passwordPlaceholder')}
+                                    label={t('signup.passwordPlaceholder')}
                                     value={values.password}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -202,19 +180,15 @@ const Signup = () => {
                                     variant="outlined"
                                     type="password"
                                     className="auth-input"
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            '& fieldset': { borderColor: '#B38D46' },
-                                            '&:hover fieldset': { borderColor: '#B38D46' },
-                                        },
-                                    }}
                                 />
 
-                                <TextField
+                                {/* حقل تأكيد كلمة المرور */}
+                                <Field
+                                    as={TextField}
                                     fullWidth
                                     id="confirmPassword"
                                     name="confirmPassword"
-                                    placeholder={t('signup.confirmPasswordPlaceholder')}
+                                    label={t('signup.confirmPasswordPlaceholder')}
                                     value={values.confirmPassword}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -223,14 +197,9 @@ const Signup = () => {
                                     variant="outlined"
                                     type="password"
                                     className="auth-input"
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            '& fieldset': { borderColor: '#B38D46' },
-                                            '&:hover fieldset': { borderColor: '#B38D46' },
-                                        },
-                                    }}
                                 />
 
+                                {/* أزرار الإجراءات */}
                                 <div className="auth-actions">
                                     <Button
                                         type="submit"
@@ -257,6 +226,7 @@ const Signup = () => {
                 </div>
             </div>
 
+            {/* عناصر الزخرفة في الخلفية */}
             <div className="auth-decoration">
                 <div className="bubble bubble-1"></div>
                 <div className="bubble bubble-2"></div>

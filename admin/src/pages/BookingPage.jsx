@@ -98,7 +98,7 @@ const BookingPage = () => {
     const entityId = queryParams.get("entityId");
     const entityName = queryParams.get("name") || "مكان غير معروف";
     const initialDate = useMemo(() => queryParams.get("date") || new Date().toISOString().split('T')[0], [queryParams]);
-
+const [sources, setSources] = useState([]);
     const price = useMemo(() => {
         const parsedPrice = JSON.parse(queryParams.get("price")) || {};
         return {
@@ -123,6 +123,8 @@ const BookingPage = () => {
         selectedPeriod: "wholeDay",
         startDate: initialDate,
         endDate: initialDate,
+    source: "", // ✅ تأكد من وجود هذا الحقل هنا
+
         checkInSelection: "صباحية",
         checkOutSelection: "مسائية",
         checkInPeriod: price.dayStartHour,
@@ -159,12 +161,21 @@ const BookingPage = () => {
             wholeDay: wholeDay,
         };
     }, [entityId, allReservations, initialDate]);
-
+ // ✅ دمج جميع استدعاءات الـ API في useEffect واحد
     useEffect(() => {
         dispatch(fetchCustomer());
         dispatch(fetchBankDetails());
         dispatch(fetchReservations());
+        Api.get('/reservation-payments/sources/all')
+            .then((res) => {
+                setSources(res.data);
+            })
+            .catch(err => console.error("Failed to fetch sources:", err));
     }, [dispatch]);
+
+
+      // ✅ إضافة دالة handleChange المفقودة
+   
 
     const filteredCustomers = useMemo(() => {
         if (!searchQuery) return customers;
@@ -183,7 +194,8 @@ const BookingPage = () => {
             setFinalCosts({ total: 0, remaining: 0 });
             return;
         }
-
+// This useEffect hook is now correctly placed at the top level.
+// Depend on 'open' to trigger the effect.
         const isSingleDayBooking = start.toDateString() === end.toDateString();
 
         if (isSingleDayBooking) {
@@ -213,8 +225,8 @@ const BookingPage = () => {
         const discount = parseFloat(formData.discountAmount) || 0;
         const paid = parseFloat(formData.paidAmount) || 0;
 
-        const finalCostAfterDiscount = calculatedTotalCost - discount;
-        const remaining = finalCostAfterDiscount - paid;
+        const finalCostAfterDiscount = calculatedTotalCost ;
+        const remaining = finalCostAfterDiscount - paid- discount;
 
         setFinalCosts({
             total: Math.max(0, finalCostAfterDiscount),
@@ -373,6 +385,7 @@ const BookingPage = () => {
             entityId: entityId,
             notes: formData.notes,
             paymentMethod: formData.paymentMethod,
+        source: formData.source, // ✅ يتم إرساله هنا
 
             // إرسال معرّف البنك بدلاً من اسمه
             bank: formData.paymentMethod === "تحويل بنكي" ? formData.bankId : null,
@@ -632,6 +645,22 @@ const filterOptions = createFilterOptions({
                 <MenuItem value="شبكة">💳 شبكة</MenuItem>
             </Select>
         </FormControl>
+
+                {/* ✅ حقل المصدر الجديد */}
+                <FormControl fullWidth sx={{ mb: 1.5 }}>
+                  <InputLabel>المصدر</InputLabel>
+                  <Autocomplete
+                    freeSolo
+                    options={sources}
+                    value={formData.source || ""}
+                    onChange={(event, newValue) => {
+                      setFormData(prev => ({ ...prev, source: newValue }));
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} variant="outlined" />
+                    )}
+                  />
+                </FormControl>
 
         <TextField
             fullWidth

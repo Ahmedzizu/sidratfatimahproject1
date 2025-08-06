@@ -1,15 +1,12 @@
-2025/08/05-05:47:37.004 63f4 Reusing MANIFEST D:\New folder (2)\final\server\tokens\my-session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2025/08/05-05:47:37.005 63f4 Recovering log #364
-2025/08/05-05:47:37.029 63f4 Reusing old log D:\New folder (2)\final\server\tokens\my-session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000364.log 
-2025/08/05-05:47:38.716 63f4 Level-0 table #370: started
-2025/08/05-05:47:38.730 63f4 Level-0 table #370: 252349 bytes OK
-2025/08/05-05:47:38.735 63f4 Delete type=0 #364
-2025/08/05-05:47:38.736 63f4 Manual compaction at level-0 from '\x00q\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00r\x00\x00\x00' @ 0 : 0; will stop at (end)
-2025/08/05-05:47:42.272 5d44 Compacting 1@1 + 2@2 files
-2025/08/05-05:47:42.377 5d44 Generated table #371@1: 49383 keys, 2208937 bytes
-2025/08/05-05:47:42.459 5d44 Generated table #372@1: 46614 keys, 1755596 bytes
-2025/08/05-05:47:42.459 5d44 Compacted 1@1 + 2@2 files => 3964533 bytes
-2025/08/05-05:47:42.462 5d44 compacted to: files[ 0 0 2 0 0 0 0 ]
-2025/08/05-05:47:42.462 5d44 Delete type=2 #366
-2025/08/05-05:47:42.463 5d44 Delete type=2 #367
-2025/08/05-05:47:42.463 5d44 Delete type=2 #370
+2025/08/06-04:18:01.179 7c0 Reusing MANIFEST D:\New folder (2)\final\server\tokens\my-session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/08/06-04:18:01.181 7c0 Recovering log #1161
+2025/08/06-04:18:01.319 7c0 Reusing old log D:\New folder (2)\final\server\tokens\my-session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/001161.log 
+2025/08/06-04:18:03.901 7c0 Level-0 table #1168: started
+2025/08/06-04:18:03.962 7c0 Level-0 table #1168: 1000151 bytes OK
+2025/08/06-04:18:03.965 7c0 Delete type=0 #1161
+2025/08/06-04:18:03.969 7c0 Manual compaction at level-0 from ' T\x01\x00\x00\x00' @ 72057594037927935 : 1 .. ' U\x01\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/08/06-04:18:13.766 3bb8 Compacting 1@1 + 2@2 files
+2025/08/06-04:18:14.071 3bb8 Generated table #1169@1: 30713 keys, 2184091 bytes
+2025/08/06-04:18:14.273 3bb8 Generated table #1170@1: 42695 keys, 1210494 bytes
+2025/08/06-04:18:14.273 3bb8 Compacted 1@1 + 2@2 files => 3394585 bytes
+2025/08/06-04:18:14.275 3bb8 compacted to: files[ 0 0 2 0 0 0 0 ]

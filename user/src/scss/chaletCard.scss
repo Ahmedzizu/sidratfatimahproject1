@@ -1,46 +1,60 @@
-// src/scss/chaletCard.scss - ملف مستقل بالكامل لتنسيق صفحة تفاصيل الشاليه
+// src/scss/chaletCard.scss - An elegant and vibrant detailed page for chalets
 
-// Color Variables - ✨ تم ترتيبها لضمان التعريف قبل الاستخدام
-$primary-color: #D4AF37; // اللون الذهبي الرئيسي
-$secondary-color: #B38D46; // اللون الذهبي الثانوي
-$dark-bg: #121212; // خلفية الصفحة
-$card-bg: #1E1E1E; // خلفية البطاقات والأقسام
-$light-text: #F5F5F5; // لون النص الفاتح
-$border-color: rgba(212, 175, 55, 0.3); // لون الحدود الذهبية الشفافة
-$text-subtle: rgba($light-text, 0.8); // لون نص فرعي خفيف
-$highlight-color: rgba($primary-color, 0.1); // لون خلفية العناصر المميزة
+// ==============================================
+// *** Global Variables & Settings ***
+// ==============================================
+$primary-gold: #D4AF37; // ذهبي لامع
+$secondary-yellow: #FFC107; // أصفر مشرق
+$soft-beige: #F8F5EC; // بيج ناعم للخلفيات
+$white-cream: #FFFDF7; // أبيض كريمي دافئ
+$text-dark: #4A4A4A; // لون نص رمادي دافئ
+$text-light: #FFFFFF; // لون نص أبيض نقي
+$border-light: #E0DED7; // لون حدود ناعم
+$box-shadow-light: rgba(0, 0, 0, 0.05);
 
-// ألوان الحالات (Hex values) - ✨ تم التأكيد على تعريفها هنا
-$status-available: #4CAF50; // أخضر
-$status-not-available: #ff4d4f; // أحمر
-$status-maintenance: #ff9800; // برتقالي
-$status-unknown: #616161; // رمادي
-$success-color: #4caf50; // لون النجاح
-$error-status-color: #ff4d4f; // لون رسالة الخطأ
+// Typography
+$font-primary: 'Cairo', sans-serif;
+$font-secondary: 'Montserrat', sans-serif;
 
+// Shadows and effects
+$soft-shadow: 0 4px 15px $box-shadow-light;
+$medium-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+$card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+$gold-glow: 0 0 20px rgba($primary-gold, 0.4);
+$icon-glow: 0 0 8px rgba($primary-gold, 0.3);
 
-// RGB values for rgba() function (used for transparency) - ✨ تم التأكيد على تعريفها هنا
-// هذه المتغيرات تحمل قيم RGB فقط (بدون rgb() function) لأن Sass يمكنه استخدامها في rgba()
-$primary-rgb: 212, 175, 55;
-$secondary-rgb: 179, 141, 70;
-$dark-bg-rgb: 18, 18, 18;
-$light-text-rgb: 245, 245, 245;
+// Transitions
+$transition-medium: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+$transition-fast: all 0.2s ease-in-out;
 
+// Border Radius
+$radius-sm: 8px;
+$radius-md: 16px;
+$radius-lg: 25px;
 
-// Animations - ✨ تم التأكيد على تعريفها هنا
-@keyframes fadeInSlideUp {
+// Z-index layers
+$z-low: 1;
+$z-medium: 10;
+$z-high: 100;
+$z-top: 1000;
+
+// ==============================================
+// *** Animations ***
+// ==============================================
+
+@keyframes fadeInScale {
     from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: scale(0.98);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: scale(1);
     }
 }
 
-@keyframes slideInFromRight {
+@keyframes slideInRight {
     from {
         opacity: 0;
         transform: translateX(50px);
@@ -52,39 +66,27 @@ $light-text-rgb: 245, 245, 245;
     }
 }
 
-@keyframes slideInFromLeft {
-    from {
-        opacity: 0;
-        transform: translateX(-50px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-@keyframes glowPulse {
+@keyframes pulseBorder {
     0% {
-        box-shadow: 0 0 5px rgba($primary-color, 0.3);
+        border-color: rgba($primary-gold, 0.2);
     }
 
     50% {
-        box-shadow: 0 0 15px rgba($primary-color, 0.7);
+        border-color: rgba($primary-gold, 0.6);
     }
 
     100% {
-        box-shadow: 0 0 5px rgba($primary-color, 0.3);
+        border-color: rgba($primary-gold, 0.2);
     }
 }
 
-@keyframes maintenancePulse {
+@keyframes iconPulse {
     0% {
         transform: scale(1);
     }
 
     50% {
-        transform: scale(1.05);
+        transform: scale(1.1);
     }
 
     100% {
@@ -92,586 +94,377 @@ $light-text-rgb: 245, 245, 245;
     }
 }
 
+// ==============================================
+// *** Main Page Layout ***
+// ==============================================
 
 .chalet-card-page-container {
-    background-color: $dark-bg;
-    color: $light-text;
-    font-family: 'Tajawal', sans-serif;
+    background-color: $soft-beige;
     min-height: 100vh;
-    padding-top: calc(40px + 65px); // تعويض ارتفاع النافبار
-    padding-bottom: 60px; // بادينج سفلي
-    animation: fadeInSlideUp 0.8s ease-out forwards;
-
-    &.no-data {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        min-height: calc(100vh - 120px);
-
-        .no-chalet-message {
-            color: $text-subtle;
-            font-size: 1.5rem;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .back-to-chalets-btn {
-            background-color: $primary-color;
-            color: $dark-bg;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-weight: 700;
-            text-transform: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba($primary-color, 0.4);
-
-            &:hover {
-                background-color: darken($primary-color, 5%);
-                transform: translateY(-3px);
-                box-shadow: 0 8px 20px rgba($primary-color, 0.6);
-            }
-        }
-    }
+    padding-top: 60px; // للحفاظ على مسافة من شريط التنقل
+    padding-bottom: 60px;
+    font-family: $font-primary;
+    color: $text-dark;
+    animation: fadeInScale 0.8s ease-out forwards;
 
     .chalet-details-wrapper {
         max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
+        margin: auto;
+        padding-top: 40px;
+        position: relative;
+    }
 
-        .chalet-header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba($border-color, 0.4);
-            animation: fadeInSlideUp 0.8s ease-out 0.1s forwards;
-            opacity: 0;
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        color: $text-dark;
+        font-weight: 600;
+        transition: $transition-fast;
+        margin-bottom: 20px;
 
-            .chalet-name-title {
-                color: $primary-color;
-                font-size: 3rem;
-                font-weight: 800;
-                margin: 0;
-                text-shadow: 0 0 10px rgba($primary-color, 0.6);
-            }
-
-            .back-link {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                color: $text-subtle;
-                text-decoration: none;
-                font-size: 1rem;
-                font-weight: 600;
-                transition: all 0.3s ease;
-                padding: 8px 12px;
-                border-radius: 8px;
-                background-color: rgba($primary-color, 0.05);
-
-                &:hover {
-                    color: $primary-color;
-                    background-color: rgba($primary-color, 0.1);
-                    transform: translateX(-5px);
-                }
-
-                .back-icon {
-                    font-size: 1.5rem;
-                }
-            }
+        .back-icon {
+            font-size: 1.2rem;
+            color: $primary-gold;
+            transform: rotate(180deg);
         }
+
+        &:hover {
+            color: $primary-gold;
+            transform: translateX(-5px);
+        }
+    }
+}
+
+// ==============================================
+// *** Header and Title Section ***
+// ==============================================
+
+.chalet-header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+    padding: 0 15px;
+
+    .chalet-name-title {
+        font-family: $font-secondary;
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: $primary-gold;
+        margin-top: 0;
+        margin-bottom: 10px;
+        text-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+}
+
+// ==============================================
+// *** Image Carousel and Video Sections ***
+// ==============================================
 
 .chalet-video-section {
-    width: 100%; // اجعل عرض القسم 100% من الحاوية الأب
-    // قم بإزالة أي ارتفاع ثابت إذا كنت تريد أن يتناسب مع نسبة أبعاد الفيديو
-    // height: 500px;
-    background-color: $dark-bg;
-    border-radius: 16px;
+    width: 100%;
+    margin-top: 40px;
+    box-shadow: $card-shadow;
+    border-radius: $radius-lg;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-    margin-bottom: 40px;
-    border: 1px solid rgba($border-color, 0.5);
-    animation: fadeInSlideUp 0.8s ease-out 0.3s forwards;
-    opacity: 0;
-    display: flex; // استخدام Flexbox لتوسيط محتوى الفيديو إذا لزم الأمر
-    align-items: center;
-    justify-content: center;
+    animation: fadeInScale 0.8s ease-out 0.2s forwards;
+    animation-delay: 0.2s;
 
     .chalet-video {
-        display: block; // مهم لإزالة أي فراغات أسفل الفيديو
-        width: 100%; // اجعل عرض الفيديو 100% من الحاوية
-        height: auto; // أو يمكنك استخدام height: 100% إذا كنت تريد ملء الارتفاع (قد يشوه الأبعاد)
-        object-fit: cover; // للحفاظ على نسبة أبعاد الفيديو وملء الحاوية
+        width: 100%;
+        border-radius: $radius-lg;
     }
+}
 
-    .no-video-message {
+// ==============================================
+// *** Main Details Section ***
+// ==============================================
+
+.chalet-main-details-section {
+    padding: 40px 15px;
+    background-color: $white-cream;
+    border-radius: $radius-lg;
+    box-shadow: $card-shadow;
+    margin-top: 40px;
+    border: 1px solid $border-light;
+    animation: fadeInScale 0.8s ease-out 0.4s forwards;
+    animation-delay: 0.4s;
+}
+
+.details-description-box,
+.details-key-info-box {
+    padding: 25px;
+    border-radius: $radius-md;
+    border: 1px solid $border-light;
+    background-color: $white-cream;
+    height: 100%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.details-title {
+    font-family: $font-secondary;
+    font-size: 2rem;
+    font-weight: 600;
+    color: $primary-gold;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid $border-light;
+    display: inline-block;
+    animation: slideInRight 0.6s ease-out forwards;
+    animation-delay: 0.6s;
+    opacity: 0;
+}
+
+.details-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: $text-dark;
+    margin-bottom: 30px;
+    animation: fadeInScale 0.8s ease-out 0.8s forwards;
+    opacity: 0;
+}
+
+.details-features-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    animation: fadeInScale 0.8s ease-out 1s forwards;
+    opacity: 0;
+
+    li {
+        background-color: $soft-beige;
+        border: 1px solid $border-light;
+        border-radius: $radius-sm;
+        padding: 15px;
+        font-size: 1rem;
+        font-weight: 500;
         display: flex;
-        justify-content: center;
         align-items: center;
-        height: 100%;
-        width: 100%; // تأكد من أن الرسالة تأخذ كامل المساحة
-        color: $text-subtle;
-        font-size: 1.2rem;
-        text-align: center;
+        gap: 12px;
+        transition: $transition-fast;
+        box-shadow: $soft-shadow;
+
+        .feature-icon {
+            color: $secondary-yellow;
+            font-size: 1.5rem;
+            animation: iconPulse 1.5s infinite alternate;
+        }
+
+        &:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
     }
 }
 
-        .chalet-main-details-section {
-            background-color: $card-bg;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba($border-color, 0.5);
-            padding: 40px;
-            margin-bottom: 40px;
-            animation: fadeInSlideUp 0.8s ease-out 0.5s forwards;
-            opacity: 0;
+// Key Info Box (Rate, Location, Area)
+.details-key-info-box {
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 20px;
+        border-bottom: 1px dashed $border-light;
+        transition: $transition-medium;
+        animation: fadeInScale 0.8s ease-out 1.2s forwards;
+        opacity: 0;
 
-            .details-description-box {
-                padding-right: 20px;
-            }
+        &:last-child {
+            border-bottom: none;
+        }
 
-            .details-title {
-                color: $primary-color;
-                font-size: 1.8rem;
-                font-weight: 700;
-                margin-bottom: 20px;
-                position: relative;
-                padding-bottom: 10px;
-                text-shadow: 0 0 8px rgba($primary-color, 0.4);
+        &:hover {
+            background-color: rgba($primary-gold, 0.05);
+            border-color: $primary-gold;
+        }
 
-                &::after {
-                    content: '';
-                    position: absolute;
-                    bottom: 0;
-                    left: 0;
-                    width: 80px;
-                    height: 2px;
-                    background: linear-gradient(90deg, $primary-color, $secondary-color);
-                }
-            }
+        .info-icon {
+            font-size: 2rem;
+            color: $primary-gold;
+            animation: iconPulse 1.5s infinite alternate;
+        }
 
-            .details-text {
-                color: $text-subtle;
-                font-size: 1rem;
-                line-height: 1.7;
-                margin-bottom: 30px;
-                text-align: justify;
-            }
+        .info-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: $text-dark;
+            flex-grow: 1;
+        }
 
-            .details-features-list {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 15px;
-                margin-bottom: 30px;
+        .info-value {
+            font-size: 1rem;
+            font-weight: 400;
+            color: $text-dark;
+            text-align: end;
+        }
+    }
 
-                li {
-                    background-color: $highlight-color;
-                    border: 1px solid rgba($border-color, 0.4);
-                    border-radius: 8px;
-                    padding: 12px 15px;
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    font-size: 0.95rem;
-                    font-weight: 500;
-                    color: $light-text;
-                    transition: all 0.3s ease;
+    .maintenance-info {
+        background-color: rgba($secondary-yellow, 0.1);
+        border: 1px solid rgba($secondary-yellow, 0.3);
+        border-radius: $radius-md;
+        margin-top: 20px;
+        padding: 15px;
+        animation: pulseBorder 2s infinite ease-in-out;
 
-                    .feature-icon {
-                        color: $primary-color;
-                        font-size: 1.5rem;
-                        flex-shrink: 0;
-                    }
+        .info-icon {
+            color: $secondary-yellow;
+        }
 
-                    &:hover {
-                        transform: translateY(-3px);
-                        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-                        background-color: rgba($primary-color, 0.15);
-                    }
-                }
-            }
+        .info-label {
+            font-weight: 700;
+            color: $secondary-yellow;
+        }
 
-            .details-key-info-box {
-                background-color: rgba($primary-color, 0.05);
-                border: 1px solid rgba($border-color, 0.3);
-                border-radius: 12px;
-                padding: 30px;
-                display: flex;
-                flex-direction: column;
-                gap: 25px;
-                height: 100%;
-
-                .info-item {
-                    display: flex;
-                    align-items: center;
-                    gap: 15px;
-                    color: $light-text;
-                    font-size: 1rem;
-                    font-weight: 500;
-
-                    .info-icon {
-                        color: $primary-color;
-                        font-size: 2rem;
-                        flex-shrink: 0;
-                        filter: drop-shadow(0 0 5px rgba($primary-color, 0.4));
-                    }
-
-                    .info-label {
-                        color: $text-subtle;
-                        font-size: 0.9rem;
-                        font-weight: 500;
-                        margin: 0;
-                    }
-
-                    .info-value {
-                        color: $primary-color;
-                        font-size: 1.2rem;
-                        font-weight: 700;
-                        margin: 0;
-                    }
-
-                    &.maintenance-info {
-                        color: $status-maintenance;
-                        font-weight: 600;
-
-                        .info-icon {
-                            color: $status-maintenance;
-                        }
-
-                        .maintenance-status {
-                            background-color: rgba($status-maintenance, 0.15);
-                            padding: 5px 10px;
-                            border-radius: 5px;
-                            border: 1px solid rgba($status-maintenance, 0.4);
-                        }
-                    }
-                }
-            }
+        .maintenance-status {
+            color: $secondary-yellow;
         }
     }
 }
 
 
-/* ============================================== */
-/* *** GLOBAL RTL (Right-to-Left) Adjustments *** */
-/* ============================================== */
+// ==============================================
+// *** "No Chalet Found" Page ***
+// ==============================================
+
+.no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    background-color: $soft-beige;
+
+    .no-chalet-message {
+        font-family: $font-secondary;
+        color: $primary-gold;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 30px;
+    }
+
+    .back-to-chalets-btn {
+        background-color: $primary-gold;
+        color: $text-light;
+        padding: 15px 30px;
+        border-radius: $radius-md;
+        font-weight: 600;
+        transition: $transition-fast;
+
+        &:hover {
+            background-color: darken($primary-gold, 10%);
+            transform: translateY(-3px);
+            box-shadow: $soft-shadow;
+        }
+    }
+}
+
+// ==============================================
+// *** RTL Adjustments ***
+// ==============================================
+
 [dir="rtl"] {
-    .chalet-details-wrapper {
-        .chalet-header-section {
-            .back-link {
-                flex-direction: row-reverse;
-                transform: translateX(5px);
-
-                &:hover {
-                    transform: translateX(5px);
-                }
-
-                .back-icon {
-                    transform: scaleX(-1);
-                }
-            }
-        }
-
-        .chalet-main-details-section {
-            .details-description-box {
-                padding-right: 0;
-                padding-left: 20px;
-            }
-
-            .details-title {
-                text-align: right;
-
-                &::after {
-                    left: auto;
-                    right: 0;
-                    background: linear-gradient(90deg, transparent, $primary-color, transparent); // ✨ تصحيح تدرج الخط
-                }
-            }
-
-            .details-text {
-                text-align: justify;
-            }
-
-            .details-features-list {
-                li {
-                    flex-direction: row-reverse;
-                    text-align: right;
-                    justify-content: flex-end;
-
-                    .feature-icon {
-                        margin-left: 10px;
-                        margin-right: 0;
-                    }
-
-                    &:hover {
-                        transform: translateX(-8px);
-                    }
-                }
-            }
-
-            .details-key-info-box {
-                .info-item {
-                    flex-direction: row-reverse;
-                    justify-content: flex-end;
-                    text-align: right;
-
-                    .info-icon {
-                        margin-right: 0;
-                        margin-left: 15px;
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-/* ============================================== */
-/* *** RESPONSIVE STYLES *** */
-/* ============================================== */
-@media (max-width: 1200px) {
     .chalet-card-page-container {
-        padding-top: calc(30px + 60px);
-
-        .chalet-details-wrapper {
-            padding: 0 15px;
-
-            .chalet-header-section {
-                .chalet-name-title {
-                    font-size: 2.5rem;
-                }
-
-                .back-link {
-                    font-size: 0.9rem;
-                    padding: 6px 10px;
-                }
+        .back-link {
+            .back-icon {
+                transform: rotate(0deg);
             }
 
-            .chalet-video-section {
-                height: 400px;
+            &:hover {
+                transform: translateX(5px);
+            }
+        }
+
+        .chalet-header-section {
+            flex-direction: row-reverse;
+
+            .back-link {
+                order: 1;
             }
 
-            .chalet-main-details-section {
-                padding: 30px;
-
-                .details-title {
-                    font-size: 1.6rem;
-                }
-
-                .details-text {
-                    font-size: 0.95rem;
-                }
-
-                .details-features-list li {
-                    font-size: 0.9rem;
-                }
-
-                .details-key-info-box {
-                    .info-item {
-                        .info-icon {
-                            font-size: 1.8rem;
-                        }
-
-                        .info-label {
-                            font-size: 0.85rem;
-                        }
-
-                        .info-value {
-                            font-size: 1.1rem;
-                        }
-                    }
-                }
+            .chalet-name-title {
+                text-align: right;
+                margin-right: 20px;
             }
         }
     }
 }
+
+
+// ==============================================
+// *** Responsive Styles ***
+// ==============================================
 
 @media (max-width: 992px) {
     .chalet-card-page-container {
-        .chalet-details-wrapper {
-            .chalet-header-section {
-                .chalet-name-title {
-                    font-size: 2.2rem;
-                }
-            }
-
-            .chalet-video-section {
-                height: 350px;
-            }
-
-            .chalet-main-details-section {
-                .details-description-box {
-                    padding-right: 0;
-                }
-
-                .details-key-info-box {
-                    padding: 25px;
-
-                    .info-item {
-                        gap: 10px;
-
-                        .info-icon {
-                            font-size: 1.6rem;
-                        }
-                    }
-                }
+        .chalet-header-section {
+            .chalet-name-title {
+                font-size: 2.5rem;
             }
         }
+    }
+
+    .details-description-box,
+    .details-key-info-box {
+        padding: 20px;
+    }
+
+    .details-title {
+        font-size: 1.8rem;
+    }
+
+    .details-text {
+        font-size: 1rem;
+    }
+
+    .details-features-list {
+        gap: 10px;
     }
 }
 
 @media (max-width: 768px) {
     .chalet-card-page-container {
-        padding-top: calc(20px + 55px);
-
         .chalet-details-wrapper {
-            padding: 0 10px;
+            padding-top: 20px;
+        }
 
-            .chalet-header-section {
-                flex-direction: column;
-                align-items: center;
-                gap: 15px;
+        .chalet-header-section {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
 
-                .chalet-name-title {
-                    font-size: 2rem;
-                    text-align: center;
-                }
-
-                .back-link {
-                    transform: none;
-
-                    &:hover {
-                        transform: none;
-                    }
-                }
+            .back-link {
+                order: 0;
             }
 
-            .chalet-video-section {
-                height: 300px;
-                margin-bottom: 30px;
-            }
-
-            .chalet-main-details-section {
-                padding: 25px;
-
-                .details-title {
-                    font-size: 1.4rem;
-                }
-
-                .details-features-list {
-                    grid-template-columns: 1fr;
-                }
-
-                .details-key-info-box {
-                    .info-item {
-                        flex-direction: column;
-                        align-items: center;
-                        gap: 5px;
-
-                        .info-icon {
-                            margin-left: 0;
-                            margin-right: 0;
-                        }
-                    }
-                }
+            .chalet-name-title {
+                font-size: 2rem;
+                margin-bottom: 20px;
             }
         }
     }
 
-    [dir="rtl"] {
-        .chalet-details-wrapper {
-            .chalet-header-section {
-                .back-link {
-                    transform: none;
-
-                    &:hover {
-                        transform: none;
-                    }
-
-                    .back-icon {
-                        transform: none;
-                    }
-                }
-            }
-
-            .chalet-main-details-section {
-                .details-features-list li {
-                    flex-direction: column;
-
-                    .feature-icon {
-                        margin-right: 0;
-                    }
-                }
-
-                .details-key-info-box .info-item {
-                    flex-direction: column;
-
-                    .info-icon {
-                        margin-right: 0;
-                    }
-                }
-            }
-        }
+    .chalet-main-details-section {
+        padding: 20px;
+        margin-top: 20px;
     }
-}
 
-@media (max-width: 576px) {
-    .chalet-card-page-container {
-        padding-top: calc(15px + 50px);
+    .details-title {
+        font-size: 1.5rem;
+    }
 
-        .chalet-details-wrapper {
-            padding: 0 10px;
+    .details-features-list {
+        grid-template-columns: 1fr;
+    }
 
-            .chalet-header-section {
-                .chalet-name-title {
-                    font-size: 1.8rem;
-                }
-
-                .back-link {
-                    font-size: 0.8rem;
-                    padding: 5px 8px;
-                }
-            }
-
-            .chalet-video-section {
-                height: 250px;
-            }
-
-            .chalet-main-details-section {
-                padding: 20px;
-
-                .details-title {
-                    font-size: 1.2rem;
-                }
-
-                .details-text {
-                    font-size: 0.9rem;
-                }
-
-                .details-features-list li {
-                    font-size: 0.85rem;
-                }
-
-                .details-key-info-box {
-                    .info-item {
-                        .info-icon {
-                            font-size: 1.4rem;
-                        }
-
-                        .info-label {
-                            font-size: 0.8rem;
-                        }
-
-                        .info-value {
-                            font-size: 1rem;
-                        }
-                    }
-                }
-            }
-        }
+    .details-key-info-box .info-item {
+        flex-wrap: wrap;
+        text-align: center;
     }
 }

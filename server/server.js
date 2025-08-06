@@ -47,7 +47,9 @@ const { initializeWhatsApp } = require('./services/whatsappService');
 const databaseConnection = require('./connection/connect');
 databaseConnection();
 
-initializeWhatsApp();
+ initializeWhatsApp(); 
+// فقط يتم استدعاء initializeWhatsApp عند الضغط على الزر
+
 
 const corsOptions = {
   origin: (origin, callback) => {

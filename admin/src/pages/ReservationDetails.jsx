@@ -138,7 +138,7 @@ const reservation = allReservations.find((ele) => ele._id === id);
       // ✅✅✅  السطر الجديد: حساب المبلغ المتبقي بالمعادلة الصحيحة  ✅✅✅
   const remainingAmount = 
     (
-      parseFloat(reservation?.cost || 0) - 
+      parseFloat(reservation?.originalCost || 0) - 
       parseFloat(reservation?.discountAmount || 0) + 
       totalServices
     ) - totalPaid;
@@ -566,7 +566,7 @@ const waLink = `https://wa.me/${reservation?.client?.phone}?text=${encodedMessag
                                 </TableRow>
                                 <TableRow>
                                     <TableCell align="center" className="table-data">{t('details.bookingAmount')}</TableCell>
-                                    <TableCell align="center" className="table-data">{reservation?.cost}</TableCell>
+                                    <TableCell align="center" className="table-data">{reservation?.originalCost}</TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell align="center" className="table-data">{t('details.period')}</TableCell>

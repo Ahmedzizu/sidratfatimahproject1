@@ -1,0 +1,632 @@
+// src/scss/chalets.scss - A vibrant, luxurious, and glowing theme for chalets
+
+// ==============================================
+// *** Global Variables & Settings ***
+// ==============================================
+// لوحة ألوان جديدة: درجات ذهبية، بيج، وأصفر خفيف لإحساس بالسطوع
+$primary-gold: #D4AF37; // ذهبي لامع
+$secondary-yellow: #FFC107; // أصفر مشرق لإضفاء الحيوية
+$soft-beige: #F8F5EC; // بيج ناعم للخلفيات
+$white-cream: #FFFDF7; // أبيض كريمي دافئ جداً
+$text-dark: #4A4A4A; // لون نص رمادي دافئ
+$text-light: #FFFFFF; // لون نص أبيض نقي
+$border-light: #E0DED7; // لون حدود ناعم
+$box-shadow-light: rgba(0, 0, 0, 0.05);
+
+// Opacity-based colors for background effects
+$primary-gold-opacity: rgba($primary-gold, 0.15);
+$secondary-yellow-opacity: rgba($secondary-yellow, 0.1);
+
+// Typography (الخطوط)
+$font-primary: 'Cairo', sans-serif;
+$font-secondary: 'Montserrat', sans-serif;
+$font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+
+// Shadows (الظلال)
+$soft-shadow: 0 4px 15px $box-shadow-light;
+$medium-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+$gold-glow: 0 0 15px rgba($primary-gold, 0.5);
+
+// Transitions (الانتقالات)
+$transition-fast: all 0.2s ease-in-out;
+$transition-medium: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+// Border Radius (انحناء الأطراف)
+$radius-md: 12px;
+$radius-lg: 25px; // زوايا البطاقات
+$radius-pill: 999px;
+
+// Z-index layers
+$z-low: 1;
+$z-medium: 10;
+$z-high: 100;
+$z-top: 1000;
+
+// ألوان حالات الحجز والرسائل
+$status-available-morning: #66BB6A; // أخضر فاتح
+$status-available-night: #FFB300; // أصفر/برتقالي
+$status-available-both: #4CAF50; // أخضر غامق
+$status-not-available: #EF5350; // أحمر
+$status-maintenance: #FF9800; // برتقالي
+$status-unknown: #9E9E9E; // رمادي
+
+// أنيميشنات
+@keyframes fadeInSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes floatBubble {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    25% {
+        transform: translate(random(100) * 1px, random(100) * 1px) scale(1.1);
+    }
+
+    50% {
+        transform: translate(random(100) * 1px, random(100) * 1px) scale(0.9);
+    }
+
+    75% {
+        transform: translate(random(100) * 1px, random(100) * 1px) scale(1.1);
+    }
+
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+}
+
+@keyframes starPulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes flashRed {
+
+    0%,
+    100% {
+        background-color: rgba($status-not-available, 0.7);
+    }
+
+    50% {
+        background-color: rgba($status-not-available, 0.9);
+    }
+}
+
+@keyframes flashOrange {
+
+    0%,
+    100% {
+        background-color: rgba($status-maintenance, 0.7);
+    }
+
+    50% {
+        background-color: rgba($status-maintenance, 0.9);
+    }
+}
+
+// ==============================================
+// *** Base Styles ***
+// ==============================================
+
+.chalet-page-container {
+    background-color: $white-cream;
+    color: $text-dark;
+    font-family: $font-primary;
+    min-height: 100vh;
+    padding: 40px 20px;
+    padding-top: calc(40px + 65px);
+    animation: fadeInSlideUp 0.8s ease-out forwards;
+    position: relative;
+    overflow: hidden;
+
+    .page-content-wrapper {
+        position: relative;
+        z-index: $z-medium;
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    // الخلفية المتحركة والفقاعات
+    .animated-background-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: $z-low;
+        pointer-events: none;
+
+        .animated-bubble {
+            position: absolute;
+            background: linear-gradient(135deg, $primary-gold-opacity, $secondary-yellow-opacity);
+            border-radius: 50%;
+            opacity: 0.5;
+            filter: blur(10px);
+            animation: floatBubble 20s linear infinite;
+
+            &.bubble-1 {
+                width: 250px;
+                height: 250px;
+                top: 10%;
+                left: 5%;
+                animation-delay: 0s;
+            }
+
+            &.bubble-2 {
+                width: 300px;
+                height: 300px;
+                top: 40%;
+                right: 15%;
+                animation-delay: 5s;
+            }
+
+            &.bubble-3 {
+                width: 200px;
+                height: 200px;
+                bottom: 10%;
+                left: 30%;
+                animation-delay: 10s;
+            }
+
+            &.bubble-4 {
+                width: 400px;
+                height: 400px;
+                top: -5%;
+                right: 30%;
+                animation-delay: 15s;
+            }
+
+            &.bubble-5 {
+                width: 150px;
+                height: 150px;
+                bottom: 25%;
+                left: 15%;
+                animation-delay: 8s;
+            }
+        }
+    }
+
+    .loading-message,
+    .no-results-message {
+        color: $text-dark;
+        font-size: 1.6rem;
+        font-weight: 600;
+        margin-top: 50px;
+        text-align: center;
+        width: 100%;
+    }
+
+    .calendar-filter-section {
+        margin-bottom: 40px;
+
+        .date-picker-input {
+            background-color: $text-light;
+            color: $text-dark;
+            border: 2px solid rgba($primary-gold, 0.2);
+            border-radius: $radius-lg;
+            padding: 14px 25px;
+            font-size: 1.2rem;
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+            box-shadow: $soft-shadow;
+            transition: $transition-medium;
+            font-weight: 500;
+
+            &:focus {
+                outline: none;
+                border-color: $primary-gold;
+                box-shadow: $gold-glow;
+            }
+        }
+    }
+
+    .chalets-grid {
+        width: 100%;
+        justify-content: center;
+
+        .MuiGrid-item {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+        }
+    }
+
+    .chalet-card {
+        background-color: $text-light;
+        border-radius: $radius-lg;
+        box-shadow: $medium-shadow;
+        border: 1px solid rgba($primary-gold, 0.1);
+        transition: $transition-medium;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+
+        .card-action-area {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        &:hover:not(.disabled-card) {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+            border-color: $primary-gold;
+        }
+
+        &.disabled-card {
+            opacity: 0.6;
+            cursor: not-allowed;
+            filter: grayscale(80%);
+        }
+
+        .maintenance-badge,
+        .fully-booked-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: $z-high;
+            color: $text-light;
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 15px 30px;
+            border-radius: $radius-lg;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            pointer-events: none;
+            backdrop-filter: blur(5px);
+            border: 2px solid $text-light;
+        }
+
+        .maintenance-badge {
+            background-color: rgba($status-maintenance, 0.8);
+            animation: flashOrange 1.8s infinite alternate ease-in-out;
+        }
+
+        .fully-booked-overlay {
+            background-color: rgba($status-not-available, 0.8);
+            animation: flashRed 1.8s infinite alternate ease-in-out;
+        }
+
+        .card-image {
+            object-fit: cover;
+            width: 100%;
+            height: 250px;
+            border-top-left-radius: $radius-lg;
+            border-top-right-radius: $radius-lg;
+            filter: brightness(0.95);
+            transition: filter 0.4s ease;
+        }
+
+        .card-content {
+            padding: 25px !important;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .card-title {
+                margin-bottom: 15px;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                transition: color 0.3s ease;
+
+                .chalet-name-display {
+                    font-size: 1.8rem;
+                    font-weight: 800;
+                    color: $text-dark;
+                    margin-bottom: 5px;
+                    line-height: 1.2;
+                }
+            }
+
+            .card-rating {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                margin-top: 5px;
+
+                .star-icon {
+                    color: $border-light;
+                    font-size: 1.2rem;
+
+                    &.filled {
+                        color: $secondary-yellow;
+                        animation: starPulse 1.2s ease-in-out infinite;
+                    }
+                }
+
+                .rating-count {
+                    color: $text-dark;
+                    font-size: 0.95rem;
+                    font-weight: 500;
+                    margin-inline-start: 8px;
+                }
+            }
+
+            .availability-info {
+                margin-bottom: 20px;
+                font-weight: 700;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+
+                .availability-status {
+                    padding: 8px 15px;
+                    border-radius: $radius-pill;
+                    font-size: 1rem;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    white-space: nowrap;
+                    border: 1px solid rgba($primary-gold, 0.1);
+                    color: $text-dark;
+                    background-color: rgba($primary-gold, 0.05);
+                }
+            }
+
+            .card-details-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 12px;
+                font-size: 1rem;
+                color: $text-dark;
+                flex-wrap: wrap;
+
+                div {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-weight: 600;
+                    color: $text-dark;
+                }
+
+                .price-info {
+                    font-weight: 800;
+
+                    .price-value {
+                        font-size: 1.6rem;
+                        color: $primary-gold;
+                    }
+                }
+
+                .capacity-info {
+                    span:last-child {
+                        color: $text-dark;
+                        font-weight: 500;
+                    }
+                }
+            }
+        }
+    }
+
+    .pagination-controls {
+        margin-top: 60px;
+        display: flex;
+        justify-content: center;
+
+        .MuiPaginationItem-root {
+            color: $text-dark;
+            border: 1px solid rgba($primary-gold, 0.15);
+            border-radius: $radius-md;
+            transition: $transition-medium;
+            font-size: 1.1rem;
+            padding: 8px 14px;
+
+            &.Mui-selected {
+                background-color: $primary-gold;
+                color: $text-light;
+                font-weight: 800;
+                box-shadow: 0 4px 15px rgba($primary-gold, 0.25);
+            }
+
+            &:hover:not(.Mui-selected) {
+                background-color: rgba($primary-gold, 0.05);
+                color: $primary-gold;
+                transform: translateY(-2px);
+            }
+        }
+    }
+}
+
+
+/* ============================================== */
+/* *** GLOBAL RTL (Right-to-Left) Adjustments *** */
+/* ============================================== */
+[dir="rtl"] {
+    .chalet-page-container {
+        .calendar-filter-section {
+            .date-picker-input {
+                text-align: right;
+            }
+        }
+
+        .chalet-card {
+
+            .maintenance-badge,
+            .fully-booked-overlay {
+                // No change needed as they are centered
+            }
+
+            .card-content {
+                .card-title {
+                    align-items: flex-end;
+
+                    .chalet-name-display {
+                        text-align: right;
+                    }
+                }
+
+                .card-rating {
+                    flex-direction: row-reverse;
+
+                    .rating-count {
+                        margin-inline-start: 0;
+                        margin-inline-end: 8px;
+                    }
+                }
+
+                .availability-info {
+                    // No change needed
+                }
+
+                .card-details-row {
+                    flex-direction: row-reverse;
+                }
+            }
+        }
+
+        .pagination-controls {
+            direction: ltr;
+        }
+    }
+}
+
+
+/* ============================================== */
+/* *** RESPONSIVE STYLES *** */
+/* ============================================== */
+@media (max-width: 1200px) {
+    .chalet-page-container {
+        .chalet-card {
+            .card-content {
+                .card-title {
+                    font-size: 1.6rem;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 992px) {
+    .chalet-page-container {
+        .chalet-card {
+            .card-image {
+                height: 220px;
+            }
+
+            .card-content {
+                padding: 20px !important;
+
+                .card-title {
+                    font-size: 1.5rem;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .chalet-page-container {
+        padding: 20px 10px;
+
+        .calendar-filter-section .date-picker-input {
+            max-width: 280px;
+        }
+
+        .chalet-card {
+            .card-image {
+                height: 180px;
+            }
+
+            .card-content {
+                padding: 18px !important;
+
+                .card-title {
+                    font-size: 1.3rem;
+                }
+
+                .availability-info {
+                    font-size: 0.8rem;
+                    gap: 8px;
+                }
+
+                .card-details-row {
+                    font-size: 0.85rem;
+
+                    .price-value {
+                        font-size: 1.2rem;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 576px) {
+    .chalet-page-container {
+        padding: 15px 10px;
+
+        .calendar-filter-section .date-picker-input {
+            max-width: 240px;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+        }
+
+        .chalet-card {
+            .card-image {
+                height: 160px;
+            }
+
+            .card-content {
+                padding: 15px !important;
+
+                .card-title {
+                    font-size: 1.2rem;
+                }
+
+                .availability-info {
+                    font-size: 0.7rem;
+                    gap: 6px;
+                }
+
+                .card-details-row {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    font-size: 0.8rem;
+                    gap: 4px;
+                }
+            }
+        }
+    }
+
+    [dir="rtl"] {
+        .chalet-page-container {
+            .chalet-card {
+                .card-content {
+                    .card-details-row {
+                        align-items: flex-end;
+                    }
+                }
+            }
+        }
+    }
+}

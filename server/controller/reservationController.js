@@ -1794,6 +1794,7 @@ getReservationByType: async (req, res) => {
                 entityId,
                 notes,
                 paymentMethod,
+                 source,
                  bank, // <--- استقبال معرّف البنك
                 paidAmount,
                 discountAmount,
@@ -1921,6 +1922,7 @@ getReservationByType: async (req, res) => {
                 const newPayment = new ReservationPayments({
                     paid: finalPaidAmount,
                     type: paymentMethod || "نقدي",
+                source: source, // ✅ تم حفظ قيمة المصدر هنا
                      bank: bank,
                     reservation: savedReservation._id,
                   employee: req.user._id,

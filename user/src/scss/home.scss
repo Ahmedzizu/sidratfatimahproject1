@@ -1,25 +1,50 @@
-// src/scss/home.scss - ملف مستقل بالكامل
+// src/scss/home.scss - A sophisticated, light, and golden theme
 
-// Color Variables (unchanged)
-$primary-color: #D4AF37;
-$secondary-color: #B38D46;
-$dark-bg: #121212;
-$card-bg: #1E1E1E;
-$light-text: #F5F5F5;
-$border-color: rgba(212, 175, 55, 0.3);
-$input-bg-dark: rgba($light-text, 0.07);
-$glow-color: rgba(212, 175, 55, 0.8);
+// ==============================================
+// *** Global Variables & Settings ***
+// ==============================================
+// لوحة ألوان جديدة: درجات ذهبية، بيج فاتح، وأبيض كريمي
+$primary-gold: #B8860B; // ذهبي متوسط وفخم
+$secondary-gold: #D4AF37; // ذهبي لامع
+$light-beige: #F5F5DC; // لون بيج فاتح جداً
+$white-cream: #F8F4EC; // لون أبيض كريمي
+$text-dark: #5A5A5A; // لون نص رمادي دافئ
+$text-light: #FFFFFF; // لون نص أبيض نقي
+$border-light: #E0DED7; // لون حدود ناعم
+$box-shadow-light: rgba(0, 0, 0, 0.05);
 
-$primary-rgb: rgb(212, 175, 55);
-$secondary-rgb: rgb(179, 141, 70);
-$dark-bg-rgb: rgb(18, 18, 18);
-$light-text-rgb: rgb(245, 245, 245);
+// Opacity-based colors for background effects
+$primary-gold-opacity: rgba($primary-gold, 0.1);
+$secondary-gold-opacity: rgba($secondary-gold, 0.2);
 
-$hero-gradient-start: rgba($dark-bg-rgb, 0.95);
-$hero-gradient-end: rgba($dark-bg-rgb, 0.7);
+// Typography (الخطوط)
+$font-primary: 'Cairo', sans-serif;
+$font-secondary: 'Montserrat', sans-serif;
+$font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 
+// Shadows (الظلال)
+$soft-shadow: 0 4px 15px $box-shadow-light;
+$medium-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+$gold-glow: 0 0 10px rgba($secondary-gold, 0.4);
 
-// أنيميشنات (unchanged)
+// Transitions (الانتقالات)
+$transition-fast: all 0.2s ease-in-out;
+$transition-medium: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+// Border Radius (انحناء الأطراف)
+$radius-md: 12px;
+$radius-pill: 999px;
+
+// Z-index layers
+$z-low: 1;
+$z-medium: 10;
+$z-high: 100;
+$z-top: 1000;
+
+// ==============================================
+// *** Animations - Same great animations, different colors ***
+// ==============================================
+
 @keyframes fadeInSlideUp {
     from {
         opacity: 0;
@@ -32,51 +57,29 @@ $hero-gradient-end: rgba($dark-bg-rgb, 0.7);
     }
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes pulse {
+@keyframes floatBubble {
     0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.02);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-@keyframes bubbleFloat {
-
-    0%,
-    100% {
-        transform: translateY(0) rotate(0deg);
+        transform: translate(0, 0) scale(1);
     }
 
     25% {
-        transform: translateY(-20px) rotate(5deg);
+        transform: translate(random(100) * 1px, random(100) * 1px) scale(1.1);
     }
 
     50% {
-        transform: translateY(10px) rotate(-5deg);
+        transform: translate(random(100) * 1px, random(100) * 1px) scale(0.9);
     }
 
     75% {
-        transform: translateY(-15px) rotate(3deg);
+        transform: translate(random(100) * 1px, random(100) * 1px) scale(1.1);
+    }
+
+    100% {
+        transform: translate(0, 0) scale(1);
     }
 }
 
-@keyframes heroBackgroundPan {
+@keyframes colorShift {
     0% {
         background-position: 0% 50%;
     }
@@ -90,217 +93,238 @@ $hero-gradient-end: rgba($dark-bg-rgb, 0.7);
     }
 }
 
-@keyframes shimmer {
-    0% {
-        background-position: -200% 0;
-    }
-
-    100% {
-        background-position: 200% 0;
-    }
-}
-
+// ==============================================
+// *** Base Styles ***
+// ==============================================
 
 .home-page {
-    background-color: $dark-bg;
-    color: $light-text;
-    font-family: 'Tajawal', sans-serif;
+    background-color: $white-cream;
+    color: $text-dark;
+    font-family: $font-primary;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     position: relative;
-    overflow: hidden;
-    animation: fadeIn 1s ease-out forwards;
+    overflow-x: hidden;
+    line-height: 1.6;
 
-    // Hero Section
+    // الخلفية المتحركة والفقاعات
+    .animated-background-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: $z-low;
+        pointer-events: none;
+
+        .animated-bubble {
+            position: absolute;
+            background: linear-gradient(135deg, $primary-gold-opacity, $secondary-gold-opacity);
+            border-radius: 50%;
+            opacity: 0.5;
+            filter: blur(10px);
+            animation: floatBubble 20s linear infinite;
+
+            &.bubble-1 {
+                width: 250px;
+                height: 250px;
+                top: 10%;
+                left: 5%;
+                animation-delay: 0s;
+            }
+
+            &.bubble-2 {
+                width: 300px;
+                height: 300px;
+                top: 40%;
+                right: 15%;
+                animation-delay: 5s;
+            }
+
+            &.bubble-3 {
+                width: 200px;
+                height: 200px;
+                bottom: 10%;
+                left: 30%;
+                animation-delay: 10s;
+            }
+
+            &.bubble-4 {
+                width: 400px;
+                height: 400px;
+                top: -5%;
+                right: 30%;
+                animation-delay: 15s;
+            }
+
+            &.bubble-5 {
+                width: 150px;
+                height: 150px;
+                bottom: 25%;
+                left: 15%;
+                animation-delay: 8s;
+            }
+        }
+    }
+
+    // ==============================================
+    // *** Hero Section - The header with search bar ***
+    // ==============================================
+
     .hero-section {
-        height: 550px; // ✨ تقليل الارتفاع قليلاً (كان 600px)
-        background: linear-gradient(135deg, $hero-gradient-start, $dark-bg, $hero-gradient-end);
-        background-size: 400% 400%;
-        animation: heroBackgroundPan 20s ease infinite;
+        height: 600px;
+        background: linear-gradient(135deg, $primary-gold, $white-cream);
         display: flex;
         align-items: center;
         justify-content: center;
         text-align: center;
         position: relative;
         overflow: hidden;
-        border-bottom: 1px solid rgba($border-color, 0.5);
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+        padding: 0 20px;
+        transition: height $transition-medium;
+        box-shadow: $soft-shadow;
 
         .hero-content {
-            z-index: 2;
-            max-width: 800px;
-            padding: 20px;
+            z-index: $z-medium;
+            max-width: 900px;
+            padding: 40px;
             animation: fadeInSlideUp 1s ease-out 0.3s forwards;
             opacity: 0;
 
             .hero-title {
-                color: $primary-color;
-                font-size: 4rem; // ✨ تقليل حجم الخط قليلاً (كان 4.5rem)
-                font-weight: 900;
-                margin-bottom: 20px; // ✨ تقليل المسافة السفلية (كان 25px)
-                text-shadow: 0 5px 15px rgba(0, 0, 0, 0.7), 0 0 20px rgba($primary-color, 0.8);
-                line-height: 1.2;
+                color: $text-light;
+                font-family: $font-secondary;
+                font-size: 4.5rem;
+                font-weight: 700;
+                margin-bottom: 25px;
+                text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                line-height: 1.15;
+                transition: font-size $transition-medium;
             }
 
             .hero-subtitle {
-                color: $light-text;
-                font-size: 1.4rem; // ✨ تقليل حجم الخط قليلاً (كان 1.5rem)
+                color: $text-light;
+                font-size: 1.5rem;
                 line-height: 1.6;
-                margin-bottom: 30px; // ✨ تقليل المسافة السفلية (كان 40px)
+                margin-bottom: 40px;
                 opacity: 0.9;
+                font-weight: 400;
+                max-width: 700px;
+                margin: 0 auto 40px;
+                transition: font-size $transition-medium;
             }
 
             .search-bar-hero {
                 display: flex;
                 gap: 15px;
                 width: 100%;
-                max-width: 550px; // ✨ تقليل العرض الأقصى لشريط البحث (كان 600px)
+                max-width: 650px;
                 margin: 0 auto;
-                background-color: $card-bg;
-                border-radius: 12px;
-                padding: 10px;
-                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-                border: 1px solid rgba($border-color, 0.5);
-                animation: fadeInSlideUp 1s ease-out 0.6s forwards;
-                opacity: 0;
+                background-color: $white-cream;
+                border-radius: $radius-md;
+                padding: 12px;
+                box-shadow: $medium-shadow;
+                transition: $transition-medium;
+
+                &:hover {
+                    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+                    transform: translateY(-2px);
+                }
 
                 .hero-search-input {
-                    .MuiOutlinedInput-root {
-                        background-color: $input-bg-dark;
-                        border-radius: 8px;
-                        color: $light-text;
+                    flex-grow: 1;
 
-                        fieldset {
-                            border-color: rgba($border-color, 0.7);
-                        }
+                    .MuiOutlinedInput-root {
+                        background-color: $border-light;
+                        border-radius: $radius-md;
+                        transition: $transition-fast;
+                        border: none;
 
                         &:hover fieldset {
-                            border-color: rgba($primary-color, 0.7);
+                            border-color: $primary-gold !important;
                         }
 
                         &.Mui-focused fieldset {
-                            border-color: $primary-color;
-                            box-shadow: 0 0 0 3px rgba($primary-color, 0.3);
+                            border-color: $primary-gold !important;
+                            box-shadow: $gold-glow;
                         }
-                    }
-
-                    .MuiInputBase-input {
-                        padding: 14px 16px;
-                    }
-
-                    .MuiInputLabel-root {
-                        color: rgba($light-text, 0.7);
-                    }
-
-                    .MuiInputBase-input::placeholder {
-                        color: rgba($light-text, 0.4);
                     }
                 }
 
                 .detailed-search-btn {
-                    background-color: $primary-color;
-                    color: $dark-bg;
-                    padding: 12px 20px;
-                    border-radius: 8px;
-                    font-weight: 700;
+                    background: linear-gradient(135deg, $primary-gold, $secondary-gold);
+                    color: $text-light;
+                    padding: 12px 28px;
+                    border-radius: $radius-md;
+                    font-weight: 600;
                     font-size: 1rem;
                     text-transform: none;
                     letter-spacing: 0.5px;
-                    transition: all 0.3s ease;
-                    box-shadow: 0 2px 10px rgba($primary-color, 0.4);
+                    transition: $transition-medium;
+                    box-shadow: $gold-glow;
 
                     &:hover {
-                        background-color: darken($primary-color, 5%);
                         transform: translateY(-2px);
-                        box-shadow: 0 4px 15px rgba($primary-color, 0.6);
+                        box-shadow: 0 0 20px rgba($primary-gold, 0.5);
                     }
                 }
             }
         }
     }
 
-    // Main Content Area (Tabs and Outlet)
+    // ==============================================
+    // *** Main Content & Tabs ***
+    // ==============================================
+
     .main-content-container {
         flex-grow: 1;
-        padding: 30px 20px; // ✨ تقليل التباعد العلوي والسفلي (كان 40px)
-        background-color: $dark-bg;
+        padding: 50px 20px;
+        background-color: $white-cream;
+        position: relative;
+        z-index: $z-medium;
 
         .main-content-area {
             max-width: 1200px;
             margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px; // ✨ تقليل المسافة بين زر البحث والتابات (كان 40px)
-
-            .advanced-search-btn {
-                display: none;
-            }
 
             .tabs-container {
                 width: 100%;
-                margin-bottom: 20px; // ✨ تقليل المسافة من الـ Outlet (كان 30px)
+                margin-bottom: 30px;
 
                 .main-nav-tabs {
                     display: flex;
                     justify-content: center;
-                    border-bottom: none;
-                    background-color: rgba($card-bg, 0.8);
-                    border-radius: 12px;
-                    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-                    padding: 8px; // ✨ تقليل البادينج الداخلي للتابات (كان 10px)
-
-                    .nav-item {
-                        margin: 0 8px; // ✨ تقليل المسافة بين التابات (كان 10px)
-                    }
+                    background-color: $text-light;
+                    border-radius: $radius-pill;
+                    box-shadow: $soft-shadow;
+                    padding: 8px;
+                    max-width: fit-content;
+                    margin: 0 auto;
+                    border: 1px solid $border-light;
 
                     .nav-tab {
                         background-color: transparent;
-                        color: rgba($light-text, 0.8);
+                        color: $text-dark;
                         font-weight: 600;
-                        font-size: 1rem; // ✨ تقليل حجم الخط قليلاً (كان 1.1rem)
-                        padding: 10px 20px; // ✨ تقليل البادينج (كان 12px 25px)
-                        border-radius: 8px;
-                        transition: all 0.3s ease;
+                        font-size: 0.95rem;
+                        padding: 12px 32px;
+                        border-radius: $radius-pill;
+                        transition: $transition-medium;
                         position: relative;
-                        overflow: hidden;
+                        z-index: 1;
+                        border: none;
 
-                        &::before {
-                            content: '';
-                            position: absolute;
-                            bottom: 0;
-                            left: 0;
-                            width: 100%;
-                            height: 3px;
-                            background: linear-gradient(90deg, transparent, $primary-color, transparent);
-                            background-size: 200% 100%;
-                            animation: shimmer 2s linear infinite;
-                            transform: translateX(-100%);
-                            transition: transform 0.4s ease;
+                        &.active {
+                            background: linear-gradient(135deg, $primary-gold, $secondary-gold);
+                            color: #fff;
+                            box-shadow: $gold-glow;
                         }
 
                         &:hover {
-                            color: $primary-color;
-                            background-color: rgba($primary-color, 0.1);
-                            transform: translateY(-2px);
-
-                            &::before {
-                                transform: translateX(0);
-                            }
-                        }
-
-                        &.active {
-                            background-color: $primary-color !important;
-                            color: $dark-bg !important;
-                            box-shadow: 0 3px 10px rgba($primary-color, 0.5);
-                            transform: translateY(-2px);
-                            border-color: $primary-color !important;
-
-                            &::before {
-                                transform: translateX(0);
-                                animation: none;
-                            }
+                            color: $primary-gold;
+                            background-color: rgba($primary-gold, 0.1);
                         }
                     }
                 }
@@ -308,178 +332,42 @@ $hero-gradient-end: rgba($dark-bg-rgb, 0.7);
         }
     }
 
-    // Content Wrapper (Outlet for Chalets/Halls)
     .content-wrapper {
-        padding: 15px; // ✨ تقليل البادينج (كان 20px)
+        padding: 30px 15px;
         max-width: 1200px;
         margin: 0 auto;
-    }
-
-    // Decorative Elements (unchanged as they are background elements)
-    .decorative-elements {
-        position: fixed;
-        top: 0;
-        left: 0;
         width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 1;
+        z-index: $z-medium;
+    }
 
-        .bubble {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba($primary-color, 0.05);
-            animation: bubbleFloat 15s ease-in-out infinite;
-            filter: blur(3px);
-
-            &.bubble-1 {
-                width: 300px;
-                height: 300px;
-                right: -100px;
-                bottom: -100px;
-                animation-delay: 0s;
-            }
-
-            &.bubble-2 {
-                width: 200px;
-                height: 200px;
-                left: -80px;
-                top: 50px;
-                animation-delay: 5s;
-            }
-
-            &.bubble-3 {
-                width: 150px;
-                height: 150px;
-                right: 30%;
-                top: -50px;
-                animation-delay: 10s;
-            }
-        }
-
-        .golden-pattern {
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba($primary-color, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
-            right: -250px;
-            top: -250px;
-            opacity: 0.6;
-            animation: goldPulse 4s infinite alternate;
-        }
+    footer {
+        z-index: $z-medium;
     }
 }
 
+// ==============================================
+// *** Responsive Design & RTL adjustments ***
+// ==============================================
 
-/* ============================================== */
-/* *** RTL (Right-to-Left) Adjustments *** */
-/* ============================================== */
 [dir="rtl"] {
-    .hero-section {
-        .hero-content {
-            .search-bar-hero {
-                .hero-search-input {
-                    .MuiInputBase-input {
-                        text-align: right;
-                    }
-                }
-            }
-        }
-    }
-
-    .main-content-container {
-        .main-content-area {
-            .tabs-container {
-                .main-nav-tabs {
-                    .nav-tab {
-                        &::before {
-                            transform: translateX(100%);
-                        }
-
-                        &:hover {
-                            transform: translateY(-2px);
-
-                            &::before {
-                                transform: translateX(0);
-                            }
-                        }
-
-                        &.active {
-                            &::before {
-                                transform: translateX(0);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-/* ============================================== */
-/* *** RESPONSIVE STYLES *** */
-/* ============================================== */
-@media (max-width: 1200px) {
     .home-page {
-        .hero-section {
-            height: 500px; // ✨ تقليل الارتفاع (كان 550px)
-
-            .hero-content {
-                .hero-title {
-                    font-size: 3.8rem;
-                }
-
-                // ✨ تقليل الخط
-                .hero-subtitle {
-                    font-size: 1.3rem;
-                }
-
-                // ✨ تقليل الخط
-            }
-        }
-
-        .main-content-container {
-            padding: 25px 15px; // ✨ تقليل البادينج
-
-            .main-content-area {
-                gap: 25px; // ✨ تقليل المسافة
-
-                .tabs-container .main-nav-tabs .nav-tab {
-                    padding: 10px 18px; // ✨ تقليل البادينج
-                    font-size: 0.95rem; // ✨ تقليل الخط
-                }
-            }
-        }
-
-        .content-wrapper {
-            padding: 10px; // ✨ تقليل البادينج
-        }
+        font-family: $font-primary;
     }
 }
 
 @media (max-width: 992px) {
     .home-page {
         .hero-section {
-            height: 450px; // ✨ تقليل الارتفاع (كان 500px)
+            height: 550px;
 
             .hero-content {
                 .hero-title {
-                    font-size: 3.2rem;
+                    font-size: 3.5rem;
                 }
 
-                // ✨ تقليل الخط
                 .hero-subtitle {
-                    font-size: 1.1rem;
+                    font-size: 1.2rem;
                 }
-
-                // ✨ تقليل الخط
-                .search-bar-hero {
-                    max-width: 450px;
-                    gap: 10px;
-                }
-
-                // ✨ تقليل العرض الأقصى
             }
         }
     }
@@ -488,95 +376,69 @@ $hero-gradient-end: rgba($dark-bg-rgb, 0.7);
 @media (max-width: 768px) {
     .home-page {
         .hero-section {
-            height: 400px; // ✨ تقليل الارتفاع (كان 450px)
+            height: 500px;
 
             .hero-content {
+                padding: 30px 20px;
+
                 .hero-title {
                     font-size: 2.8rem;
-                    margin-bottom: 15px;
                 }
 
-                // ✨ تقليل الخط والمسافة
                 .hero-subtitle {
                     font-size: 1rem;
-                    margin-bottom: 25px;
                 }
 
-                // ✨ تقليل الخط والمسافة
                 .search-bar-hero {
                     flex-direction: column;
-                    gap: 10px; // ✨ تقليل المسافة
-                    padding: 10px; // ✨ تقليل البادينج
-
-                    .detailed-search-btn {
-                        width: 100%;
-                    }
+                    gap: 12px;
+                    padding: 12px;
                 }
             }
         }
 
         .main-content-container {
-            padding: 20px 10px; // ✨ تقليل البادينج
-
             .main-content-area {
-                gap: 20px; // ✨ تقليل المسافة
-
                 .tabs-container {
                     .main-nav-tabs {
+                        flex-wrap: wrap;
+                        border-radius: $radius-md;
+                        padding: 6px;
+
                         .nav-item {
-                            margin: 3px;
+                            width: 100%;
+                            text-align: center;
+                            margin: 4px 0;
                         }
 
-                        // ✨ تقليل المسافة
                         .nav-tab {
-                            padding: 8px 12px;
-                            font-size: 0.9rem;
+                            padding: 10px 20px;
                         }
-
-                        // ✨ تقليل البادينج والخط
                     }
                 }
             }
         }
-
-        .content-wrapper {
-            padding: 8px;
-        }
-
-        // ✨ تقليل البادينج
     }
 }
 
 @media (max-width: 576px) {
     .home-page {
         .hero-section {
-            height: 350px; // ✨ تقليل الارتفاع (كان 400px)
+            height: 400px;
 
             .hero-content {
                 .hero-title {
                     font-size: 2.2rem;
                 }
 
-                // ✨ تقليل الخط
                 .hero-subtitle {
                     font-size: 0.9rem;
                 }
-
-                // ✨ تقليل الخط
             }
         }
 
         .main-content-container {
-            padding: 15px 5px; // ✨ تقليل البادينج
-
-            .main-content-area {
-                gap: 15px; // ✨ تقليل المسافة
-
-                .tabs-container .main-nav-tabs .nav-tab {
-                    font-size: 0.8rem; // ✨ تقليل الخط
-                    padding: 6px 10px; // ✨ تقليل البادينج
-                }
-            }
+            padding: 20px 10px;
         }
     }
 }

@@ -1,419 +1,295 @@
-// متغيرات الألوان
-$primary-color: #D4AF37;
-$secondary-color: #B38D46;
-$dark-bg: #121212;
-$card-bg: #1E1E1E;
-$light-text: #F5F5F5;
-$border-color: rgba(212, 175, 55, 0.3);
-$logout-color: #ff5252;
-$hover-bg: rgba(212, 175, 55, 0.05);
+// src/scss/UserProfile.scss - A professional and elegant user profile modal
 
-// أنيميشنات محسنة
-@keyframes fadeInPop {
-    0% {
+// ===============================================
+// *** Global Variables & Settings ***
+// ===============================================
+// Define all required variables in this file to prevent import errors
+$primary-dark-blue: #0A1C2C; // Dark, elegant blue for accents and headings
+$primary-gold: #B8860B; // Medium, luxurious gold
+$secondary-beige: #F5EFE1; // Soft, warm beige for backgrounds
+$soft-cream: #FCF9F1; // Very soft cream-white for main content
+$text-dark: #333333; // Dark gray for primary text
+$text-subtle: #8A8A8A; // Subdued gray for secondary text
+$text-light: #FFFFFF; // Pure white for light-on-dark elements
+$border-light: #E0DCD1; // Soft border color
+$box-shadow-light: rgba(0, 0, 0, 0.04);
+$soft-shadow: 0 4px 12px $box-shadow-light;
+$medium-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+$card-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+$glow-color: rgba($primary-gold, 0.8);
+$status-unavailable: #dc3545; // ✅ تم إضافة المتغير المفقود
+
+// Typography
+$font-primary: 'Cairo', sans-serif;
+$font-secondary: 'Playfair Display', serif;
+
+// Transitions
+$transition-medium: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+$transition-fast: all 0.2s ease-in-out;
+
+// Border Radius
+$radius-sm: 8px;
+$radius-md: 16px;
+$radius-lg: 25px;
+
+// ===============================================
+// *** Animations ***
+// ===============================================
+@keyframes slideInFromRight {
+    from {
+        transform: translateX(100%);
         opacity: 0;
-        transform: scale(0.95) translateY(10px);
     }
 
-    100% {
+    to {
+        transform: translateX(0);
         opacity: 1;
-        transform: scale(1) translateY(0);
     }
 }
 
-@keyframes slideInItem {
-    0% {
+@keyframes slideInFromLeft {
+    from {
+        transform: translateX(-100%);
         opacity: 0;
-        transform: translateY(15px);
     }
 
-    100% {
+    to {
+        transform: translateX(0);
         opacity: 1;
-        transform: translateY(0);
     }
 }
 
-@keyframes borderGlow {
-    0% {
-        box-shadow: 0 0 0 0 rgba($primary-color, 0.4);
+@keyframes fadeIn {
+    from {
+        opacity: 0;
     }
 
-    70% {
-        box-shadow: 0 0 0 6px rgba($primary-color, 0);
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes pulseButton {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
     }
 
     100% {
-        box-shadow: 0 0 0 0 rgba($primary-color, 0);
+        transform: scale(1);
     }
 }
 
+// ===============================================
+// *** Modal Styles ***
+// ===============================================
 .user-profile-modal {
-    position: absolute;
-    top: 70px;
-    right: 20px;
-    width: 320px;
-    height: auto; // الأهم: الارتفاع تلقائي ليتناسب مع محتوى profile-content
-    // max-height: calc(100vh - 80px); // تم نقل التحكم في الارتفاع الأقصى إلى .profile-content
-    background-color: transparent; // يجب أن تكون شفافة تمامًا هنا
-    z-index: 1000;
-    pointer-events: none;
-    opacity: 0;
-    transform: scale(0.95);
-    transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); // أنيميشن للظهور والاختفاء
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 0;
+    background: rgba($primary-dark-blue, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 1050;
+    overflow-x: hidden;
+    transition: width 0.4s ease-in-out;
+    display: flex;
+    justify-content: flex-end;
 
     &.show {
-        pointer-events: all;
-        opacity: 1;
-        transform: scale(1);
-
-        .profile-content {
-            animation: fadeInPop 0.35s ease-out forwards;
-        }
+        width: 100%;
     }
 
     .profile-content {
-        width: 100%;
-        height: auto; // تأكد أن الارتفاع تلقائي
-        min-height: min-content; // الحد الأدنى للارتفاع هو المحتوى
-        // الأهم: تحديد أقصى ارتفاع هنا للسماح بالتمرير داخل البطاقة
-        max-height: calc(100vh - 100px); // 100px هي المسافة من الأعلى والأسفل (Navbar + فراغ)
-        overflow-y: auto; // السماح بالتمرير داخل هذا العنصر إذا زاد المحتوى
-
-        background-color: rgba($card-bg, 0.95); // الشفافية هنا
-        border: 1px solid $border-color;
-        border-radius: 14px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        width: 350px;
+        background-color: $soft-cream;
+        padding: 40px;
+        box-shadow: -5px 0 20px rgba(0, 0, 0, 0.2);
         display: flex;
         flex-direction: column;
-        overflow-x: hidden; // لمنع التمرير الأفقي غير المرغوب فيه
-        backdrop-filter: blur(8px);
-
-        // تأكد من عدم وجود padding-bottom أو margin-bottom كبير هنا
-        padding-bottom: 0;
-        margin-bottom: 0;
-
-
-        &>* {
-            animation: slideInItem 0.4s ease-out forwards;
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        .profile-header {
-            animation-delay: 0.1s;
-        }
-
-        .profile-info-section {
-            animation-delay: 0.2s;
-        }
-
-        .profile-setting-button {
-            animation-delay: 0.3s;
-        }
-
-        .profile-actions-section {
-            animation-delay: 0.4s;
-        }
-    }
-
-    .profile-header {
-        padding: 16px 20px;
-        display: flex;
         justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid rgba($border-color, 0.4);
-        background: linear-gradient(to right,
-                rgba($primary-color, 0.1),
-                rgba($primary-color, 0.05));
-        border-top-left-radius: 14px;
-        border-top-right-radius: 14px;
-        position: sticky; // لجعل الهيدر ثابتًا عند التمرير
-        top: 0;
-        z-index: 10; // لضمان ظهوره فوق المحتوى المتمرر
+        animation: slideInFromRight 0.4s ease-in-out forwards;
 
-        .profile-title {
-            color: $primary-color;
-            margin: 0;
-            font-size: 1.4rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-shadow: 0 0 8px rgba($primary-color, 0.4);
-            font-family: 'Tajawal', sans-serif;
-        }
-
-        .close-profile-btn {
-            background: none;
-            border: none;
-            color: rgba($light-text, 0.7);
-            cursor: pointer;
-            transition: all 0.25s ease-out;
-            padding: 4px;
-            border-radius: 50%;
-
-            &:hover {
-                color: $primary-color;
-                transform: rotate(90deg) scale(1.1);
-                background: rgba($light-text, 0.1);
-            }
-
-            svg {
-                font-size: 1.8rem;
-            }
+        &.rtl {
+            animation: slideInFromLeft 0.4s ease-in-out forwards;
         }
     }
+}
 
-    .profile-info-section {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 16px;
-        border-bottom: 1px solid rgba($border-color, 0.3);
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
 
-        .profile-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid $primary-color;
-            box-shadow: 0 0 12px rgba($primary-color, 0.6);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            animation: borderGlow 2s infinite;
-
-            &:hover {
-                transform: scale(1.08);
-                box-shadow: 0 0 16px rgba($primary-color, 0.8);
-            }
-        }
-
-        .user-details-text {
-            text-align: center;
-
-            .username {
-                color: $light-text;
-                font-size: 1.2rem;
-                margin: 0 0 6px 0;
-                font-weight: 600;
-                font-family: 'Tajawal', sans-serif;
-                letter-spacing: 0.3px;
-            }
-
-            .user-contact-phone {
-                color: rgba($light-text, 0.7);
-                margin: 0;
-                font-size: 0.95rem;
-                font-family: 'Tajawal', sans-serif;
-            }
-        }
+    .profile-title {
+        font-family: $font-secondary;
+        font-size: 2rem;
+        font-weight: 700;
+        color: $primary-dark-blue;
+        margin: 0;
     }
 
-    .profile-info-message {
-        padding: 24px 20px;
-        text-align: center;
-        color: rgba($light-text, 0.7);
-        font-size: 1.05rem;
-        line-height: 1.5;
-        font-family: 'Tajawal', sans-serif;
-    }
-
-    .profile-setting-button {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 16px 20px;
-        background-color: transparent;
+    .close-profile-btn {
+        background: none;
         border: none;
-        border-bottom: 1px solid rgba($border-color, 0.3);
-        color: $light-text;
+        color: $text-subtle;
         cursor: pointer;
-        transition: all 0.25s ease-out;
-        position: relative;
-
-        &::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(to right,
-                    transparent,
-                    $primary-color,
-                    transparent);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.4s ease-out;
-        }
+        transition: $transition-fast;
 
         &:hover {
-            background-color: $hover-bg;
+            color: $status-unavailable;
+            transform: rotate(90deg);
+        }
+    }
+}
 
-            &::after {
-                transform: scaleX(1);
-                transform-origin: left;
-            }
+.profile-info-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 1px dashed $border-light;
 
-            .setting-icon {
-                transform: rotate(20deg) scale(1.1);
-            }
+    .profile-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid $primary-gold;
+        box-shadow: $medium-shadow;
+        margin-bottom: 15px;
+    }
+
+    .username {
+        font-family: $font-secondary;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: $primary-dark-blue;
+        margin-bottom: 5px;
+    }
+
+    .user-contact-phone {
+        font-size: 1rem;
+        color: $text-subtle;
+        margin: 0;
+    }
+}
+
+.profile-setting-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 15px 20px;
+    margin-top: 25px;
+    background-color: $secondary-beige;
+    border: 1px solid $border-light;
+    border-radius: $radius-md;
+    box-shadow: $soft-shadow;
+    cursor: pointer;
+    transition: $transition-medium;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .setting-text-container {
+        text-align: left;
+
+        h5 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: $text-dark;
+            margin: 0;
         }
 
-        .setting-text-container {
-            text-align: left;
-
-            .setting-main-text {
-                margin: 0 0 4px 0;
-                font-size: 1.05rem;
-                font-weight: 500;
-                color: $light-text;
-                font-family: 'Tajawal', sans-serif;
-            }
-
-            .setting-sub-text {
-                margin: 0;
-                font-size: 0.85rem;
-                color: rgba($light-text, 0.6);
-                font-family: 'Tajawal', sans-serif;
-            }
-        }
-
-        .setting-icon {
-            color: $primary-color;
-            font-size: 1.7rem;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        p {
+            font-size: 0.9rem;
+            color: $text-subtle;
+            margin: 0;
         }
     }
 
-    .profile-actions-section {
-        padding: 16px 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        border-top: 1px solid rgba($border-color, 0.4);
-        border-bottom-left-radius: 14px;
-        border-bottom-right-radius: 14px;
+    .setting-icon {
+        font-size: 2rem;
+        color: $primary-gold;
+        animation: pulseButton 2s infinite alternate;
+    }
+}
 
-        // لا تضع margin-top: auto; هنا
+.profile-actions-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
 
-        .profile-action-button {
-            padding: 12px;
-            border-radius: 8px;
+    .profile-action-button {
+        width: 100%;
+        padding: 15px;
+        font-size: 1rem;
+        font-weight: 700;
+        border-radius: $radius-md;
+        cursor: pointer;
+        transition: $transition-medium;
+
+        &.logout-button {
+            background-color: $status-unavailable;
+            color: $text-light;
             border: none;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.25s ease-out;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            font-family: 'Tajawal', sans-serif;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
-            font-weight: 600;
 
             &:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+                background-color: darken($status-unavailable, 10%);
+                transform: translateY(-3px);
+                box-shadow: $soft-shadow;
             }
+        }
 
-            &:active {
-                transform: translateY(0);
-            }
+        &.login-button {
+            background-color: $primary-dark-blue;
+            color: $text-light;
+            border: none;
 
-            &.logout-button {
-                background-color: rgba($logout-color, 0.1);
-                color: $logout-color;
-                border: 1px solid rgba($logout-color, 0.3);
-
-                &:hover {
-                    background-color: rgba($logout-color, 0.2);
-                }
-            }
-
-            &.login-button {
-                background-color: rgba($primary-color, 0.1);
-                color: $primary-color;
-                border: 1px solid rgba($primary-color, 0.3);
-
-                &:hover {
-                    background-color: rgba($primary-color, 0.2);
-                }
+            &:hover {
+                background-color: lighten($primary-dark-blue, 10%);
+                transform: translateY(-3px);
+                box-shadow: $soft-shadow;
             }
         }
     }
 }
 
-// تعديلات RTL
-.rtl {
+// ===============================================
+// *** RTL Adjustments ***
+// ===============================================
+[dir="rtl"] {
     .user-profile-modal {
-        right: auto;
-        left: 20px;
-
         .profile-content {
-            border-left: none;
-            border-right: 1px solid $border-color;
-            border-top-left-radius: 14px;
-            border-top-right-radius: 0;
-            border-bottom-left-radius: 14px;
-            border-bottom-right-radius: 0;
+            right: auto;
+            left: 0;
+            animation: slideInFromLeft 0.4s ease-in-out forwards;
         }
+    }
 
-        .profile-header {
-            border-top-left-radius: 14px;
-            border-top-right-radius: 0;
-        }
-
-        .profile-setting-button {
-            &::after {
-                transform-origin: left;
-            }
-
-            &:hover::after {
-                transform-origin: right;
-            }
-
-            .setting-text-container {
-                text-align: right;
-            }
-        }
-
-        .profile-actions-section {
-            border-bottom-left-radius: 14px;
-            border-bottom-right-radius: 0;
-        }
+    .profile-setting-button .setting-text-container {
+        text-align: right;
     }
 }
 
-// تصميم متجاوب (لشاشات الهاتف الصغيرة)
-@media (max-width: 480px) {
+
+// ===============================================
+// *** Responsive Design ***
+// ===============================================
+@media (max-width: 576px) {
     .user-profile-modal {
-        width: 92%;
-        left: 4%;
-        right: 4%;
-        top: 60px;
-        max-height: calc(100vh - 70px); // للحفاظ على مساحة كافية من الأعلى والأسفل
-
         .profile-content {
-            border-radius: 12px;
-        }
-
-        .profile-header {
-            padding: 14px 16px;
-        }
-
-        .profile-info-section {
-            padding: 16px;
-
-            .profile-image {
-                width: 70px;
-                height: 70px;
-            }
-        }
-
-        .profile-setting-button {
-            padding: 14px 16px;
-        }
-
-        .profile-actions-section {
-            padding: 14px 16px;
+            width: 85%;
+            padding: 30px;
         }
     }
 }

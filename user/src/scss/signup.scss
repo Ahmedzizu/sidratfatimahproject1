@@ -1,831 +1,384 @@
-// متغيرات الألوان (متوافقة مع باقي المشروع)
-$primary-color: #D4AF37; // اللون الذهبي الرئيسي
-$secondary-color: #B38D46; // اللون الذهبي الثانوي
-$dark-bg: #121212; // الخلفية الداكنة للصفحة
-$card-bg: #1E1E1E; // خلفية البطاقات (فورمات المصادقة)
-$light-text: #F5F5F5; // لون النص الفاتح
-$border-color: rgba(212, 175, 55, 0.4); // لون الحدود الذهبية (أكثر وضوحاً)
-$error-color: #ff4d4f; // لون رسائل الخطأ
-$glow-color: rgba($primary-color, 0.8); // لون التوهج الأساسي
-$input-bg-dark: lighten($card-bg, 5%); // خلفية حقول الإدخال
-
-
-// Global Direction Variables (for RTL compatibility)
-$dir-left: left;
-$dir-right: right;
-
+// src/scss/signup.scss - A professional, vibrant, and interactive signup page
 
 // ===============================================
-// أنيميشنات قوية ومُحسّنة
+// *** Global Variables & Settings ***
 // ===============================================
+$primary-dark-blue: #0A1C2C; // لون داكن أنيق (مثل لون اللوجو)
+$primary-gold: #B8860B; // ذهبي متوسط وفخم
+$secondary-beige: #F5EFE1; // لون بيج فاتح ودافئ
+$soft-cream: #FCF9F1; // أبيض كريمي ناعم جداً
+$text-dark: #333333; // لون النص الداكن
+$text-subtle: #8A8A8A; // لون نص فرعي
+$text-light: #FFFFFF; // لون نص أبيض نقي
+$border-light: #E0DCD1; // لون حدود ناعم
+$box-shadow-light: rgba(0, 0, 0, 0.04);
+$error-color: #dc3545; // لون الخطأ
 
-// ظهور الصفحة بالكامل مع تحريك لأعلى وتأثير ضبابي خفيف
-@keyframes pageFadeInSlideUpBlur {
+// Shadows and effects
+$soft-shadow: 0 4px 12px $box-shadow-light;
+$medium-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+$card-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+$gold-glow: 0 0 12px rgba($primary-gold, 0.4);
+
+// Typography
+$font-primary: 'Cairo', sans-serif;
+$font-secondary: 'Playfair Display', serif;
+
+// Transitions
+$transition-medium: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+$transition-fast: all 0.2s ease-in-out;
+
+// Border Radius
+$radius-sm: 8px;
+$radius-md: 16px;
+$radius-lg: 25px;
+$radius-pill: 999px;
+
+// ===============================================
+// *** Animations ***
+// ===============================================
+@keyframes fadeInScale {
   from {
     opacity: 0;
-    transform: translateY(50px);
-    filter: blur(8px);
+    transform: scale(0.98);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
+    transform: scale(1);
   }
 }
 
-// أنيميشن ظهور عناصر الـ UI (فورمات، شعار، أزرار) مع تحريك خفيف
-@keyframes elementFadeInUp {
+@keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateY(40px);
-    filter: blur(4px);
+    transform: translateX(100%);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
+    transform: translateX(0);
   }
 }
 
-// أنيميشن لشريط اللمعان على حافة البطاقة
-@keyframes borderShimmerPulse {
+@keyframes pulseButton {
   0% {
-    background-position: -200% 0;
-    opacity: 0.7;
+    transform: scale(1);
   }
 
   50% {
-    opacity: 1;
+    transform: scale(1.05);
   }
 
   100% {
-    background-position: 200% 0;
-    opacity: 0.7;
+    transform: scale(1);
   }
 }
 
-// أنيميشن توهج مستمر للعناصر المميزة (مثل اللوجو أو زر محدد)
-@keyframes continuousGlow {
+@keyframes floatBubble {
   0% {
-    box-shadow: 0 0 8px rgba($primary-color, 0.4);
+    transform: translateY(0) translateX(0);
   }
 
   50% {
-    box-shadow: 0 0 25px rgba($primary-color, 0.9);
-    /* توهج أقوى */
+    transform: translateY(-20px) translateX(10px);
   }
 
   100% {
-    box-shadow: 0 0 8px rgba($primary-color, 0.4);
+    transform: translateY(0) translateX(0);
   }
 }
-
-// أنيميشن تعويم لطيف للخلفيات الزخرفية
-@keyframes subtleFloat {
-
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-
-  25% {
-    transform: translate(10px, -10px) scale(1.02);
-  }
-
-  50% {
-    transform: translate(0, 15px) scale(1.05);
-  }
-
-  75% {
-    transform: translate(-10px, 5px) scale(1.03);
-  }
-}
-
-// أنيميشن لدوران وتكبير اللوجو عند التحويم
-@keyframes logoHoverEffect {
-  from {
-    transform: rotate(0deg) scale(1);
-    filter: drop-shadow(0 0 10px rgba($primary-color, 0.5));
-  }
-
-  to {
-    transform: rotate(15deg) scale(1.1);
-    filter: drop-shadow(0 0 20px rgba($primary-color, 0.9));
-  }
-}
-
-// أنيميشن لخط العنوان السفلي يتوسع
-@keyframes expandLineSmooth {
-  from {
-    width: 0;
-    opacity: 0;
-  }
-
-  to {
-    width: 60px;
-    /* العرض النهائي */
-    opacity: 1;
-  }
-}
-
-// أنيميشن للزر الرئيسي
-@keyframes buttonPulse {
-  0% {
-    transform: translateY(0);
-    box-shadow: 0 5px 15px rgba($primary-color, 0.4);
-  }
-
-  50% {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba($primary-color, 0.7);
-  }
-
-  100% {
-    transform: translateY(0);
-    box-shadow: 0 5px 15px rgba($primary-color, 0.4);
-  }
-}
-
 
 // ===============================================
-// التصميم العام للصفحة
+// *** Auth Page Layout ***
 // ===============================================
+
 .auth-page {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: $dark-bg;
+  padding-top: 100px;
+  padding-bottom: 60px;
+  background-color: $soft-cream;
+  font-family: $font-primary;
+  color: $text-dark;
+  overflow-x: hidden;
   position: relative;
-  overflow: hidden;
-  /* لمنع ظهور أي scrollbars بسبب العناصر الزخرفية */
-  font-family: 'Tajawal', 'Roboto', sans-serif;
-  color: $light-text;
-  animation: pageFadeInSlideUpBlur 1.2s ease-out forwards;
-  /* تطبيق أنيميشن ظهور الصفحة */
-}
 
-.auth-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1;
-  padding: 60px 20px;
-  /* بادينج أكبر */
-  position: relative;
-  z-index: 2;
-  /* فوق العناصر الزخرفية */
-}
-
-.auth-card {
-  background: $card-bg;
-  border: 2px solid $border-color;
-  /* حدود أسمك وأوضح */
-  border-radius: 20px;
-  /* حواف دائرية أكبر */
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
-  /* ظل أعمق وأوسع */
-  padding: 50px;
-  /* بادينج أكبر */
-  width: 100%;
-  max-width: 550px;
-  /* عرض أكبر قليلاً */
-  animation: elementFadeInUp 1s ease-out 0.3s both;
-  /* أنيميشن ظهور البطاقة */
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    /* شريط اللمعان العلوي */
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
+  .auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    height: 5px;
-    /* خط أسمك */
-    background: linear-gradient(90deg, $primary-color, $secondary-color, $primary-color);
-    background-size: 200% 100%;
-    /* لتأثير التمرير */
-    animation: borderShimmerPulse 3s linear infinite;
-    /* أنيميشن شريط اللمعان */
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
   }
-}
 
-.logo-container {
-  text-align: center;
-  margin-bottom: 40px;
-  /* مسافة سفلية أكبر */
-  animation: elementFadeInUp 1s ease-out 0.2s both;
-  /* أنيميشن ظهور الشعار */
-
-  .logo {
-    height: 100px;
-    /* حجم أكبر للشعار */
-    width: 100px;
-    object-fit: contain;
-    margin-bottom: 15px;
-    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    /* انتقال سلس */
-    filter: drop-shadow(0 0 12px rgba($primary-color, 0.6));
-    /* ظل توهج أقوى */
+  .back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: $secondary-beige;
+    border: 1px solid $border-light;
+    color: $text-dark;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: $transition-fast;
+    box-shadow: $soft-shadow;
 
     &:hover {
-      animation: logoHoverEffect 0.8s forwards;
-      /* أنيميشن دوران وتكبير عند التحويم */
+      transform: scale(1.1);
+      background-color: darken($secondary-beige, 5%);
+    }
+
+    @media (max-width: 768px) {
+      top: 10px;
+      left: 10px;
+    }
+
+    [dir="rtl"] & {
+      left: auto;
+      right: 20px;
     }
   }
 
-  .title {
-    color: $primary-color;
-    font-size: 2.2rem;
-    /* حجم خط أكبر للعنوان الرئيسي */
-    font-weight: 800;
-    /* خط أثقل */
-    margin: 0;
-    position: relative;
-    text-shadow: 0 0 10px rgba($primary-color, 0.7);
-    /* ظل نص أقوى */
-    letter-spacing: 1px;
-    /* تباعد أحرف */
+  .auth-card {
+    background-color: $soft-cream;
+    padding: 50px;
+    border-radius: $radius-lg;
+    box-shadow: $card-shadow;
+    border: 2px solid $border-light;
+    width: 100%;
+    max-width: 500px;
+    animation: fadeInScale 0.8s ease-out forwards;
 
-    &::after {
-      /* خط ذهبي تحت العنوان */
-      content: '';
-      position: absolute;
-      bottom: -15px;
-      /* مسافة أكبر */
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      /* سيبدأ من 0 */
-      height: 4px;
-      /* خط أسمك */
-      background: $primary-color;
-      border-radius: 3px;
-      animation: expandLineSmooth 1s ease-out forwards 0.8s;
-      /* أنيميشن توسع الخط */
+    .logo-container {
+      text-align: center;
+      margin-bottom: 20px;
+
+      .logo {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 10px;
+      }
+
+      .title {
+        font-family: $font-secondary;
+        font-size: 2rem;
+        font-weight: 700;
+        color: $primary-dark-blue;
+      }
     }
   }
 }
 
-.form-title {
-  color: $primary-color;
-  font-size: 1.8rem;
-  /* حجم خط أكبر لعنوان الفورم */
-  text-align: center;
-  margin-bottom: 30px;
-  /* مسافة سفلية أكبر */
-  font-weight: 700;
-  /* خط أثقل */
-  position: relative;
-  text-shadow: 0 0 8px rgba($primary-color, 0.5);
-  /* ظل نص أقوى */
-  animation: elementFadeInUp 1s ease-out 0.4s both;
-  /* أنيميشن ظهور عنوان الفورم */
-
-  &::after {
-    /* خط ذهبي تحت عنوان الفورم */
-    content: '';
-    position: absolute;
-    bottom: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    /* سيبدأ من 0 */
-    height: 3px;
-    background: $primary-color;
-    border-radius: 3px;
-    animation: expandLineSmooth 0.8s ease-out forwards 0.6s;
-    /* أنيميشن توسع الخط */
-  }
-}
-
+// ===============================================
+// *** Form Styles & Inputs ***
+// ===============================================
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  /* مسافة أكبر بين حقول الفورم */
-  animation: elementFadeInUp 1s ease-out 0.6s both;
-  /* أنيميشن ظهور الفورم */
-}
+  gap: 20px;
 
-.phone-input-wrapper {
-  direction: ltr;
-  /* الافتراضي */
-  margin-bottom: 25px;
-  /* مسافة أكبر */
-  animation: elementFadeInUp 1s ease-out 0.5s both;
-  /* أنيميشن ظهور حقل الهاتف */
-
-  .react-tel-input {
-    .form-control {
-      height: 60px;
-      /* ارتفاع أكبر لحقل الإدخال */
-      width: 100%;
-      background-color: $input-bg-dark;
-      /* خلفية أغمق قليلاً */
-      color: $light-text;
-      border: 2px solid $border-color;
-      /* حدود أسمك */
-      border-radius: 10px;
-      /* حواف دائرية أكبر */
-      padding-left: 65px;
-      /* بادينج أكبر */
-      font-size: 1.1rem;
-      /* خط أكبر */
-      transition: all 0.4s ease;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
-      /* ظل أقوى */
-
-      &::placeholder {
-        color: rgba($light-text, 0.5);
-        /* لون placeholder أفتح */
-      }
-    }
-
-    .flag-dropdown {
-      background-color: $input-bg-dark;
-      /* خلفية أغمق قليلاً */
-      border: 2px solid $border-color;
-      /* حدود أسمك */
-      border-right: none;
-      border-radius: 10px 0 0 10px;
-      /* حواف دائرية أكبر */
-      transition: all 0.4s ease;
-
-      &:hover {
-        background-color: rgba($primary-color, 0.15);
-        /* خلفية أغمق عند التحويم */
-      }
-
-      .selected-flag {
-        &:hover {
-          background-color: transparent;
-        }
-
-        .arrow {
-          border-top-color: $primary-color;
-
-          /* لون السهم ذهبي */
-          &.up {
-            border-bottom-color: $primary-color;
-          }
-        }
-      }
-    }
-
-    .country-list {
-      background-color: $card-bg;
-      border: 1px solid $border-color;
-      border-radius: 10px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
-      /* ظل أقوى */
-
-      .country {
-        &:hover {
-          background-color: rgba($primary-color, 0.15);
-        }
-
-        &.highlight {
-          background-color: rgba($primary-color, 0.25);
-          /* لون تحديد أوضح */
-        }
-
-        .dial-code {
-          color: $primary-color;
-          font-weight: 700;
-          /* خط أثقل */
-        }
-      }
-
-      .search-box {
-        background-color: $dark-bg;
-        border: 1px solid rgba($primary-color, 0.5);
-        color: $light-text;
-        margin: 12px;
-        padding: 10px 12px;
-        border-radius: 8px;
-
-        &::placeholder {
-          color: rgba($light-text, 0.5);
-        }
-      }
-    }
-  }
-
-  /* Styling when the PhoneInput is focused */
-  &.focused {
-    .react-tel-input {
-      .form-control {
-        border-color: $primary-color;
-        box-shadow: 0 0 0 4px rgba($primary-color, 0.4);
-        /* توهج أكبر عند التركيز */
-        outline: none;
-      }
-
-      .flag-dropdown {
-        border-color: $primary-color;
-        box-shadow: 0 0 0 4px rgba($primary-color, 0.4);
-      }
-    }
-  }
-
-  .error-message-phone {
-    color: $error-color;
-    font-size: 0.85rem;
-    /* خط أكبر لرسالة الخطأ */
-    margin-top: 5px;
-    /* مسافة بعد الحقل */
-    margin-left: 10px;
-    /* محاذاة للجانب */
-    direction: ltr;
-    /* للتأكد من اتجاه النص */
-    animation: fadeIn 0.3s ease-out;
-    font-weight: 500;
+  .form-title {
+    font-family: $font-secondary;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: $primary-gold;
+    text-align: center;
+    margin-bottom: 10px;
   }
 }
 
 .auth-input {
-
-  /* أنماط حقول الإدخال العامة (مثل TextField من MUI) */
   .MuiInputBase-root {
-    background-color: $input-bg-dark !important;
-    color: $light-text !important;
-    border-radius: 10px !important;
-    /* حواف دائرية أكبر */
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5) !important;
-    /* ظل أقوى */
-    transition: all 0.4s ease;
-    height: 60px;
-    /* ارتفاع موحد للحقول */
+    border-radius: $radius-md;
+    background-color: $secondary-beige;
+    border: 1px solid $border-light;
 
-    .MuiOutlinedInput-notchedOutline {
-      border-color: $border-color !important;
-      /* لون حدود أقوى */
-      border-width: 2px !important;
-      /* حدود أسمك */
+    &.Mui-error {
+      border-color: $error-color !important;
     }
 
-    &:hover .MuiOutlinedInput-notchedOutline {
-      border-color: $primary-color !important;
-      /* توهج عند التحويم */
+    fieldset {
+      border-color: transparent !important;
     }
 
-    &.Mui-focused .MuiOutlinedInput-notchedOutline {
-      border-color: $primary-color !important;
-      box-shadow: 0 0 0 4px rgba($primary-color, 0.4) !important;
-      /* توهج أقوى عند التركيز */
+    &:hover fieldset {
+      border-color: rgba($primary-gold, 0.5) !important;
     }
 
-    input {
-      /* تنسيق النص داخل الحقل */
-      padding: 18px 14px;
-      /* بادينج للنص */
-      font-size: 1.1rem;
-      /* خط أكبر */
+    &.Mui-focused {
+      background-color: $soft-cream;
+      box-shadow: $gold-glow;
     }
-  }
-
-  .MuiFormHelperText-root {
-    color: $error-color !important;
-    font-size: 0.85rem !important;
-    /* خط أكبر لرسالة الخطأ */
-    margin-left: 14px !important;
-    /* محاذاة */
-    font-weight: 500;
   }
 }
 
-.auth-actions {
+// PhoneInput specific styles
+.phone-input-wrapper {
+  position: relative;
+
+  .phone-input-container {
+    width: 100%;
+    border-radius: $radius-md;
+    background-color: $secondary-beige;
+    border: 1px solid $border-light;
+
+    &.focused {
+      background-color: $soft-cream;
+      box-shadow: $gold-glow;
+    }
+
+    &.has-error {
+      border-color: $error-color !important;
+    }
+
+    .phone-input-field {
+      width: 100% !important;
+      border-radius: $radius-md !important;
+      background-color: transparent;
+      border: none;
+      box-shadow: none;
+      padding-left: 55px !important;
+      height: 56px;
+      font-family: $font-primary;
+      font-size: 1rem;
+      color: $text-dark;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .phone-input-button {
+      border-right: 1px solid $border-light;
+      background-color: transparent;
+      border-radius: $radius-md !important;
+      transition: $transition-fast;
+
+      &:hover {
+        background-color: rgba($primary-gold, 0.1);
+      }
+    }
+  }
+}
+
+// ===============================================
+// *** Error Message & Decoration ***
+// ===============================================
+
+.error-message {
+  font-size: 0.9rem;
+  color: $error-color;
+  margin-top: 5px;
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-  /* مسافة أكبر بين الأزرار */
-  margin-top: 40px;
-  /* مسافة علوية أكبر */
-}
-
-.auth-button {
-  border-radius: 35px !important;
-  /* حواف دائرية أكبر للزر */
-  padding: 16px !important;
-  /* بادينج أكبر للزر */
-  font-weight: 800 !important;
-  /* خط أثقل */
-  text-transform: none !important;
-  font-size: 1.2rem !important;
-  /* خط أكبر */
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-  /* انتقال سلس وبطيء */
-  letter-spacing: 1px;
-  /* تباعد أحرف */
-
-  &.primary {
-    background-color: $primary-color !important;
-    color: $dark-bg !important;
-    box-shadow: 0 8px 20px rgba($primary-color, 0.5) !important;
-    /* ظل أقوى */
-    animation: buttonPulse 2s infinite alternate ease-in-out;
-    /* أنيميشن نبض للزر الرئيسي */
-
-    &:hover {
-      background-color: darken($primary-color, 8%) !important;
-      /* أغمق عند التحويم */
-      transform: translateY(-5px);
-      /* رفع أكبر */
-      box-shadow: 0 12px 30px rgba($primary-color, 0.8) !important;
-      /* ظل توهج أقوى */
-    }
-  }
-
-  &.secondary {
-    background-color: transparent !important;
-    border: 2px solid $primary-color !important;
-    /* حدود أسمك */
-    color: $primary-color !important;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3) !important;
-    /* ظل خفيف */
-
-    &:hover {
-      background-color: rgba($primary-color, 0.2) !important;
-      /* خلفية أغمق عند التحويم */
-      transform: translateY(-3px);
-      /* رفع خفيف */
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4) !important;
-    }
-  }
-}
-
-.back-button {
-  position: absolute;
-  top: 30px;
-  /* مسافة أكبر */
-  #{$dir-left}: 30px;
-  /* استخدم المتغير */
-  background-color: $primary-color;
-  color: $dark-bg;
-  border: none;
-  border-radius: 50%;
-  width: 55px;
-  /* حجم أكبر */
-  height: 55px;
-  display: flex;
-  justify-content: center;
   align-items: center;
-  cursor: pointer;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-  /* ظل أقوى */
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  /* انتقال سلس */
-  z-index: 10;
-  animation: elementFadeInUp 0.8s ease-out 0.1s both;
-  /* أنيميشن ظهور زر الرجوع */
-  font-size: 1.8rem;
-  /* حجم أيقونة أكبر */
+  gap: 5px;
 
-  &:hover {
-    transform: scale(1.2) rotate(-15deg);
-    /* تكبير ودوران أكبر عند التحويم */
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  .MuiSvgIcon-root {
+    font-size: 1.1rem;
   }
 }
 
 .auth-decoration {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-
   .bubble {
-    position: absolute;
+    position: fixed;
+    background-color: rgba($primary-gold, 0.2);
     border-radius: 50%;
-    background: rgba($primary-color, 0.12);
-    /* شفافية أكبر */
-    animation: subtleFloat 10s ease-in-out infinite alternate;
-    /* أنيميشن تعويم أكثر سلاسة */
-    filter: blur(5px);
-    /* ضبابية أكبر */
-    opacity: 0.8;
-    /* شفافية عامة */
+    filter: blur(10px);
+    animation: floatBubble 20s infinite ease-in-out;
 
     &.bubble-1 {
-      width: 400px;
-      /* حجم أكبر */
-      height: 400px;
-      right: -150px;
-      /* إزاحة أكبر */
-      bottom: -150px;
-      animation-duration: 12s;
-      /* مدة أطول للأنيميشن */
-      animation-delay: 0s;
+      top: 10%;
+      left: 5%;
+      width: 200px;
+      height: 200px;
     }
 
     &.bubble-2 {
+      bottom: 20%;
+      right: 15%;
       width: 300px;
-      /* حجم أكبر */
       height: 300px;
-      left: -100px;
-      /* إزاحة أكبر */
-      top: -100px;
-      animation-duration: 15s;
-      /* مدة أطول */
-      animation-delay: 2s;
-      /* تأخير مختلف */
-    }
-  }
-
-  .golden-pattern {
-    /* تأثير التوهج الذهبي في الخلفية */
-    position: absolute;
-    width: 500px;
-    /* حجم أكبر */
-    height: 500px;
-    background: radial-gradient(circle, rgba($primary-color, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
-    /* توهج أكثر انتشاراً */
-    right: -250px;
-    top: -250px;
-    opacity: 0.6;
-    animation: continuousGlow 5s infinite alternate ease-in-out;
-    /* أنيميشن توهج مستمر وقوي */
-  }
-}
-
-/* ===============================================
-تعديلات الشاشات الصغيرة (Responsive Design)
-=============================================== */
-@media (max-width: 768px) {
-  .auth-page {
-    padding: 40px 0;
-    /* تقليل البادينج العلوي والسفلي */
-  }
-
-  .auth-container {
-    padding: 30px 15px;
-    /* تقليل البادينج */
-  }
-
-  .auth-card {
-    padding: 30px 25px;
-    /* تقليل البادينج الداخلي */
-    border-radius: 15px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-
-    &::before {
-      height: 3px;
-    }
-  }
-
-  .logo-container {
-    margin-bottom: 30px;
-
-    .logo {
-      height: 80px;
-      width: 80px;
-    }
-
-    .title {
-      font-size: 1.8rem;
-
-      &::after {
-        height: 3px;
-        bottom: -10px;
-      }
-    }
-  }
-
-  .form-title {
-    font-size: 1.4rem;
-    margin-bottom: 20px;
-
-    &::after {
-      height: 2px;
-      bottom: -8px;
-    }
-  }
-
-  .auth-form {
-    gap: 18px;
-  }
-
-  .phone-input-wrapper,
-  .auth-input .MuiInputBase-root {
-    height: 52px !important;
-
-    /* ارتفاع أقل للحقول */
-    .form-control,
-    input {
-      font-size: 1rem !important;
-      padding: 15px 12px !important;
-    }
-  }
-
-  .auth-button {
-    padding: 12px !important;
-    font-size: 1rem !important;
-    letter-spacing: 0.5px;
-  }
-
-  .back-button {
-    top: 20px;
-    #{$dir-left}: 20px;
-    width: 45px;
-    height: 45px;
-    font-size: 1.5rem;
-  }
-
-  .auth-decoration {
-    .bubble {
-      filter: blur(3px);
-
-      &.bubble-1 {
-        width: 250px;
-        height: 250px;
-        right: -80px;
-        bottom: -80px;
-      }
-
-      &.bubble-2 {
-        width: 150px;
-        height: 150px;
-        left: -40px;
-        top: -40px;
-      }
+      animation-delay: 5s;
     }
 
     .golden-pattern {
-      width: 350px;
-      height: 350px;
-      right: -170px;
-      top: -170px;
+      /* ... */
     }
   }
 }
 
-/* ===============================================
-تعديلات RTL
-=============================================== */
-[dir="rtl"] {
-  .auth-input .MuiFormHelperText-root {
-    text-align: right;
-    /* محاذاة رسالة الخطأ لليمين */
-  }
 
-  .back-button {
-    #{$dir-left}: auto;
-    #{$dir-right}: 30px;
-    /* ضبط الموضع لزر الرجوع */
-  }
+// ===============================================
+// *** Buttons & Actions ***
+// ===============================================
 
-  @media (max-width: 768px) {
-    .back-button {
-      #{$dir-right}: 20px;
-      /* ضبط الموضع لزر الرجوع في الجوال */
-    }
-  }
+.auth-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 10px;
 
-  .phone-input-wrapper {
-    direction: rtl;
-    /* جعل اتجاه حقل الهاتف من اليمين لليسار */
+  .auth-button {
+    width: 100%;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: $radius-md;
+    transition: $transition-medium;
 
-    .react-tel-input {
-      .form-control {
-        padding-left: 14px;
-        /* بادينج لليسار */
-        padding-right: 65px;
-        /* بادينج لليمين (مكان علم الدولة) */
-        text-align: right;
-        /* محاذاة النص لليمين */
+    &.primary {
+      background-color: $primary-dark-blue;
+      color: $text-light;
+      box-shadow: 0 4px 15px rgba($primary-dark-blue, 0.3);
+
+      &:hover {
+        background-color: lighten($primary-dark-blue, 5%);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba($primary-dark-blue, 0.4);
       }
 
-      .flag-dropdown {
-        border-right: 2px solid $border-color;
-        /* حدود لليمين */
-        border-left: none;
-        /* إزالة الحدود من اليسار */
-        border-radius: 0 10px 10px 0;
-        /* تعديل الحواف الدائرية */
-      }
-
-      .country-list {
-        .search-box {
-          text-align: right;
-          /* محاذاة البحث لليمين */
-        }
+      &.Mui-disabled {
+        background-color: lighten($primary-dark-blue, 20%) !important;
+        color: rgba($text-light, 0.8) !important;
       }
     }
 
-    .error-message-phone {
-      text-align: right;
-      /* محاذاة رسالة الخطأ لليمين */
-      margin-left: auto;
-      /* إزالة الهامش الأيسر */
-      margin-right: 10px;
-      /* إضافة هامش أيمن */
+    &.secondary {
+      background-color: transparent;
+      color: $text-dark;
+      border-color: $border-light;
+
+      &:hover {
+        background-color: $secondary-beige;
+        transform: translateY(-3px);
+        border-color: $primary-gold;
+      }
     }
+  }
+}
+
+// ===============================================
+// *** Responsive Design ***
+// ===============================================
+
+@media (max-width: 768px) {
+  .auth-page .auth-container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .auth-card {
+    padding: 30px;
+  }
+
+  .auth-actions {
+    flex-direction: column;
   }
 }

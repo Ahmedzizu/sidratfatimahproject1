@@ -19,7 +19,7 @@
     "arabic": "العربية"
   },
   "main": {
-    "title": "سدرة فاطمة للمناسبات و الايجار اليومي",
+    "title": "مجموعة سدرة فاطمة للمناسبات و الايجار اليومي ",
     "subtitle": "يمكنك تأجير شاليهات و قاعات من خلال موقعنا بكل سهولة",
     "search": "ابحث هنا",
     "detailedSearch": "البحث المفصل"
@@ -139,7 +139,24 @@
     "pendingReservation": "حجز معلق",
     "partiallyBookedConfirmed": "محجوز جزئياً (مؤكد)",
     "partiallyBookedPending": "محجوز جزئياً (معلق)",
-    "noBanksAvailable": "لا توجد بنوك متاحة."
+    "noBanksAvailable": "لا توجد بنوك متاحة.",
+    "endDateBeforeStartDate": "تاريخ المغادرة لا يمكن أن يكون قبل تاريخ الوصول.",
+    "periodUnavailableSpecific": "الفترة '{period}' غير متاحة في تاريخ {date}.",
+    "periodUnavailableOnDate": "فترة غير متاحة في تاريخ {date}.",
+    "bookNow": "احجز الآن",
+    "bankType": "نوع البنك",
+    "checkInPeriod": "فترة الدخول",
+    "checkOutPeriod": "فترة المغادرة",
+    "reservationInfo": "معلومات الحجز",
+    "customerName": "اسم العميل",
+    "bookingAmount": "مبلغ الحجز",
+    "discount": "الخصم",
+    "reservationStatus": "حالة الحجز",
+    "checkInLabel": "تاريخ الدخول",
+    "checkOutLabel": "تاريخ المغادرة",
+    "additionalServices": "الخدمات الإضافية",
+    "paid": "المدفوع",
+    "remaining": "المبلغ المتبقي"
   },
   "user": {
     "reservations": "الحجوزات",
@@ -239,25 +256,28 @@
     "forgotPassword": "هل نسيت كلمة المرور؟"
   },
   "signup": {
-    "title": "إنشاء حساب جديد",
-    "nameRequired": "الاسم مطلوب",
-    "emailInvalid": "صيغة البريد الإلكتروني غير صحيحة",
+    "nameRequired": " الاسم مطلوب ثلاثي",
+    "nameMinLength": "يجب أن يكون الاسم 3 أحرف على الأقل",
+    "nameInvalidChars": "يجب أن يحتوي الاسم على أحرف فقط",
+    "emailInvalid": "البريد الإلكتروني غير صحيح",
     "emailRequired": "البريد الإلكتروني مطلوب",
-    "phoneMinLength": "رقم الهاتف يجب أن لا يقل عن 7 أرقام",
     "phoneRequired": "رقم الهاتف مطلوب",
-    "passwordMinLength": "كلمة المرور يجب أن لا تقل عن 8 أحرف",
+    "phoneInvalid": "رقم الهاتف غير صحيح",
+    "passwordMinLength": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
     "passwordRequired": "كلمة المرور مطلوبة",
-    "confirmPasswordMismatch": "كلمتا المرور غير متطابقتين",
+    "passwordComplexity": "يجب أن تحتوي كلمة المرور على حرف كبير، صغير، رقم ورمز",
+    "passwordHint": "يجب أن تحتوي على حرف كبير، صغير، رقم ورمز",
+    "confirmPasswordMismatch": "كلمة المرور غير متطابقة",
     "confirmPasswordRequired": "تأكيد كلمة المرور مطلوب",
-    "namePlaceholder": "الاسم الكامل",
+    "title": "إنشاء حساب جديد",
+    "namePlaceholder": "الاسم الكامل ",
     "emailPlaceholder": "البريد الإلكتروني",
     "phonePlaceholder": "رقم الهاتف",
     "passwordPlaceholder": "كلمة المرور",
     "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
     "continueBtn": "متابعة",
-    "loginBtn": "تسجيل الدخول",
-    "signupSuccess": "تم تسجيل حسابك بنجاح! يرجى التحقق من بريدك الإلكتروني.",
-    "phoneInvalid": "صيغة رقم الهاتف غير صحيحة (مثال: +1234567890)"
+    "loginBtn": "لديك حساب بالفعل؟ تسجيل الدخول",
+    "signupSuccess": "تم التسجيل بنجاح! يرجى التحقق من بريدك الإلكتروني"
   },
   "verifyEmail": {
     "title": "التحقق من البريد الإلكتروني",
@@ -298,8 +318,8 @@
   "common": {
     "back": "رجوع",
     "loginGenericError": "حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.",
-    "signupGenericError": "حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.",
-    "networkError": "حدث خطأ في الاتصال. يرجى التحقق من اتصالك بالإنترنت.",
+    "signupGenericError": "حدث خطأ أثناء التسجيل، يرجى المحاولة لاحقًا",
+    "networkError": "خطأ في الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت",
     "noDescription": "لا يوجد وصف متاح.",
     "loading": "جاري التحميل",
     "backToChalets": "العودة إلى الشاليهات",
@@ -315,7 +335,12 @@
     "previous": "السابق",
     "next": "التالي",
     "imageNumber": "صورة رقم",
-    "send": "إرسال"
+    "loginToContinue": "تسجيل الدخول للمتابعة",
+    "send": "إرسال",
+    "viewDetails": "عرض التفاصيل",
+    "reservationDetails": "تفاصيل الحجز",
+    "currency": "ريال سعودي",
+    "notSpecified": "غير محدد"
   },
   "footer": {
     "contact": "تواصل معنا",
@@ -333,5 +358,72 @@
     "subscribe": "اشترك",
     "copyright": "© 2025 @ نظامكو | Nizamko",
     "scrollToTop": "انتقل إلى الأعلى"
+  },
+  "validation": {
+    "fullNameRequired": "الاسم الثلاثي مطلوب.",
+    "phoneRequired": "رقم الجوال مطلوب.",
+    "idNumberRequired": "رقم الهوية مطلوب.",
+    "addressRequired": "العنوان مطلوب.",
+    "nationalityRequired": "الجنسية مطلوبة.",
+    "paymentMethodRequired": "طريقة الدفع مطلوبة.",
+    "bankNameRequired": "اسم البنك مطلوب.",
+    "paymentProofRequired": "إثبات الدفع مطلوب.",
+    "loginRequiredForReservation": "يجب تسجيل الدخول لإتمام الحجز.",
+    "loginToBookMessage": "لإتمام الحجز بسلاسة والوصول إلى ملفك الشخصي، يرجى تسجيل الدخول وإكمال بيانات ملفك.",
+    "periodSelectionRequired": "يجب اختيار فترة للحجز."
+  },
+  "payments": {
+    "title": "الدفعات",
+    "noPayments": "لا توجد دفعات حالياً.",
+    "table": {
+      "type": "النوع",
+      "amount": "المبلغ المدفوع",
+      "insurance": "مبلغ التأمين",
+      "bank": "البنك",
+      "employee": "الموظف",
+      "date": "التاريخ"
+    }
+  },
+  "additionalServices": {
+    "title": "الخدمات الإضافية",
+    "noServices": "لا توجد خدمات إضافية حالياً.",
+    "table": {
+      "service": "الخدمة",
+      "type": "النوع",
+      "count": "العدد",
+      "pricePerUnit": "سعر الوحدة",
+      "totalAmount": "المبلغ الإجمالي"
+    }
+  },
+  "status": {
+    "confirmed": "مؤكد",
+    "completed": "مكتمل",
+    "unConfirmed": "غير مؤكد",
+    "deferred": "مؤجل",
+    "canceled": "ملغى",
+    "unknown": "غير معروف"
+  },
+  "entityTypes": {
+    "hall": "القاعة",
+    "chalet": "الشاليه"
+  },
+  "freeServices": {
+    "title": "الخدمات المجانية",
+    "table": {
+      "service": "الخدمة",
+      "count": "العدد",
+      "notes": "ملاحظات"
+    },
+    "noFreeServices": "لا توجد خدمات مجانية حالياً."
+  },
+  "requests": {
+    "title": "المطالبات",
+    "table": {
+      "service": "الخدمة",
+      "statement": "البيان",
+      "price": "السعر",
+      "notes": "ملاحظات"
+    },
+    "noRequests": "لا توجد مطالبات حالياً."
   }
 }

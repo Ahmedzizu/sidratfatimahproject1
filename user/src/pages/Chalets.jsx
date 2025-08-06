@@ -22,7 +22,7 @@ import BuildCircleIcon from "@mui/icons-material/BuildCircle";
 import DatePicker from "react-datepicker";
 import format from 'date-fns/format';
 import "react-datepicker/dist/react-datepicker.css";
-import "../scss/halls.scss"; // استخدم هذا المسار إذا كنت تستخدم نفس ملف SCSS للشاليهات والقاعات
+import "../scss/chalets.scss"; // استخدم هذا المسار إذا كنت تستخدم نفس ملف SCSS للشاليهات والقاعات
 
 // تعريف مكون Alert لـ Snackbar
 const Alert = React.forwardRef(function Alert(props, ref) {

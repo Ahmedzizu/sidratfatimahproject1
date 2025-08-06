@@ -1,91 +1,102 @@
-// ✨ Luxury Dark & Gold Theme - Bank Details Modal ✨
+// src/scss/bankDetails.scss - A sophisticated and elegant bank details modal
 
-// Color Variables
-$background-color: #121212;
-$primary-gold: #D4AF37;
-$secondary-gold: #B38D46;
-$dark-gold: #8A6D3B;
-$light-text: #F5F5F5;
-$card-bg: #1E1E1E;
-$border-color: rgba(212, 175, 55, 0.3);
+// ===============================================
+// *** Global Variables & Settings ***
+// ===============================================
+// Define all required variables in this file to prevent import errors
+$primary-dark-blue: #63563a; // لون داكن أنيق (مثل لون اللوجو)
+$primary-gold: #B8860B; // ذهبي متوسط وفخم
+$secondary-beige: #F5EFE1; // لون بيج فاتح ودافئ
+$soft-cream: #FCF9F1; // أبيض كريمي ناعم جداً
+$text-dark: #a35a29; // لون نص رمادي داكن
+$text-subtle: #8A8A8A; // لون نص فرعي
+$text-light: #FFFFFF; // لون نص أبيض نقي
+$border-light: #E0DCD1; // لون حدود ناعم
+$box-shadow-light: rgba(0, 0, 0, 0.04);
 
-// Animation Variables
-$transition-speed: 0.3s;
+// Shadows and effects
+$soft-shadow: 0 4px 12px $box-shadow-light;
+$medium-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+$card-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+$gold-glow: 0 0 12px rgba($primary-gold, 0.4);
 
-// Keyframe Animations
+// Typography
+$font-primary: 'Cairo', sans-serif;
+$font-secondary: 'Playfair Display', serif;
+
+// Transitions
+$transition-medium: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+$transition-fast: all 0.2s ease-in-out;
+
+// Border Radius
+$radius-sm: 8px;
+$radius-md: 16px;
+$radius-lg: 25px;
+
+// ===============================================
+// *** Animations ***
+// ===============================================
 @keyframes fadeIn {
     from {
         opacity: 0;
+        transform: scale(0.95);
     }
 
     to {
         opacity: 1;
+        transform: scale(1);
     }
 }
 
-@keyframes slideInFromRight {
-    from {
-        opacity: 0;
-        transform: translateX(50%);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-@keyframes goldPulse {
+@keyframes pulseCopyButton {
     0% {
-        box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba($primary-gold, 0.4);
     }
 
-    50% {
-        box-shadow: 0 0 15px rgba(212, 175, 55, 0.7);
+    70% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 10px rgba($primary-gold, 0);
     }
 
     100% {
-        box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba($primary-gold, 0);
     }
 }
 
-@keyframes textShimmer {
-    0% {
-        background-position: -100% 0;
-    }
-
-    100% {
-        background-position: 100% 0;
-    }
-}
-
-// Modal Styles
+// ===============================================
+// *** Modal Styles ***
+// ===============================================
 .bank-details-modal-box {
-    background: linear-gradient(135deg, #1E1E1E 0%, #2A2A2A 100%) !important;
-    border: 1px solid $border-color !important;
-    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.8) !important;
-    border-radius: 12px !important;
-    padding: 30px !important;
-    animation: slideInFromRight 0.4s ease-out forwards;
-    position: fixed !important;
-    right: 20px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    width: 45% !important;
-    max-height: 85vh !important;
-    overflow-y: auto !important;
+    position: absolute; // ✅ تغيير الموضع ليكون مطلقًا داخل المودال
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); // ✅ توسيط المودال في منتصف الشاشة
+    width: 45%;
+    max-width: 600px;
+    background-color: $soft-cream;
+    box-shadow: $card-shadow;
+    padding: 40px;
+    border-radius: $radius-lg;
+    border: 1px solid $border-light;
+    outline: none;
+    max-height: 85vh;
+    overflow-y: auto;
+    color: $text-dark;
+    font-family: $font-primary;
+    animation: fadeIn 0.4s ease-out forwards;
 
-    // Header Title
     .MuiTypography-h5 {
-        color: $primary-gold !important;
-        font-family: 'El Messiri', 'Playfair Display', serif !important;
-        font-weight: 700 !important;
-        text-align: center !important;
-        margin-bottom: 25px !important;
+        // Modal Title
+        font-family: $font-secondary;
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: $primary-dark-blue;
+        margin-bottom: 30px;
+        text-align: center;
         position: relative;
         padding-bottom: 15px;
-        font-size: 1.7rem !important;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 
         &::after {
             content: '';
@@ -94,235 +105,162 @@ $transition-speed: 0.3s;
             left: 50%;
             transform: translateX(-50%);
             width: 80px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, $primary-gold, transparent);
+            height: 4px;
+            background: linear-gradient(90deg, $primary-gold, darken($primary-gold, 10%));
+            border-radius: 2px;
         }
     }
 
-    // Bank Info Container
     .bank-info-container {
-        max-height: calc(85vh - 150px);
-        overflow-y: auto;
-        padding-right: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
 
-        // Custom Scrollbar
-        &::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        &::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 3px;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background: rgba(212, 175, 55, 0.5);
-            border-radius: 3px;
-
-            &:hover {
-                background: $primary-gold;
-            }
-        }
-
-        // Bank Item Card
         .bank-item {
-            background: $card-bg;
-            border: 1px solid rgba(212, 175, 55, 0.15);
-            border-radius: 10px;
-            padding: 18px;
-            margin-bottom: 18px;
-            transition: all $transition-speed ease;
-            position: relative;
-            overflow: hidden;
+            background-color: $secondary-beige;
+            padding: 20px;
+            border-radius: $radius-md;
+            border: 1px solid $border-light;
+            box-shadow: $soft-shadow;
+            transition: $transition-medium;
 
             &:hover {
                 transform: translateY(-3px);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-                border-color: rgba(212, 175, 55, 0.3);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
             }
 
-            // Bank Name
-            .bank-name {
-                color: $light-text;
-                font-family: 'Tajawal', sans-serif;
-                font-weight: 600;
-                font-size: 1.05rem;
-                margin-bottom: 12px;
-                display: flex;
-                align-items: center;
+            p {
+                margin-bottom: 8px;
+                font-size: 1.1rem;
+                font-weight: 500;
+                color: $text-dark;
 
                 span {
-                    color: $primary-gold;
                     font-weight: 700;
-                    margin-left: 8px;
-                    background: linear-gradient(90deg, $primary-gold, $secondary-gold);
-                    background-size: 200% auto;
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    animation: textShimmer 3s linear infinite;
+                    color: $primary-dark-blue;
+                    margin-inline-start: 5px;
                 }
             }
 
-            // Account Details
             .account-details {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
+                gap: 10px;
+                flex-wrap: wrap;
 
                 .account-number {
-                    color: $light-text;
-                    font-family: 'Tajawal', sans-serif;
-                    font-weight: 500;
-                    font-size: 0.95rem;
+                    font-size: 1.2rem;
+                    font-weight: 600;
+                    color: $primary-gold;
                     margin: 0;
-
-                    span {
-                        color: $primary-gold;
-                        font-weight: 600;
-                        margin-left: 8px;
-                    }
+                    flex-grow: 1;
+                    word-break: break-all;
                 }
-            }
 
-            // Copy Button
-            .copy-button {
-                background: rgba(212, 175, 55, 0.1);
-                border: 1px solid rgba(212, 175, 55, 0.3);
-                border-radius: 8px;
-                padding: 8px;
-                transition: all $transition-speed ease;
-                min-width: 38px;
-                height: 38px;
+                .copy-button {
+                    background-color: $primary-dark-blue;
+                    color: $text-light;
+                    border-radius: $radius-sm;
+                    padding: 8px;
+                    transition: $transition-fast;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 
-                &:hover {
-                    background: $primary-gold;
-                    transform: scale(1.1);
+                    &:hover {
+                        background-color: lighten($primary-dark-blue, 10%);
+                        transform: scale(1.05);
+                        animation: pulseCopyButton 0.8s ease-out;
+                    }
 
                     .MuiSvgIcon-root {
-                        color: #000 !important;
+                        font-size: 1.3rem;
+                        color: $text-light;
                     }
                 }
-
-                .MuiSvgIcon-root {
-                    color: $primary-gold;
-                    transition: color $transition-speed ease;
-                }
             }
 
-            // Divider
             .bank-divider {
                 border: none;
-                height: 1px;
-                background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
-                margin: 15px 0;
+                border-top: 1px dashed $border-light;
+                margin-top: 25px;
+                margin-bottom: 0;
             }
         }
     }
 
-    // No Data Message
-    .MuiTypography-root[sx] {
-        color: rgba(245, 245, 245, 0.7) !important;
-        font-family: 'Tajawal', sans-serif;
-        font-style: italic;
-        text-align: center;
-        padding: 20px 0;
+    .no-bank-info-message {
+        color: $text-subtle;
+        font-size: 1.1rem;
+        margin-top: 20px;
     }
 }
 
-// RTL Adjustments
-[dir="rtl"] {
-    .bank-details-modal-box {
-        right: auto !important;
-        left: 20px !important;
-        animation: slideInFromLeft 0.4s ease-out forwards;
-
-        @keyframes slideInFromLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(-50%);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0) translateY(-50%);
-            }
-        }
-
-        .bank-info-container {
-            .bank-item {
-
-                .bank-name span,
-                .account-number span {
-                    margin-left: 0;
-                    margin-right: 8px;
-                }
-            }
-        }
-    }
-}
-
-// Responsive Styles
-@media (max-width: 1200px) {
-    .bank-details-modal-box {
-        width: 50% !important;
-    }
-}
-
-@media (max-width: 992px) {
-    .bank-details-modal-box {
-        width: 55% !important;
-        padding: 25px !important;
-
-        .MuiTypography-h5 {
-            font-size: 1.5rem !important;
-        }
-    }
-}
-
+// ===============================================
+// *** Responsive Styles ***
+// ===============================================
 @media (max-width: 768px) {
     .bank-details-modal-box {
-        width: 65% !important;
-        padding: 20px !important;
+        width: 90%;
+        left: 50% !important;
+        right: auto !important;
+        transform: translate(-50%, -50%);
+        padding: 30px 20px;
+        border-radius: $radius-md;
 
         .MuiTypography-h5 {
-            font-size: 1.4rem !important;
-            margin-bottom: 20px !important;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+
+            &::after {
+                width: 60px;
+                height: 3px;
+            }
         }
 
         .bank-info-container {
+            gap: 20px;
+
             .bank-item {
                 padding: 15px;
+
+                .account-details {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 5px;
+
+                    .account-number {
+                        font-size: 1.1rem;
+                    }
+                }
             }
         }
     }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 480px) {
     .bank-details-modal-box {
-        width: 85% !important;
-        right: 50% !important;
-        transform: translate(50%, -50%) !important;
-
-        [dir="rtl"] & {
-            right: auto !important;
-            left: 50% !important;
-            transform: translate(-50%, -50%) !important;
-        }
+        width: 95%;
+        padding: 25px 15px;
 
         .MuiTypography-h5 {
-            font-size: 1.3rem !important;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
         }
 
-        .bank-info-container {
-            .bank-item {
-                padding: 12px;
+        .bank-info-container .bank-item {
+            p {
+                font-size: 1rem;
+            }
 
-                .bank-name {
-                    font-size: 1rem;
-                }
+            .account-details .account-number {
+                font-size: 1rem;
+            }
 
-                .account-number {
-                    font-size: 0.9rem;
+            .copy-button {
+                padding: 6px;
+
+                .MuiSvgIcon-root {
+                    font-size: 1.1rem;
                 }
             }
         }

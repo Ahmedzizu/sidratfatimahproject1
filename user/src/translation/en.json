@@ -82,7 +82,7 @@
     "morning": "Morning",
     "Night": "Evening",
     "day": "Whole Day",
-    "price_per_day": "Price per night",
+    "price_per_day": "Price per night/day",
     "currency": "SAR",
     "price": "Price",
     "checkInPeriod": "Check-in Period",
@@ -140,7 +140,23 @@
     "videoNotSupported": "Your browser does not support the video tag.",
     "periodAvailable": "Available Period",
     "hallDetails": "Hall Details",
-    "selectDate": "Select Date"
+    "selectDate": "Select Date",
+    "endDateBeforeStartDate": "Departure date cannot be before arrival date.",
+    "periodUnavailableSpecific": "Period '{period}' is unavailable on {date}.",
+    "periodUnavailableOnDate": "Period unavailable on {date}.",
+    "bookNow": "Book Now",
+    "bankType": "Bank Type",
+    "checkingAvailability": "Checking availability...",
+    "reservationInfo": "Reservation Info",
+    "customerName": "Customer Name",
+    "customerPhone": "Customer Phone",
+    "contractNumber": "Contract Number",
+    "reservationStatus": "Reservation Status",
+    "bookingAmount": "Booking Amount",
+    "network": "Network",
+    "paid": "Paid",
+    "additionalServices": "Additional Services",
+    "remaining": "Remaining Amount"
   },
   "user": {
     "reservations": "My Reservations",
@@ -239,7 +255,7 @@
   },
   "signup": {
     "title": "Create Account",
-    "nameRequired": "Name is required",
+    "nameRequired": "Full name is required",
     "emailInvalid": "Invalid email format",
     "emailRequired": "Email is required",
     "phoneMinLength": "Phone number must be at least 7 digits",
@@ -256,7 +272,11 @@
     "continueBtn": "Continue",
     "loginBtn": "Login",
     "signupSuccess": "Account created successfully! Please check your email.",
-    "phoneInvalid": "Invalid phone number format (e.g., +1234567890)"
+    "phoneInvalid": "Invalid phone number format (e.g., +1234567890)",
+    "nameMinLength": "Name must be at least 3 characters",
+    "nameInvalidChars": "Name must contain letters only",
+    "passwordComplexity": "Password must contain an uppercase letter, lowercase letter, number, and symbol",
+    "passwordHint": "Must contain an uppercase letter, lowercase letter, number, and symbol"
   },
   "verifyEmail": {
     "title": "Email Verification",
@@ -314,7 +334,12 @@
     "previous": "Previous",
     "next": "Next",
     "imageNumber": "Image No.",
-    "send": "Send"
+    "send": "Send",
+    "viewDetails": "View Details",
+    "reservationDetails": "Reservation Details",
+    "currency": "SAR",
+    "notSpecified": "Not Specified",
+    "loginToContinue": "Login to continue"
   },
   "footer": {
     "contact": "Contact Us",
@@ -332,5 +357,71 @@
     "subscribe": "Subscribe",
     "copyright": "© 2025 Nizamko | Nizamko",
     "scrollToTop": "Scroll to Top"
+  },
+  "validation": {
+    "fullNameRequired": "Full name is required.",
+    "phoneRequired": "Phone number is required.",
+    "idNumberRequired": "ID number is required.",
+    "addressRequired": "Address is required.",
+    "nationalityRequired": "Nationality is required.",
+    "paymentMethodRequired": "Payment method is required.",
+    "bankNameRequired": "Bank name is required.",
+    "paymentProofRequired": "Payment proof is required.",
+    "loginRequiredForReservation": "Please login before making a reservation.",
+    "periodSelectionRequired": "A period must be selected for the reservation."
+  },
+  "payments": {
+    "title": "Payments",
+    "noPayments": "No payments to display.",
+    "table": {
+      "type": "Type",
+      "amount": "Paid Amount",
+      "insurance": "Insurance Amount",
+      "bank": "Bank",
+      "employee": "Employee",
+      "date": "Date"
+    }
+  },
+  "additionalServices": {
+    "title": "Additional Services",
+    "noServices": "No additional services to display.",
+    "table": {
+      "service": "Service",
+      "type": "Type",
+      "count": "Count",
+      "pricePerUnit": "Price Per Unit",
+      "totalAmount": "Total Amount"
+    }
+  },
+  "status": {
+    "confirmed": "Confirmed",
+    "completed": "Completed",
+    "unConfirmed": "Unconfirmed",
+    "deferred": "Deferred",
+    "canceled": "Canceled",
+    "unknown": "Unknown"
+  },
+  "entityTypes": {
+    "hall": "Hall",
+    "chalet": "Chalet"
+  },
+  "freeServices": {
+    "title": "Free Services",
+    "table": {
+      "service": "Service",
+      "count": "Count",
+      "notes": "Notes"
+    },
+    "noFreeServices": "No free services to display."
+  },
+  "requests": {
+    "title": "Requests",
+    "table": {
+      "service": "Service",
+      "statement": "Statement",
+      "price": "Price",
+      "notes": "Notes"
+    },
+    "noRequests": "No requests to display."
   }
 }

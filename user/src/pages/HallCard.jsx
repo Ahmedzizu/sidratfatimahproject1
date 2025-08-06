@@ -140,17 +140,13 @@ const HallCard = () => {
                         </Grid>
 
                         {/* Right Column: Key Info (Rate, Location, Area) */}
-                        <Grid item xs={12} md={5}>
+                        {/* <Grid item xs={12} md={5}>
                             <Box className="details-key-info-box">
                                 <div className="info-item">
                                     <LocationOnIcon className="info-icon" />
-                                    <Typography variant="body1" className="info-label">{t("cards.address")}</Typography>
-                                    <Typography variant="body1" className="info-value">{data?.address || t("cards.unknownLocation")}</Typography>
                                 </div>
                                 <div className="info-item">
                                     <DashboardIcon className="info-icon" />
-                                    <Typography variant="body1" className="info-label">{t("cards.area")}</Typography>
-                                    <Typography variant="body1" className="info-value">{data?.area || "N/A"} {t("cards.areaUnit")}</Typography>
                                 </div>
                                 <div className="info-item">
                                     <StarIcon className="info-icon" />
@@ -169,7 +165,7 @@ const HallCard = () => {
                                     </div>
                                 )}
                             </Box>
-                        </Grid>
+                        </Grid> */}
                     </Grid>
                 </Box>
             </Container>

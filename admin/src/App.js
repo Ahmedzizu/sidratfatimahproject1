@@ -53,6 +53,8 @@ import Treasury from './pages/Treasury';
 import Api from "./config/config";
 import ShiftClosures from './pages/ShiftClosures';
 import DrawersAdminPage from './pages/DrawersAdminPage'; 
+import WhatsAppSettings from './pages/WhatsAppSettings'; // تأكد أنك أنشأت الملف
+
 function App() {
   const [loading, setLoading] = useState(false);
   let share = useSelector((state) => state.reservation.value.share);
@@ -240,10 +242,14 @@ function App() {
             element={logedin ? <BankDetails /> : <Signin />}
           />
           <Route path="/shift-closures" element={<ShiftClosures />} />
-          
-<Route path="/drawers-admin" element={<DrawersAdminPage />} />
+          <Route path="/settings/whatsapp" element={logedin ? <WhatsAppSettings  />: <Signin />} />
+<Route path="/treasury" element={logedin ? <Treasury /> : <Signin />} /> 
           <Route path="*" element={logedin ? <Dashboard /> : <Signin />} />
-<Route path="/treasury" element={logedin ? <Treasury /> : <Signin />} />        </Routes>
+  
+
+
+
+ </Routes>
         <Loading open={loading} />
         
       </div>

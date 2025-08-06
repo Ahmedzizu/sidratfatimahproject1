@@ -300,7 +300,7 @@ const ReservationHall = ({ data: hallData }) => {
         } finally {
             setAvailabilityChecking(false);
         }
-    }, [t, periodButtons, hallData]);
+    }, [t, hallData]); // periodButtons removed from dependency array as it's not directly used here
 
     // Trigger availability check when *significant* parameters change
     useEffect(() => {
@@ -329,8 +329,6 @@ const ReservationHall = ({ data: hallData }) => {
         formData.checkInSelection,
         formData.checkOutSelection,
         hallData?._id,
-        // Include date objects directly if you want changes in time to trigger
-        // Although timestamps are already compared in hasChanged
         formData.startDate,
         formData.endDate
     ]);
@@ -352,39 +350,41 @@ const ReservationHall = ({ data: hallData }) => {
         let isValid = true;
 
         // Validation for personal information fields
-        if (!formData.fullName?.trim() || formData.fullName.trim().split(' ').length < 3) {
-            newErrors.fullName = t("validation.fullNameRequired");
-            isValid = false;
-        }
-        if (!formData.phoneNumber?.trim()) {
-            newErrors.phoneNumber = t("validation.phoneRequired");
-            isValid = false;
-        }
-        if (!formData.idNumber?.trim()) {
-            newErrors.idNumber = t("validation.idNumberRequired");
-            isValid = false;
-        }
-        if (!formData.address?.trim()) {
-            newErrors.address = t("validation.addressRequired");
-            isValid = false;
-        }
-        if (!formData.nationality?.trim()) {
-            newErrors.nationality = t("validation.nationalityRequired");
-            isValid = false;
-        }
-
-        // Validation for payment method fields
-        if (!formData.paymentMethod) {
-            newErrors.paymentMethod = t("validation.paymentMethodRequired");
-            isValid = false;
-        } else if (formData.paymentMethod === "bank") {
-            if (!formData.bankName) {
-                newErrors.bankName = t("validation.bankNameRequired");
+        if (isAuthenticated) { // Validate these fields ONLY if the user is authenticated
+            if (!formData.fullName?.trim() || formData.fullName.trim().split(' ').length < 3) {
+                newErrors.fullName = t("validation.fullNameRequired");
                 isValid = false;
             }
-            if (!formData.paymentProof) {
-                newErrors.paymentProof = t("validation.paymentProofRequired");
+            if (!formData.phoneNumber?.trim()) {
+                newErrors.phoneNumber = t("validation.phoneRequired");
                 isValid = false;
+            }
+            if (!formData.idNumber?.trim()) {
+                newErrors.idNumber = t("validation.idNumberRequired");
+                isValid = false;
+            }
+            if (!formData.address?.trim()) {
+                newErrors.address = t("validation.addressRequired");
+                isValid = false;
+            }
+            if (!formData.nationality?.trim()) {
+                newErrors.nationality = t("validation.nationalityRequired");
+                isValid = false;
+            }
+
+            // Validation for payment method fields
+            if (!formData.paymentMethod) {
+                newErrors.paymentMethod = t("validation.paymentMethodRequired");
+                isValid = false;
+            } else if (formData.paymentMethod === "bank") {
+                if (!formData.bankName) {
+                    newErrors.bankName = t("validation.bankNameRequired");
+                    isValid = false;
+                }
+                if (!formData.paymentProof) {
+                    newErrors.paymentProof = t("validation.paymentProofRequired");
+                    isValid = false;
+                }
             }
         }
 
@@ -509,9 +509,8 @@ const ReservationHall = ({ data: hallData }) => {
 
             if (response.status === 201) {
                 setSnackOpenSuccess(true);
-                setDialogeMessage(true);
                 // navigate to reservations after a short delay
-                setTimeout(() => navigate('/reservations'), 3000);
+                setTimeout(() => navigate('/reservations'), 300);
             }
         } catch (error) {
             console.error("Error during reservation submission:", error.response?.data || error);
@@ -616,129 +615,138 @@ const ReservationHall = ({ data: hallData }) => {
                                 )}
                             </div>
 
-                            {/* Personal Information */}
-                            <TextField
-                                fullWidth
-                                label={t("details.fullName")}
-                                value={formData.fullName}
-                                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                                required
-                                error={!!errors.fullName}
-                                helperText={errors.fullName || ""}
-                                margin="normal"
-                                InputProps={{
-                                    readOnly: isAuthenticated && user?.name && user.name.trim().split(' ').length >= 3
-                                }}
-                            />
+                            {/* Conditional rendering for personal info, payment, and discount fields */}
+                            {isAuthenticated ? (
+                                <>
+                                    {/* Personal Information */}
+                                    <TextField
+                                        fullWidth
+                                        label={t("details.fullName")}
+                                        value={formData.fullName}
+                                        onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                                        required
+                                        error={!!errors.fullName}
+                                        helperText={errors.fullName || ""}
+                                        margin="normal"
+                                        InputProps={{
+                                            readOnly: isAuthenticated && user?.name && user.name.trim().split(' ').length >= 3
+                                        }}
+                                    />
 
-                            <TextField
-                                fullWidth
-                                label={t("details.phoneNumber")}
-                                value={formData.phoneNumber}
-                                onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                                required
-                                error={!!errors.phoneNumber}
-                                helperText={errors.phoneNumber || ""}
-                                margin="normal"
-                                InputProps={{ readOnly: isAuthenticated && user?.phone }}
-                            />
+                                    <TextField
+                                        fullWidth
+                                        label={t("details.phoneNumber")}
+                                        value={formData.phoneNumber}
+                                        onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                                        required
+                                        error={!!errors.phoneNumber}
+                                        helperText={errors.phoneNumber || ""}
+                                        margin="normal"
+                                        InputProps={{ readOnly: isAuthenticated && user?.phone }}
+                                    />
 
-                            <TextField
-                                fullWidth
-                                label={t("details.idNumber")}
-                                value={formData.idNumber}
-                                onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
-                                required
-                                error={!!errors.idNumber}
-                                helperText={errors.idNumber || ""}
-                                margin="normal"
-                                InputProps={{ readOnly: isAuthenticated && user?.idNumber }}
-                            />
+                                    <TextField
+                                        fullWidth
+                                        label={t("details.idNumber")}
+                                        value={formData.idNumber}
+                                        onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
+                                        required
+                                        error={!!errors.idNumber}
+                                        helperText={errors.idNumber || ""}
+                                        margin="normal"
+                                        InputProps={{ readOnly: isAuthenticated && user?.idNumber }}
+                                    />
 
-                            <TextField
-                                fullWidth
-                                label={t("details.nationality")}
-                                value={formData.nationality}
-                                onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
-                                required
-                                error={!!errors.nationality}
-                                helperText={errors.nationality || ""}
-                                margin="normal"
-                            />
+                                    <TextField
+                                        fullWidth
+                                        label={t("details.nationality")}
+                                        value={formData.nationality}
+                                        onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
+                                        required
+                                        error={!!errors.nationality}
+                                        helperText={errors.nationality || ""}
+                                        margin="normal"
+                                    />
 
-                            <TextField
-                                fullWidth
-                                label={t("details.address")}
-                                value={formData.address}
-                                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                required
-                                error={!!errors.address}
-                                helperText={errors.address || ""}
-                                margin="normal"
-                            />
+                                    <TextField
+                                        fullWidth
+                                        label={t("details.address")}
+                                        value={formData.address}
+                                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                        required
+                                        error={!!errors.address}
+                                        helperText={errors.address || ""}
+                                        margin="normal"
+                                    />
 
-                            {/* Payment Method */}
-                            <FormControl fullWidth margin="normal" error={!!errors.paymentMethod}>
-                                <InputLabel>{t("details.paymentMethod")}</InputLabel>
-                                <Select
-                                    value={formData.paymentMethod}
-                                    onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
-                                    required
-                                    label={t("details.paymentMethod")}
-                                >
-                                    <MenuItem value="">{t("common.select")}</MenuItem>
-                                    <MenuItem value="cash">{t("details.cash")}</MenuItem>
-                                    <MenuItem value="network">{t("details.network")}</MenuItem>
-                                    <MenuItem value="bank">{t("details.bank")}</MenuItem>
-                                </Select>
-                                {errors.paymentMethod && (
-                                    <Typography variant="caption" color="error">{errors.paymentMethod}</Typography>
-                                )}
-
-                                {formData.paymentMethod === "bank" && (
-                                    <>
-                                        <FormControl fullWidth margin="normal" error={!!errors.bankName}>
-                                            <InputLabel>{t("details.bankType")}</InputLabel>
-                                            <Select
-                                                value={formData.bankName}
-                                                onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
-                                                required
-                                                label={t("details.bankType")}
-                                            >
-                                                <MenuItem value="">{t("common.selectBank")}</MenuItem>
-                                                {banks?.map(bank => (
-                                                    <MenuItem key={bank.id} value={bank.name}>🏦 {bank.name}</MenuItem>
-                                                ))}
-                                            </Select>
-                                            {errors.bankName && (
-                                                <Typography variant="caption" color="error">{errors.bankName}</Typography>
-                                            )}
-                                        </FormControl>
-
-                                        <TextField
-                                            fullWidth
-                                            label={t("details.transferMessage")}
-                                            value={formData.paymentProof}
-                                            onChange={(e) => setFormData({ ...formData, paymentProof: e.target.value })}
+                                    {/* Payment Method */}
+                                    <FormControl fullWidth margin="normal" error={!!errors.paymentMethod}>
+                                        <InputLabel>{t("details.paymentMethod")}</InputLabel>
+                                        <Select
+                                            value={formData.paymentMethod}
+                                            onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
                                             required
-                                            error={!!errors.paymentProof}
-                                            helperText={errors.paymentProof || ""}
-                                            margin="normal"
-                                        />
-                                    </>
-                                )}
-                            </FormControl>
+                                            label={t("details.paymentMethod")}
+                                        >
+                                            <MenuItem value="">{t("common.select")}</MenuItem>
+                                            <MenuItem value="cash">{t("details.cash")}</MenuItem>
+                                            <MenuItem value="network">{t("details.network")}</MenuItem>
+                                            <MenuItem value="bank">{t("details.bank")}</MenuItem>
+                                        </Select>
+                                        {errors.paymentMethod && (
+                                            <Typography variant="caption" color="error">{errors.paymentMethod}</Typography>
+                                        )}
 
-                            {/* Discount Code */}
-                            <TextField
-                                fullWidth
-                                label={t("details.discountCodeOptional")}
-                                value={formData.discountCode}
-                                onChange={(e) => setFormData({ ...formData, discountCode: e.target.value })}
-                                margin="normal"
-                            />
+                                        {formData.paymentMethod === "bank" && (
+                                            <>
+                                                <FormControl fullWidth margin="normal" error={!!errors.bankName}>
+                                                    <InputLabel>{t("details.bankType")}</InputLabel>
+                                                    <Select
+                                                        value={formData.bankName}
+                                                        onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
+                                                        required
+                                                        label={t("details.bankType")}
+                                                    >
+                                                        <MenuItem value="">{t("common.selectBank")}</MenuItem>
+                                                        {banks?.map(bank => (
+                                                            <MenuItem key={bank.id} value={bank.name}>🏦 {bank.name}</MenuItem>
+                                                        ))}
+                                                    </Select>
+                                                    {errors.bankName && (
+                                                        <Typography variant="caption" color="error">{errors.bankName}</Typography>
+                                                    )}
+                                                </FormControl>
 
-                            {/* Booking Type Selection */}
+                                                <TextField
+                                                    fullWidth
+                                                    label={t("details.transferMessage")}
+                                                    value={formData.paymentProof}
+                                                    onChange={(e) => setFormData({ ...formData, paymentProof: e.target.value })}
+                                                    required
+                                                    error={!!errors.paymentProof}
+                                                    helperText={errors.paymentProof || ""}
+                                                    margin="normal"
+                                                />
+                                            </>
+                                        )}
+                                    </FormControl>
+
+                                    {/* Discount Code */}
+                                    <TextField
+                                        fullWidth
+                                        label={t("details.discountCodeOptional")}
+                                        value={formData.discountCode}
+                                        onChange={(e) => setFormData({ ...formData, discountCode: e.target.value })}
+                                        margin="normal"
+                                    />
+                                </>
+                            ) : (
+                                <Typography variant="h6" color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
+                                    {t("validation.loginToBookMessage")}
+                                </Typography>
+                            )}
+
+                            {/* Booking Type Selection (هذا الجزء سيبقى مرئيًا للجميع لاختيار نوع الحجز) */}
                             <FormControl component="fieldset" fullWidth margin="normal" error={!!errors.selectedPeriod || !!errors.dateRange || !!errors.periodSelection}>
                                 <FormLabel component="legend">{t("details.chooseBookingType")}</FormLabel>
                                 <RadioGroup
@@ -748,13 +756,11 @@ const ReservationHall = ({ data: hallData }) => {
                                         ...prev,
                                         periodType: e.target.value,
                                         startDate: new Date(),
-                                        // لو اخترت 'dayPeriod' تبقى endDate نفس startDate، لو 'days' تبقى اليوم التالي
                                         endDate: e.target.value === 'dayPeriod' ? new Date() : addDays(new Date(), 1),
-                                        // إعادة تعيين الاختيارات الفرعية
                                         selectedPeriod: e.target.value === 'dayPeriod' ? 'كامل اليوم' : '',
                                         checkInSelection: 'صباحية',
                                         checkOutSelection: 'مسائية',
-                                        cost: 0 // Reset cost on period type change
+                                        cost: 0
                                     }))}
                                 >
                                     <FormControlLabel
@@ -763,7 +769,7 @@ const ReservationHall = ({ data: hallData }) => {
                                         label={t("details.fixedPeriod")}
                                     />
                                     <FormControlLabel
-                                        value="days" // يتوافق مع 'period.type' في الـ Backend
+                                        value="days"
                                         control={<Radio />}
                                         label={t("details.multiplePeriods")}
                                     />
@@ -779,10 +785,7 @@ const ReservationHall = ({ data: hallData }) => {
                                         <div className="period-buttons">
                                             {periodButtons.map((button) => {
                                                 const hasPrice = !!hallData?.price?.[button.priceKey];
-                                                // حالة التوفر لهذه الفترة المحددة (صباحية/مسائية/كامل اليوم)
                                                 const currentPeriodStatus = dailyAvailabilityStatus[button.priceKey];
-
-                                                // ✅ الشرط الجديد لتعطيل الزر
                                                 const isDisabled = !hasPrice || currentPeriodStatus === 'unavailable' || availabilityChecking;
                                                 const buttonColor = (currentPeriodStatus === 'available' && hasPrice) ? 'green' : 'red';
                                                 const opacity = isDisabled ? 0.6 : 1;
@@ -792,17 +795,17 @@ const ReservationHall = ({ data: hallData }) => {
                                                         key={button.value}
                                                         className={`period-btn btn ${formData.selectedPeriod === button.value ? "active" : ""}`}
                                                         onClick={() => {
-                                                            if (!isDisabled) { // فقط إذا لم يكن معطلاً
+                                                            if (!isDisabled) {
                                                                 setFormData(prev => ({
                                                                     ...prev,
                                                                     selectedPeriod: button.value,
                                                                     checkInSelection: button.checkIn,
                                                                     checkOutSelection: button.checkOut,
-                                                                    endDate: prev.startDate // هام للحجز ليوم واحد، تاريخ النهاية هو نفس تاريخ البداية
+                                                                    endDate: prev.startDate
                                                                 }));
                                                             }
                                                         }}
-                                                        disabled={isDisabled} // تعطيل الزر هنا فقط (availabilityChecking موجودة في isDisabled)
+                                                        disabled={isDisabled}
                                                         style={{ borderColor: buttonColor, color: buttonColor, opacity: opacity }}
                                                     >
                                                         <span className="period-label">
@@ -811,7 +814,6 @@ const ReservationHall = ({ data: hallData }) => {
                                                         {hasPrice && (
                                                             <>
                                                                 <span className="period-price">{hallData.price[button.priceKey]} {t("details.currency")}</span>
-                                                                {/* عرض أوقات الدخول والخروج للقاعة */}
                                                                 <span className="period-time">({hallData[button.checkInTime ? 'dayStartHour' : 'nightStartHour']} - {hallData[button.checkOutTime ? 'dayEndHour' : 'nightEndHour']})</span>
                                                                 {currentPeriodStatus === 'unavailable' && <span className="status-text" style={{ color: 'red' }}> ({t("cards.fullyBooked")})</span>}
                                                             </>
@@ -837,7 +839,7 @@ const ReservationHall = ({ data: hallData }) => {
                                                         setFormData(prev => ({
                                                             ...prev,
                                                             startDate: safeNewStartDate,
-                                                            endDate: addDays(safeNewStartDate, 1) // Default to next day
+                                                            endDate: addDays(safeNewStartDate, 1)
                                                         }));
                                                     }
                                                 }}
@@ -920,7 +922,6 @@ const ReservationHall = ({ data: hallData }) => {
                                         </p>
                                     </div>
 
-                                    {/* Show checkout for multi-day bookings OR if it's a same-day full-period booking */}
                                     {(formData.periodType === "days" || differenceInDays(formData.endDate, formData.startDate) > 0 || (differenceInDays(formData.endDate, formData.startDate) === 0 && formData.selectedPeriod === 'كامل اليوم')) && (
                                         <div className="date-field">
                                             <p>{t("details.left")}</p>
@@ -946,13 +947,24 @@ const ReservationHall = ({ data: hallData }) => {
                                     )}
                                 </div>
 
-                                <MuiButton
-                                    type='submit'
-                                    className='reserve-btn btn'
-                                    disabled={isMainButtonDisabled}
-                                >
-                                    {mainButtonText}
-                                </MuiButton>
+                                {/* Conditional rendering for the submit button */}
+                                {isAuthenticated ? (
+                                    <MuiButton
+                                        type='submit'
+                                        className='reserve-btn btn'
+                                        disabled={isMainButtonDisabled}
+                                    >
+                                        {mainButtonText}
+                                    </MuiButton>
+                                ) : (
+                                    <MuiButton
+                                        className='reserve-btn btn'
+                                        onClick={() => navigate("/user/signin")}
+                                        sx={{ mt: 2 }} // إضافة هامش علوي للتباعد
+                                    >
+                                        {t("common.loginToContinue")} {/* زر يدعو لتسجيل الدخول بدلاً من الحجز */}
+                                    </MuiButton>
+                                )}
 
                                 <p className='installment-title'>{t("details.pill")}</p>
 

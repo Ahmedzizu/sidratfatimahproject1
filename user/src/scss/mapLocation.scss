@@ -1,19 +1,54 @@
-// متغيرات الألوان (متناسقة مع باقي المشروع)
-$primary-color: #D4AF37;
-$secondary-color: #B38D46;
-$dark-bg: #121212;
-$card-bg: #1E1E1E;
-$light-text: #F5F5F5;
-$border-color: rgba(212, 175, 55, 0.3);
-$accent-dark: #2A2A2A;
-$text-subtle: rgba($light-text, 0.8);
+// src/scss/mapLocation.scss - A professional and elegant map section
 
-// أنيميشنات (كما هي)
+// ==============================================
+// *** Global Variables & Settings ***
+// ==============================================
+// لوحة ألوان متناسقة مع التصميم العام
+$primary-dark-blue: #0A1C2C; // لون داكن أنيق
+$primary-gold: #B8860B; // ذهبي متوسط
+$secondary-beige: #F5EFE1; // لون بيج فاتح
+$soft-cream: #FCF9F1; // أبيض كريمي
+$text-dark: #333333; // لون نص رمادي داكن
+$text-light: #FFFFFF; // لون نص أبيض نقي
+$border-light: #E0DCD1; // لون حدود ناعم
+$box-shadow-light: rgba(0, 0, 0, 0.04);
+$text-subtle: #8A8A8A; // لون نص فرعي خفيف
+
+// Shadows and effects
+$soft-shadow: 0 4px 12px $box-shadow-light;
+$medium-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+$card-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+$gold-glow: 0 0 12px rgba($primary-gold, 0.4);
+
+// Typography
+$font-primary: 'Cairo', sans-serif;
+$font-secondary: 'Playfair Display', serif;
+
+// Transitions
+$transition-medium: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+$transition-fast: all 0.2s ease-in-out;
+
+// Border Radius
+$radius-sm: 8px; // ✅ تم إضافة المتغير المفقود
+$radius-md: 16px;
+$radius-lg: 25px;
+
+// Z-index layers
+$z-low: 1;
+$z-medium: 10;
+$z-high: 100;
+$z-top: 1000;
+
+// ==============================================
+// *** Animations ***
+// ==============================================
+
 @keyframes fadeInSlideUp {
     from {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -22,32 +57,54 @@ $text-subtle: rgba($light-text, 0.8);
 
 @keyframes mapBorderGlow {
     0% {
-        box-shadow: 0 0 0 0 rgba($primary-color, 0.4);
+        box-shadow: 0 0 0 0 rgba($primary-gold, 0.2);
     }
+
     50% {
-        box-shadow: 0 0 0 10px rgba($primary-color, 0);
+        box-shadow: 0 0 0 10px rgba($primary-gold, 0.05);
     }
+
     100% {
-        box-shadow: 0 0 0 0 rgba($primary-color, 0);
+        box-shadow: 0 0 0 0 rgba($primary-gold, 0);
     }
 }
 
+@keyframes mapEntrance {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+        filter: brightness(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+        filter: brightness(1);
+    }
+}
+
+// ==============================================
+// *** Main Component Styles ***
+// ==============================================
+
 .map-location-container {
     padding: 60px 20px;
-    background-color: $dark-bg;
-    color: $light-text;
-    font-family: 'Tajawal', sans-serif;
+    background-color: $soft-cream;
+    color: $text-dark;
+    font-family: $font-primary;
     text-align: center;
+    overflow-x: hidden;
     animation: fadeInSlideUp 0.8s ease-out forwards;
 
     .map-title {
-        color: $primary-color;
+        font-family: $font-secondary;
         font-size: 2.8rem;
         font-weight: 800;
+        color: $primary-dark-blue;
         margin-bottom: 40px;
         position: relative;
         padding-bottom: 15px;
-        text-shadow: 0 0 10px rgba($primary-color, 0.5);
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 
         &::after {
             content: '';
@@ -57,7 +114,7 @@ $text-subtle: rgba($light-text, 0.8);
             transform: translateX(-50%);
             width: 150px;
             height: 4px;
-            background: linear-gradient(90deg, $primary-color, $secondary-color);
+            background: linear-gradient(90deg, $primary-gold, darken($primary-gold, 15%));
             border-radius: 2px;
         }
     }
@@ -67,20 +124,20 @@ $text-subtle: rgba($light-text, 0.8);
         width: 100%;
         max-width: 900px;
         margin: 0 auto;
-        // ✨ تم تقليل padding-bottom لجعل الخريطة أعرض وأقصر
-        padding-bottom: 55%; // مثلاً نسبة 16:9 تكون حوالي 56.25%، 55% ستجعلها أوسع قليلاً
+        padding-bottom: 55%;
         height: 0;
         overflow: hidden;
-        background-color: $card-bg;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        border: 1px solid rgba($border-color, 0.5);
-        transition: all 0.4s ease-in-out;
+        background-color: $text-light;
+        border-radius: $radius-lg;
+        box-shadow: $card-shadow;
+        border: 2px solid $border-light;
+        transition: $transition-medium;
+        animation: mapEntrance 1s ease-out forwards;
 
         &:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
-            border-color: rgba($primary-color, 0.8);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+            border-color: rgba($primary-gold, 0.6);
         }
 
         .map-iframe {
@@ -90,9 +147,8 @@ $text-subtle: rgba($light-text, 0.8);
             width: 100%;
             height: 100%;
             border: 0;
-            border-radius: 16px;
-            
-            filter: grayscale(40%) brightness(70%);
+            border-radius: $radius-lg;
+            filter: grayscale(10%) brightness(105%);
             transition: filter 0.4s ease-in-out;
             animation: mapBorderGlow 3s infinite alternate;
 
@@ -103,7 +159,9 @@ $text-subtle: rgba($light-text, 0.8);
     }
 }
 
-// تعديلات RTL
+// ==============================================
+// *** RTL Adjustments ***
+// ==============================================
 [dir="rtl"] {
     .map-location-container {
         .map-title {
@@ -116,7 +174,9 @@ $text-subtle: rgba($light-text, 0.8);
     }
 }
 
-// تصميم متجاوب
+// ==============================================
+// *** Responsive Styles ***
+// ==============================================
 @media (max-width: 992px) {
     .map-location-container {
         padding: 50px 15px;
@@ -128,9 +188,8 @@ $text-subtle: rgba($light-text, 0.8);
 
         .map-frame-wrapper {
             max-width: 700px;
-            // ✨ تم تعديل padding-bottom هنا أيضًا
-            padding-bottom: 60%; // لجعلها أعرض على التابلت
-            border-radius: 12px;
+            padding-bottom: 60%;
+            border-radius: $radius-md;
         }
     }
 }
@@ -146,9 +205,8 @@ $text-subtle: rgba($light-text, 0.8);
 
         .map-frame-wrapper {
             max-width: 100%;
-            // ✨ تم تعديل padding-bottom هنا أيضًا
-            padding-bottom: 65%; // لجعلها أعرض على الموبايل
-            border-radius: 10px;
+            padding-bottom: 65%;
+            border-radius: $radius-md;
         }
     }
 }
@@ -163,9 +221,8 @@ $text-subtle: rgba($light-text, 0.8);
         }
 
         .map-frame-wrapper {
-            // ✨ تم تعديل padding-bottom هنا أيضًا
-            padding-bottom: 70%; // لجعلها أعرض على الموبايل الصغير
-            border-radius: 8px;
+            padding-bottom: 70%;
+            border-radius: $radius-sm;
         }
     }
 }

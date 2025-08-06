@@ -8,8 +8,8 @@ import {
     Typography,
     CardActionArea,
     Snackbar,
-    Alert as MuiAlert,
 } from "@mui/material";
+import MuiAlert from '@mui/material/Alert'; // استخدام MuiAlert مباشرة
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchHalls } from "../redux/reducers/hall";
@@ -21,7 +21,7 @@ import BuildCircleIcon from "@mui/icons-material/BuildCircle";
 import DatePicker from "react-datepicker";
 import format from 'date-fns/format';
 import "react-datepicker/dist/react-datepicker.css";
-import "../scss/halls.scss"; // هذا الملف سيحتوي على الأنماط المشتركة
+import "../scss/halls.scss"; // ملف الأنماط الخاص بالقاعات
 
 // تعريف مكون Alert لـ Snackbar
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -34,9 +34,7 @@ const Halls = () => {
     const navigate = useNavigate();
 
     const allHalls = useSelector((state) => state.hall.data);
-    // تأكد من أنك تسحب searchTerm من Redux store الصحيح للقاعات، 
-    // أو استخدم searchTerm من state محلي إذا كان البحث مختلفًا عن الشاليهات.
-    const searchTerm = useSelector((state) => state.chalet.searchTerm); 
+    const searchTerm = useSelector((state) => state.chalet.searchTerm);
 
     const [halls, setHalls] = useState([]);
     const [filteredHalls, setFilteredHalls] = useState([]);
@@ -58,12 +56,10 @@ const Halls = () => {
 
     const imagesKey = process.env.REACT_APP_UPLOAD_URL || "http://localhost:5000/uploads/";
 
-    // جلب جميع القاعات عند تحميل المكون
     useEffect(() => {
         dispatch(fetchHalls());
     }, [dispatch]);
 
-    // فلترة القاعات حسب التاريخ كلما تغيرت allHalls أو selectedDate
     useEffect(() => {
         if (allHalls && Array.isArray(allHalls)) {
             filterHallsByDate(selectedDate, allHalls);
@@ -72,7 +68,6 @@ const Halls = () => {
         }
     }, [allHalls, selectedDate]);
 
-    // تطبيق فلتر البحث كلما تغيرت searchTerm أو halls (القاعات المفلترة بالتاريخ)
     useEffect(() => {
         if (halls.length >= 0) {
             applySearchFilter(halls);
@@ -141,7 +136,6 @@ const Halls = () => {
             }
             if (searchTerm.minPrice && (hall.price?.wholeDay || 0) < searchTerm.minPrice) return false;
             if (searchTerm.maxPrice && (hall.price?.wholeDay || 0) > searchTerm.maxPrice) return false;
-            if (searchTerm.area && (hall.area || 0) < searchTerm.area) return false;
             if (searchTerm.capacity && (hall.capacity || 0) < searchTerm.capacity) return false;
             return true;
         });
@@ -199,16 +193,17 @@ const Halls = () => {
     };
 
     return (
-        <>
-            {/* تم تغيير chalet-page-container إلى hall-page-container إذا كنت تفضل فصل الأنماط بشكل كامل */}
-            {/* ولكن في هذا السيناريو، طالما أن halls.scss يحتوي على أنماط "chalet-page-container" المشتركة، 
-                فإن استخدامها هنا سيعمل، ولكنه قد يكون مربكًا من ناحية التسمية.
-                للحفاظ على التناسق البصري السريع، سأبقيه "chalet-page-container" مع الأنماط المشتركة.
-                إذا أردت فصلها تمامًا، فستحتاج إلى إنشاء ملف SCSS جديد "halls-list.scss" 
-                وتغيير اسمه في import إلى "hall-page-container".
-            */}
-            <div className="chalet-page-container" dir={i18n.language === 'en' ? 'ltr' : 'rtl'}>
-                {/* قسم منتقي التاريخ */}
+        <div className="halls-page-container" dir={i18n.language === 'en' ? 'ltr' : 'rtl'}>
+            {/* الخلفية المتحركة والفقاعات */}
+            <div className="animated-background-container">
+                <div className="animated-bubble bubble-1"></div>
+                <div className="animated-bubble bubble-2"></div>
+                <div className="animated-bubble bubble-3"></div>
+                <div className="animated-bubble bubble-4"></div>
+                <div className="animated-bubble bubble-5"></div>
+            </div>
+
+            <div className="page-content-wrapper">
                 <div className="calendar-filter-section">
                     <DatePicker
                         selected={selectedDate}
@@ -226,7 +221,7 @@ const Halls = () => {
                         ⏳ {t("common.loading")}...
                     </Typography>
                 ) : (
-                    <Grid container spacing={4} className="chalets-grid">
+                    <Grid container spacing={4} className="halls-grid">
                         {displayedHalls.length > 0 ? (
                             displayedHalls.map((ele, ind) => {
                                 const isFullyBooked = ele.availability === "غير متاح";
@@ -236,10 +231,8 @@ const Halls = () => {
                                 return (
                                     <Grid key={ind} item xs={12} sm={6} md={4} lg={4}>
                                         <Card
-                                            className={`chalet-card ${cardDisabled ? 'disabled-card' : ''}`}
+                                            className={`hall-card ${cardDisabled ? 'disabled-card' : ''}`}
                                             onClick={() => handleCardClick(ele)}
-                                            // ⛔ تم إزالة 'sx={{ maxWidth: 400, position: "relative" }}' من هنا
-                                            // لجعل البطاقة تتمدد بالكامل داخل Grid item وتعتمد على CSS classes
                                         >
                                             <CardActionArea component="div" className="card-action-area">
                                                 {isUnderMaintenance && (
@@ -249,20 +242,20 @@ const Halls = () => {
                                                     </div>
                                                 )}
                                                 {isFullyBooked && !isUnderMaintenance && (
-                                                   <div className="fully-booked-overlay">
+                                                    <div className="fully-booked-overlay">
                                                         <span>{t("cards.fullyBooked")}</span>
                                                     </div>
                                                 )}
                                                 <CardMedia
                                                     component="img"
-                                                    height="250" // هذا الارتفاع ثابت ومهم لنسبة العرض
+                                                    height="250"
                                                     image={`${imagesKey}${ele.images?.[0] || "/placeholder.jpg"}`}
                                                     alt={ele.name || t("cards.hall")}
-                                                    className="card-image" // هذا الكلاس يجب أن يحتوي على object-fit: cover
+                                                    className="card-image"
                                                 />
                                                 <CardContent className="card-content">
                                                     <Typography gutterBottom variant="h5" component="div" className="card-title">
-                                                        <span className="chalet-name-display">{ele.name || t("cards.unknownName")}</span>
+                                                        <span className="hall-name-display">{ele.name || t("cards.unknownName")}</span>
                                                         <div className="card-rating">
                                                             {[...Array(5)].map((_, i) => (
                                                                 <StarIcon key={i} className={`star-icon ${ele.rate && ele.rate.length > i ? "filled" : ""}`} />
@@ -282,16 +275,6 @@ const Halls = () => {
                                                             <strong className="price-value">{t("cards.sar")} {ele?.price?.wholeDay || "N/A"}</strong>
                                                             <span className="price-unit"> / {t("cards.day")}</span>
                                                         </div>
-                                                        {/* <div className="location-info">
-                                                            <LocationOnIcon className="detail-icon" />
-                                                            <span>{ele.address || t("cards.unknownLocation")}</span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="card-details-row">
-                                                        <div className="area-info">
-                                                            <DashboardIcon className="detail-icon" />
-                                                            <span>{ele.area || "N/A"} {t("cards.areaUnit")}</span>
-                                                        </div> */}
                                                         <div className="capacity-info">
                                                             {ele.capacity ? (
                                                                 <>
@@ -333,7 +316,7 @@ const Halls = () => {
                     </Alert>
                 </Snackbar>
             </div>
-        </>
+        </div>
     );
 };
 

@@ -1,4 +1,4 @@
-/* src/scss/calendar.scss */
+/* src/scss/calendar.scss - ملف CSS محسّن للتقويم */
 
 .calendar-container {
   position: relative; // لجعل التقويم يظهر بشكل صحيح تحت حقل الإدخال
@@ -14,7 +14,7 @@
 
   .inputBox {
     .MuiOutlinedInput-root {
-      border-radius: 8px; // حواف دائرية
+      border-radius: 15px; // حواف دائرية أكثر تناسقاً مع البطاقات
       background-color: var(--input-bg-color); // خلفية حقل الإدخال
 
       .MuiOutlinedInput-notchedOutline {
@@ -26,13 +26,14 @@
       }
 
       &.Mui-focused .MuiOutlinedInput-notchedOutline {
-        border-color: var(--secondary-color); // لون الحدود عند التركيز
+        border-color: var(--primary-color); // لون الحدود عند التركيز (تم توحيده مع primary)
+        box-shadow: 0 0 8px rgba(var(--primary-rgb), 0.25); // توهج خفيف عند التركيز
       }
     }
 
     .MuiInputBase-input {
       color: var(--text-color); // لون النص داخل الحقل
-      padding: 12px 14px; // تعديل المسافات الداخلية
+      padding: 12px 18px; // تعديل المسافات الداخلية
     }
   }
 
@@ -41,8 +42,8 @@
     z-index: 1000; // لضمان ظهور التقويم فوق العناصر الأخرى
     background-color: var(--card-bg-color); // خلفية التقويم
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); // ظل خفيف
+    border-radius: 18px; // زوايا أكثر استدارة لتناسب البطاقات
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.08); // ظل أنعم وأكثر انتشاراً
     overflow: hidden; // إخفاء أي تجاوزات
     top: calc(100% + 10px); // يظهر أسفل حقل الإدخال بمسافة 10px
     left: 0; // محاذاة لليسار
@@ -57,7 +58,7 @@
     }
 
     .rdrCalendarWrapper {
-      font-family: 'Cairo', sans-serif; // استخدام خط كايرو
+      font-family: 'Tajawal', sans-serif; // استخدام خط Tajawal ليتناسق مع halls.scss
       font-size: 1rem;
       color: var(--text-color); // لون النص العام للتقويم
       width: 100%; // تأكد من أن الـ wrapper يملأ العرض المتاح
@@ -65,13 +66,13 @@
 
       .rdrDateDisplayWrapper {
         background-color: var(--primary-color); // خلفية عرض التاريخ العلوي
-        color: #fff; // لون النص في الخلفية العلوية
-        border-radius: 8px 8px 0 0; // حواف دائرية علوية
+        color: var(--light-text); // لون النص في الخلفية العلوية (أبيض نقي)
+        border-radius: 18px 18px 0 0; // حواف دائرية علوية
         padding: 10px;
 
         .rdrMonthAndYearPickers {
           select {
-            color: #fff; // لون نص الـ select
+            color: var(--light-text); // لون نص الـ select
             background-color: transparent;
             border: none;
 
@@ -134,25 +135,28 @@
         color: var(--primary-color); // لون الأسهم
 
         &:hover {
-          background-color: var(--primary-color-dark); // خلفية عند التحويم
+          background-color: rgba(var(--primary-rgb), 0.1); // خلفية عند التحويم
+          border-radius: 50%; // لجعلها دائرية عند التحويم
         }
       }
     }
   }
 }
 
-// تعريف بعض المتغيرات اللونية (يمكن وضعها في ملف متغيرات عالمي إذا كان موجوداً)
+// تعريف متغيرات الألوان لتتناسب مع halls.scss
 :root {
-  --primary-color: #f7931e; // لون برتقالي أساسي
-  --secondary-color: #333; // لون ثانوي (لأيام الأسبوع مثلاً)
-  --accent-color: #007bff; // لون مميز (لليوم الحالي)
-  --text-color: #333; // لون النص الغامق
-  --text-color-light: #555; // لون النص الفاتح
-  --disabled-text-color: #bbb; // لون النص للأيام غير النشطة
-  --disabled-text-color-dark: #888; // لون النص للأيام المعطلة
-  --input-bg-color: #282828; // لون خلفية حقل الإدخال
-  --card-bg-color: #3e3e3e; // لون خلفية البطاقات والتقويم
-  --border-color: #555; // لون الحدود
-  --primary-color-light: rgba(247, 147, 30, 0.2); // لون فاتح للتركيز
-  --primary-color-dark: #d68019; // لون أغمق لـ primary
+  --primary-color: #C5A056; // اللون الذهبي الرئيسي (من halls.scss)
+  --secondary-color: #B38D46; // اللون الذهبي الثانوي (من halls.scss)
+  --accent-color: #C5A056; // لون مميز لليوم الحالي (نفس اللون الأساسي)
+  --text-color: #2C3E50; // لون النص الداكن (من halls.scss)
+  --text-color-light: #7F8C8D; // لون النص الفرعي (من halls.scss)
+  --disabled-text-color: #C0C0C0; // لون النص للأيام غير النشطة (رمادي فاتح)
+  --disabled-text-color-dark: #9E9E9E; // لون النص للأيام المعطلة (رمادي متوسط)
+  --input-bg-color: #FFFFFF; // لون خلفية حقل الإدخال (أبيض نقي)
+  --card-bg-color: #FFFFFF; // لون خلفية البطاقات والتقويم (أبيض نقي)
+  --border-color: rgba(197, 160, 86, 0.15); // لون الحدود (من halls.scss)
+  --primary-color-light: rgba(197, 160, 86, 0.1); // لون فاتح للتركيز (شفافية أقل)
+  --primary-color-dark: #B08B4C; // لون أغمق لـ primary
+  --light-text: #FFFFFF; // لون النص الفاتح (من halls.scss)
+  --primary-rgb: 197, 160, 86; // قيم RGB للظل
 }

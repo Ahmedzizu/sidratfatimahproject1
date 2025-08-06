@@ -125,6 +125,14 @@ export default function Sidebar({isOpen,toggle}) {
       {title:" شاليهات" ,enTitle:"Add Chalet",path:"/addChalet"},
     ]},
     {title:"خروج" ,enTitle:"Exit",icon :<LogoutIcon /> ,path:"/signin",type:1},
+    {
+  title: "إعدادات واتساب",
+  enTitle: "WhatsApp Settings",
+  icon: <SettingsIcon />, // أو أيقونة مناسبة
+  path: "/settings/whatsapp",
+  type: 1
+}
+,
   ]
 
   function handleClick(ele){
